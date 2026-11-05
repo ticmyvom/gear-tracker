@@ -1,0 +1,12 @@
+pressure:
+  gear: prius
+  read_on: <%= 1.day.ago.to_date %>
+  name: Tire pressure FL
+  value: 35
+  unit: psi
+
+drill_hours:
+  gear: drill
+  read_on: <%= 1.day.ago.to_date %>
+  name: Hours
+  value: 12

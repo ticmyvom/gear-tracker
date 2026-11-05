@@ -1,0 +1,37 @@
+<%= form_with model: [ gear, expense ] do |form| %>
+  <%= render "shared/errors", record: expense %>
+
+  <div>
+    <%= form.label :spent_on, "Date" %>
+    <%= form.date_field :spent_on, required: true %>
+  </div>
+  <div>
+    <%= form.label :description %>
+    <%= form.text_field :description, required: true, autofocus: true, placeholder: "Oil change" %>
+  </div>
+  <div>
+    <%= form.label :category %>
+    <%= form.text_field :category, list: "expense-categories" %>
+    <datalist id="expense-categories">
+      <% Expense::SUGGESTED_CATEGORIES.each do |category| %>
+        <option value="<%= category %>"></option>
+      <% end %>
+    </datalist>
+  </div>
+  <div>
+    <%= form.label :amount %>
+    <%= form.number_field :amount, required: true, min: 0, step: "0.01", inputmode: "decimal" %>
+  </div>
+  <div>
+    <%= form.label :vendor %>
+    <%= form.text_field :vendor %>
+  </div>
+  <div class="actions">
+    <%= form.submit %>
+    <%= link_to "Cancel", gear %>
+  </div>
+<% end %>
+
+<% if expense.persisted? %>
+  <p><%= button_to "Delete expense", [ gear, expense ], method: :delete, data: { turbo_confirm: "Delete this expense?" } %></p>
+<% end %>

@@ -1,0 +1,43 @@
+<%= form_with model: gear do |form| %>
+  <%= render "shared/errors", record: gear %>
+
+  <div>
+    <%= form.label :name %>
+    <%= form.text_field :name, required: true, autofocus: true, placeholder: "2010 Toyota Prius" %>
+  </div>
+  <div>
+    <%= form.label :category %>
+    <%= form.text_field :category, list: "gear-categories" %>
+    <datalist id="gear-categories">
+      <% Gear::SUGGESTED_CATEGORIES.each do |category| %>
+        <option value="<%= category %>"></option>
+      <% end %>
+    </datalist>
+  </div>
+  <% unless gear.components.any? %>
+    <div>
+      <%= form.label :parent_id, "Component of" %>
+      <%= form.collection_select :parent_id, parent_options, :id, :name, include_blank: "Nothing (standalone gear)" %>
+    </div>
+  <% end %>
+  <div>
+    <%= form.label :purchased_on, "Purchase date" %>
+    <%= form.date_field :purchased_on %>
+  </div>
+  <div>
+    <%= form.label :price, "Price" %>
+    <%= form.number_field :price, min: 0, step: "0.01", inputmode: "decimal" %>
+  </div>
+  <div>
+    <%= form.label :purchased_from, "Bought from" %>
+    <%= form.text_field :purchased_from %>
+  </div>
+  <div>
+    <%= form.label :notes %>
+    <%= form.text_area :notes, rows: 4 %>
+  </div>
+  <div class="actions">
+    <%= form.submit %>
+    <%= link_to "Cancel", gear.persisted? ? gear : gears_path %>
+  </div>
+<% end %>

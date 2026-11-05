@@ -1,0 +1,33 @@
+<%= form_with model: [ gear, reading ] do |form| %>
+  <%= render "shared/errors", record: reading %>
+
+  <div>
+    <%= form.label :read_on, "Date" %>
+    <%= form.date_field :read_on, required: true %>
+  </div>
+  <div>
+    <%= form.label :name, "Reading" %>
+    <%= form.text_field :name, required: true, autofocus: true, list: "reading-names" %>
+    <datalist id="reading-names">
+      <% Reading::SUGGESTED_NAMES.each do |name| %>
+        <option value="<%= name %>"></option>
+      <% end %>
+    </datalist>
+  </div>
+  <div>
+    <%= form.label :value %>
+    <%= form.number_field :value, required: true, step: "any", inputmode: "decimal" %>
+  </div>
+  <div>
+    <%= form.label :unit %>
+    <%= form.text_field :unit, placeholder: "psi" %>
+  </div>
+  <div class="actions">
+    <%= form.submit %>
+    <%= link_to "Cancel", gear %>
+  </div>
+<% end %>
+
+<% if reading.persisted? %>
+  <p><%= button_to "Delete reading", [ gear, reading ], method: :delete, data: { turbo_confirm: "Delete this reading?" } %></p>
+<% end %>

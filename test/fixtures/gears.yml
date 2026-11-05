@@ -1,0 +1,21 @@
+prius:
+  user: one
+  name: 2010 Toyota Prius
+  category: Vehicle
+  purchased_on: <%= 2.years.ago.to_date %>
+  price: 8000
+  purchased_from: Private seller
+
+tires:
+  user: one
+  parent: prius
+  name: Michelin tires
+  category: Tires
+  purchased_on: <%= 1.year.ago.to_date %>
+  price: 600
+  purchased_from: Discount Tire
+
+drill:
+  user: two
+  name: Cordless drill
+  price: 150

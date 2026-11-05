@@ -26,6 +26,19 @@ Then open http://localhost:3000 and sign up.
 
     bin/rails test
 
+## Keeping your data
+
+The database is one file, `storage/development.sqlite3`. It isn't stored in git.
+
+`bin/rails db:migrate` and `db:rollback` save a copy to `storage/backups` before
+changing anything. To make or restore a copy yourself:
+
+    bin/rails db:backup
+    bin/rails db:restore FILE=storage/backups/name.sqlite3
+
+Stop the server before restoring. Restoring saves a copy of the current database
+first. Backups live on the same disk, so copy them elsewhere too.
+
 ## Before deploying
 
 Password reset emails need SMTP settings and a real host in

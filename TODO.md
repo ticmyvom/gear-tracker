@@ -4,6 +4,10 @@
 - [ ] Mark gear as sold or retired, so cost per year stops falling after you let it go
 - [ ] Show the latest value of each reading, and filter reading history (e.g. one tire's pressure)
 
+## Data
+- [ ] Regularly copy `storage/backups` off this machine (external drive or cloud), since a disk failure would take the backups too
+- [ ] Remove old files from `storage/backups` now and then, since nothing deletes them automatically
+
 ## Before deploying
 - [ ] Buy a domain
 - [ ] Choose a host and put the app online
@@ -12,4 +16,7 @@
   - Keep the Rails mailer and send over SMTP
   - Use a sending-only key, stored in Rails credentials
   - Set the real host and `from` address in `config/environments/production.rb` and `app/mailers/application_mailer.rb`
+- [ ] Choose a host with a persistent disk or volume, since many hosts wipe files on deploy, and set the production path in `config/database.yml` to it
+- [ ] Run `bin/rails db:migrate` when deploying, not `db:prepare`, or call `db:backup` first, because only `db:migrate` backs up automatically
+- [ ] Set up scheduled backups in production, stored away from the server
 - [ ] Give the queue a durable backend, since emails queued in the web process are lost on restart

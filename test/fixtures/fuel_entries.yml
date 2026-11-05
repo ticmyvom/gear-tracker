@@ -1,0 +1,13 @@
+fill_up:
+  gear: prius
+  filled_on: <%= 1.week.ago.to_date %>
+  total_price: 40
+  gallons: 10.5
+  odometer: 240042
+  trip: 450.2
+
+truck_fill_up:
+  gear: truck
+  filled_on: <%= 1.week.ago.to_date %>
+  total_price: 90
+  gallons: 25

@@ -25,7 +25,17 @@ class GearsControllerTest < ActionDispatch::IntegrationTest
     assert_select "td a", text: "Michelin tires"
     assert_select "td", text: "Oil change"
     assert_select "td", text: "Tire pressure FL"
-    assert_select "dd", text: "$8,675.00"
+    assert_select "dd", text: "$8,715.00"
+  end
+
+  test "show offers fuel entries only for vehicles" do
+    get gear_path(gears(:prius))
+    assert_select "a", text: "Add fuel entry"
+    assert_select "td", text: "$40.00"
+    assert_select "td", text: "42.9"
+
+    get gear_path(gears(:tires))
+    assert_select "a", text: "Add fuel entry", count: 0
   end
 
   test "create" do

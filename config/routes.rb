@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   resources :gears do
     resources :expenses, except: %i[ index show ]
     resources :readings, except: %i[ index show ]
+    resources :fuel_entries, except: %i[ index show ]
   end
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

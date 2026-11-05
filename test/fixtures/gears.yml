@@ -15,6 +15,11 @@ tires:
   price: 600
   purchased_from: Discount Tire
 
+truck:
+  user: two
+  name: Old truck
+  category: Vehicle
+
 drill:
   user: two
   name: Cordless drill

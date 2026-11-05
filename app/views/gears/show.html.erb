@@ -50,6 +50,35 @@
   <% end %>
 <% end %>
 
+<% if @gear.vehicle? || @fuel_entries.any? %>
+  <h2>Fuel</h2>
+  <% if @gear.vehicle? %>
+    <p><%= link_to "Add fuel entry", new_gear_fuel_entry_path(@gear) %></p>
+  <% end %>
+  <% if @fuel_entries.any? %>
+    <div class="scroll">
+      <table>
+        <thead>
+          <tr><th>Date</th><th class="num">Total price</th><th class="num">Gallons</th><th class="num">Odometer</th><th class="num">Trip</th><th class="num">MPG</th><th></th></tr>
+        </thead>
+        <tbody>
+          <% @fuel_entries.each do |fuel_entry| %>
+            <tr>
+              <td><%= fuel_entry.filled_on %></td>
+              <td class="num"><%= money fuel_entry.total_price %></td>
+              <td class="num"><%= quantity fuel_entry.gallons %></td>
+              <td class="num"><%= quantity fuel_entry.odometer %></td>
+              <td class="num"><%= quantity fuel_entry.trip %></td>
+              <td class="num"><%= number_with_precision fuel_entry.mpg, precision: 1 %></td>
+              <td><%= link_to "Edit", edit_gear_fuel_entry_path(@gear, fuel_entry) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+<% end %>
+
 <h2>Expenses</h2>
 <p><%= link_to "Add expense", new_gear_expense_path(@gear) %></p>
 <% if @expenses.any? %>
@@ -88,7 +117,7 @@
           <tr>
             <td><%= reading.read_on %></td>
             <td><%= reading.name %></td>
-            <td class="num"><%= number_with_precision reading.value, precision: 3, strip_insignificant_zeros: true %></td>
+            <td class="num"><%= quantity reading.value %></td>
             <td><%= reading.unit %></td>
             <td><%= link_to "Edit", edit_gear_reading_path(@gear, reading) %></td>
           </tr>

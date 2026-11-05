@@ -3,11 +3,12 @@ class GearsController < ApplicationController
   helper_method :parent_options
 
   def index
-    @gears = Current.user.gears.top_level.includes(:expenses, components: :expenses).order(:name)
+    @gears = Current.user.gears.top_level.includes(:expenses, :fuel_entries, components: %i[ expenses fuel_entries ]).order(:name)
   end
 
   def show
-    @components = @gear.components.includes(:expenses).order(:name)
+    @components = @gear.components.includes(:expenses, :fuel_entries).order(:name)
+    @fuel_entries = @gear.fuel_entries.order(filled_on: :desc, id: :desc)
     @expenses = @gear.expenses.order(spent_on: :desc, id: :desc)
     @readings = @gear.readings.order(read_on: :desc, id: :desc)
   end

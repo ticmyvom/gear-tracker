@@ -1,0 +1,32 @@
+<%= form_with model: [ gear, fuel_entry ] do |form| %>
+  <%= render "shared/errors", record: fuel_entry %>
+
+  <div>
+    <%= form.label :total_price, "Total price" %>
+    <%= form.number_field :total_price, required: true, autofocus: true, min: 0, step: "0.01", inputmode: "decimal" %>
+  </div>
+  <div>
+    <%= form.label :gallons %>
+    <%= form.number_field :gallons, required: true, min: 0.001, step: "0.001", inputmode: "decimal" %>
+  </div>
+  <div>
+    <%= form.label :odometer, "Current odometer (optional)" %>
+    <%= form.number_field :odometer, min: 0, step: "0.1", inputmode: "decimal" %>
+  </div>
+  <div>
+    <%= form.label :trip, "Current trip (optional)" %>
+    <%= form.number_field :trip, min: 0, step: "0.1", inputmode: "decimal" %>
+  </div>
+  <div>
+    <%= form.label :filled_on, "Date" %>
+    <%= form.date_field :filled_on %>
+  </div>
+  <div class="actions">
+    <%= form.submit %>
+    <%= link_to "Cancel", gear %>
+  </div>
+<% end %>
+
+<% if fuel_entry.persisted? %>
+  <p><%= button_to "Delete fuel entry", [ gear, fuel_entry ], method: :delete, data: { turbo_confirm: "Delete this fuel entry?" } %></p>
+<% end %>

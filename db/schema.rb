@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_05_040518) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_05_051332) do
   create_table "expenses", force: :cascade do |t|
     t.integer "gear_id", null: false
     t.date "spent_on", null: false
@@ -21,6 +21,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_05_040518) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["gear_id"], name: "index_expenses_on_gear_id"
+  end
+
+  create_table "fuel_entries", force: :cascade do |t|
+    t.integer "gear_id", null: false
+    t.date "filled_on", null: false
+    t.decimal "total_price", precision: 12, scale: 2, null: false
+    t.decimal "gallons", precision: 10, scale: 3, null: false
+    t.decimal "odometer", precision: 10, scale: 1
+    t.decimal "trip", precision: 10, scale: 1
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["gear_id"], name: "index_fuel_entries_on_gear_id"
   end
 
   create_table "gears", force: :cascade do |t|
@@ -67,6 +79,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_05_040518) do
   end
 
   add_foreign_key "expenses", "gears"
+  add_foreign_key "fuel_entries", "gears"
   add_foreign_key "gears", "gears", column: "parent_id"
   add_foreign_key "gears", "users"
   add_foreign_key "readings", "gears"

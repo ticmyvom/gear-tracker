@@ -1,8 +1,8 @@
 require "test_helper"
 
 class GearTest < ActiveSupport::TestCase
-  test "total cost includes price, expenses and components" do
-    assert_equal 8675, gears(:prius).total_cost
+  test "total cost includes price, expenses, fuel and components" do
+    assert_equal 8715, gears(:prius).total_cost
   end
 
   test "total cost treats a missing price as zero" do
@@ -54,8 +54,14 @@ class GearTest < ActiveSupport::TestCase
     assert_not prius.valid?
   end
 
+  test "vehicle category ignores case and spaces" do
+    assert Gear.new(category: " vehicle ").vehicle?
+    assert_not Gear.new(category: "Tools").vehicle?
+    assert_not Gear.new.vehicle?
+  end
+
   test "destroying gear removes its components and records" do
-    assert_difference -> { Gear.count } => -2, -> { Expense.count } => -2, -> { Reading.count } => -1 do
+    assert_difference -> { Gear.count } => -2, -> { Expense.count } => -2, -> { Reading.count } => -1, -> { FuelEntry.count } => -1 do
       gears(:prius).destroy!
     end
   end

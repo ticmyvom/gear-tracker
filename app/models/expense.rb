@@ -1,5 +1,5 @@
 class Expense < ApplicationRecord
-  SUGGESTED_CATEGORIES = %w[ Fuel Maintenance Repair Insurance Registration Accessory ].freeze
+  SUGGESTED_CATEGORIES = %w[ Maintenance Repair Insurance Registration Accessory ].freeze
 
   belongs_to :gear
 

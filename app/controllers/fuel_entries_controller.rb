@@ -13,7 +13,7 @@ class FuelEntriesController < ApplicationController
     @fuel_entry = @gear.fuel_entries.new(fuel_entry_params)
 
     if @fuel_entry.save
-      redirect_to @gear, notice: "Fuel entry added."
+      redirect_to @gear, notice: "#{@fuel_entry.label.capitalize} added."
     else
       render :new, status: :unprocessable_content
     end
@@ -21,7 +21,7 @@ class FuelEntriesController < ApplicationController
 
   def update
     if @fuel_entry.update(fuel_entry_params)
-      redirect_to @gear, notice: "Fuel entry updated."
+      redirect_to @gear, notice: "#{@fuel_entry.label.capitalize} updated."
     else
       render :edit, status: :unprocessable_content
     end
@@ -29,7 +29,7 @@ class FuelEntriesController < ApplicationController
 
   def destroy
     @fuel_entry.destroy!
-    redirect_to @gear, notice: "Fuel entry deleted.", status: :see_other
+    redirect_to @gear, notice: "#{@fuel_entry.label.capitalize} deleted.", status: :see_other
   end
 
   private
@@ -42,6 +42,6 @@ class FuelEntriesController < ApplicationController
     end
 
     def fuel_entry_params
-      params.expect(fuel_entry: %i[ filled_on total_price gallons odometer trip ])
+      params.expect(fuel_entry: %i[ filled_on total_price amount minutes odometer trip ])
     end
 end

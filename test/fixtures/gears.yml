@@ -2,6 +2,7 @@ prius:
   user: one
   name: 2010 Toyota Prius
   category: Vehicle
+  power_source: gasoline
   purchased_on: <%= 2.years.ago.to_date %>
   price: 8000
   purchased_from: Private seller
@@ -19,8 +20,10 @@ truck:
   user: two
   name: Old truck
   category: Vehicle
+  power_source: diesel
 
 drill:
   user: two
   name: Cordless drill
+  power_source: electric
   price: 150

@@ -1,3 +1,3 @@
-<% content_for :title, "Add fuel entry" %>
-<h1>Add fuel entry to <%= @gear.name %></h1>
+<% content_for :title, "Add #{@fuel_entry.label}" %>
+<h1>Add <%= @fuel_entry.label %> to <%= @gear.name %></h1>
 <%= render "form", gear: @gear, fuel_entry: @fuel_entry %>

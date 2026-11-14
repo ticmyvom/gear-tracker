@@ -14,6 +14,10 @@
       <% end %>
     </datalist>
   </div>
+  <div>
+    <%= form.label :power_source, "Powered by" %>
+    <%= form.select :power_source, Gear::POWER_SOURCES.invert, include_blank: "Not powered" %>
+  </div>
   <% unless gear.components.any? %>
     <div>
       <%= form.label :parent_id, "Component of" %>

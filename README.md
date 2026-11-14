@@ -8,8 +8,11 @@ their own gear.
 - **Components**: gear that belongs to other gear, like a set of tires on a car.
   Their costs count toward the parent's total.
 - **Expenses**: money spent after the purchase, like repairs or insurance.
-- **Fuel entries**: fill-ups for gear in the Vehicle category, with total price and
-  gallons, plus optional odometer and trip.
+- **Power source**: what makes the gear go: nothing, human power, gasoline, diesel,
+  propane, or electricity.
+- **Fuel entries**: fill-ups (gallons) or energy use (kWh) for gear that runs on fuel or
+  electricity. Add minutes of use to see gallons or kWh per hour, or miles driven to
+  see miles per gallon or per kWh.
 - **Readings**: measurements over time, like tire pressure or odometer.
 
 ## Running it

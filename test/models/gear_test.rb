@@ -54,10 +54,22 @@ class GearTest < ActiveSupport::TestCase
     assert_not prius.valid?
   end
 
-  test "vehicle category ignores case and spaces" do
-    assert Gear.new(category: " vehicle ").vehicle?
-    assert_not Gear.new(category: "Tools").vehicle?
-    assert_not Gear.new.vehicle?
+  test "fuel unit depends on the power source" do
+    assert_equal "gal", Gear.new(power_source: "gasoline").fuel_unit
+    assert_equal "kWh", Gear.new(power_source: "electric").fuel_unit
+    assert_nil Gear.new(power_source: "manual").fuel_unit
+    assert_nil Gear.new.fuel_unit
+  end
+
+  test "power source must be a known one, and blank means not powered" do
+    assert_not users(:one).gears.new(name: "Kite", power_source: "wind").valid?
+    assert_nil users(:one).gears.create!(name: "Kite", power_source: "").power_source
+  end
+
+  test "total cost counts fuel entries without a price as zero" do
+    gears(:prius).fuel_entries.create!(amount: 5)
+
+    assert_equal 8715, gears(:prius).total_cost
   end
 
   test "destroying gear removes its components and records" do

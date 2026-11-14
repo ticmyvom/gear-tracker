@@ -28,23 +28,34 @@ class GearsControllerTest < ActionDispatch::IntegrationTest
     assert_select "dd", text: "$8,715.00"
   end
 
-  test "show offers fuel entries only for vehicles" do
+  test "show offers fuel entries only for gear that uses fuel or electricity" do
     get gear_path(gears(:prius))
+    assert_select "dd", text: "Gasoline"
     assert_select "a", text: "Add fuel entry"
     assert_select "td", text: "$40.00"
-    assert_select "td", text: "42.9"
+    assert_select "td", text: "42.9 mi/gal"
 
     get gear_path(gears(:tires))
+    assert_select "dd", text: "Not powered"
     assert_select "a", text: "Add fuel entry", count: 0
+  end
+
+  test "show offers energy entries for electric gear" do
+    sign_in_as users(:two)
+    get gear_path(gears(:drill))
+
+    assert_select "h2", text: "Energy use"
+    assert_select "a", text: "Add energy entry"
   end
 
   test "create" do
     assert_difference -> { users(:one).gears.count } do
-      post gears_path, params: { gear: { name: "Tent", price: "199.99", purchased_on: "2026-01-02", purchased_from: "REI" } }
+      post gears_path, params: { gear: { name: "Tent", power_source: "manual", price: "199.99", purchased_on: "2026-01-02", purchased_from: "REI" } }
     end
 
     assert_redirected_to Gear.last
     assert_equal "REI", Gear.last.purchased_from
+    assert_equal "manual", Gear.last.power_source
   end
 
   test "create a component from the new form" do

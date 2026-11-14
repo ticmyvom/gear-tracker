@@ -53,6 +53,6 @@ class GearsController < ApplicationController
     end
 
     def gear_params
-      params.expect(gear: %i[ name category parent_id purchased_on price purchased_from notes ])
+      params.expect(gear: %i[ name category power_source parent_id purchased_on price purchased_from notes ])
     end
 end

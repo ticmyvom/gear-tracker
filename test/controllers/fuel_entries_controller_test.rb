@@ -13,7 +13,7 @@ class FuelEntriesControllerTest < ActionDispatch::IntegrationTest
 
   test "create with only the required fields" do
     assert_difference -> { @gear.fuel_entries.count } do
-      post gear_fuel_entries_path(@gear), params: { fuel_entry: { total_price: "35.20", gallons: "9.8", odometer: "", trip: "", filled_on: "" } }
+      post gear_fuel_entries_path(@gear), params: { fuel_entry: { total_price: "35.20", amount: "9.8", odometer: "", trip: "", filled_on: "" } }
     end
 
     assert_redirected_to @gear
@@ -22,26 +22,37 @@ class FuelEntriesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "create with odometer and trip" do
-    post gear_fuel_entries_path(@gear), params: { fuel_entry: { total_price: "35.20", gallons: "9.8", odometer: "240500", trip: "458.3", filled_on: "2026-01-02" } }
+    post gear_fuel_entries_path(@gear), params: { fuel_entry: { total_price: "35.20", amount: "9.8", odometer: "240500", trip: "458.3", filled_on: "2026-01-02" } }
 
     assert_equal 240500, FuelEntry.last.odometer
     assert_equal 458.3.to_d, FuelEntry.last.trip
   end
 
-  test "create requires total price and gallons" do
+  test "create requires an amount" do
     assert_no_difference -> { FuelEntry.count } do
-      post gear_fuel_entries_path(@gear), params: { fuel_entry: { total_price: "", gallons: "" } }
+      post gear_fuel_entries_path(@gear), params: { fuel_entry: { total_price: "", amount: "" } }
     end
 
     assert_response :unprocessable_content
   end
 
-  test "create rejects gear that isn't a vehicle" do
+  test "create rejects gear that doesn't use fuel" do
     assert_no_difference -> { FuelEntry.count } do
-      post gear_fuel_entries_path(gears(:tires)), params: { fuel_entry: { total_price: "30", gallons: "9" } }
+      post gear_fuel_entries_path(gears(:tires)), params: { fuel_entry: { total_price: "30", amount: "9" } }
     end
 
     assert_response :unprocessable_content
+  end
+
+  test "create an energy entry with minutes of use" do
+    sign_in_as users(:two)
+    post gear_fuel_entries_path(gears(:drill)), params: { fuel_entry: { amount: "0.25", minutes: "20", total_price: "" } }
+
+    assert_redirected_to gears(:drill)
+    assert_equal "Energy entry added.", flash[:notice]
+    assert_equal "kWh", FuelEntry.last.unit
+    assert_equal 20, FuelEntry.last.minutes
+    assert_nil FuelEntry.last.total_price
   end
 
   test "edit" do
@@ -50,10 +61,10 @@ class FuelEntriesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "update" do
-    patch gear_fuel_entry_path(@gear, fuel_entries(:fill_up)), params: { fuel_entry: { gallons: "11" } }
+    patch gear_fuel_entry_path(@gear, fuel_entries(:fill_up)), params: { fuel_entry: { amount: "11" } }
 
     assert_redirected_to @gear
-    assert_equal 11, fuel_entries(:fill_up).reload.gallons
+    assert_equal 11, fuel_entries(:fill_up).reload.amount
   end
 
   test "destroy" do
@@ -63,7 +74,7 @@ class FuelEntriesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "another user's fuel entries are off limits" do
-    post gear_fuel_entries_path(gears(:truck)), params: { fuel_entry: { total_price: "30", gallons: "9" } }
+    post gear_fuel_entries_path(gears(:truck)), params: { fuel_entry: { total_price: "30", amount: "9" } }
     assert_response :not_found
 
     delete gear_fuel_entry_path(gears(:truck), fuel_entries(:truck_fill_up))

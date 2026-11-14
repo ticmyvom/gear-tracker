@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_05_051332) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_14_120000) do
   create_table "expenses", force: :cascade do |t|
     t.integer "gear_id", null: false
     t.date "spent_on", null: false
@@ -26,12 +26,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_05_051332) do
   create_table "fuel_entries", force: :cascade do |t|
     t.integer "gear_id", null: false
     t.date "filled_on", null: false
-    t.decimal "total_price", precision: 12, scale: 2, null: false
-    t.decimal "gallons", precision: 10, scale: 3, null: false
+    t.decimal "total_price", precision: 12, scale: 2
+    t.decimal "amount", precision: 10, scale: 3, null: false
     t.decimal "odometer", precision: 10, scale: 1
     t.decimal "trip", precision: 10, scale: 1
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "unit", null: false
+    t.integer "minutes"
     t.index ["gear_id"], name: "index_fuel_entries_on_gear_id"
   end
 
@@ -46,6 +48,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_05_051332) do
     t.text "notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "power_source"
     t.index ["parent_id"], name: "index_gears_on_parent_id"
     t.index ["user_id"], name: "index_gears_on_user_id"
   end

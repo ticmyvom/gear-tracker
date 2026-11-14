@@ -9,6 +9,7 @@
 
 <dl>
   <dt>Category</dt><dd><%= @gear.category.presence || "-" %></dd>
+  <dt>Powered by</dt><dd><%= @gear.power_source_name || "Not powered" %></dd>
   <dt>Purchased</dt><dd><%= @gear.purchased_on || "-" %></dd>
   <dt>Bought from</dt><dd><%= @gear.purchased_from.presence || "-" %></dd>
   <dt>Price</dt><dd><%= money @gear.price %></dd>
@@ -22,7 +23,7 @@
 
 <div class="actions">
   <%= link_to "Edit", edit_gear_path(@gear) %>
-  <%= button_to "Delete", @gear, method: :delete, data: { turbo_confirm: "Delete #{@gear.name} and all its components, expenses and readings?" } %>
+  <%= button_to "Delete", @gear, method: :delete, data: { turbo_confirm: "Delete #{@gear.name} and all its components, expenses, fuel entries and readings?" } %>
 </div>
 
 <% if @gear.parent_id.nil? %>
@@ -50,26 +51,29 @@
   <% end %>
 <% end %>
 
-<% if @gear.vehicle? || @fuel_entries.any? %>
-  <h2>Fuel</h2>
-  <% if @gear.vehicle? %>
-    <p><%= link_to "Add fuel entry", new_gear_fuel_entry_path(@gear) %></p>
+<% if @gear.fuel_unit || @fuel_entries.any? %>
+  <h2><%= FuelEntry.log_name_for(@gear.fuel_unit) %></h2>
+  <p class="muted">Add minutes of use to see usage per hour, or miles to see efficiency.</p>
+  <% if @gear.fuel_unit %>
+    <p><%= link_to "Add #{FuelEntry.label_for(@gear.fuel_unit)}", new_gear_fuel_entry_path(@gear) %></p>
   <% end %>
   <% if @fuel_entries.any? %>
     <div class="scroll">
       <table>
         <thead>
-          <tr><th>Date</th><th class="num">Total price</th><th class="num">Gallons</th><th class="num">Odometer</th><th class="num">Trip</th><th class="num">MPG</th><th></th></tr>
+          <tr><th>Date</th><th class="num">Amount</th><th class="num">Total price</th><th class="num">Minutes</th><th class="num">Per hour</th><th class="num">Odometer</th><th class="num">Miles</th><th class="num">Efficiency</th><th></th></tr>
         </thead>
         <tbody>
           <% @fuel_entries.each do |fuel_entry| %>
             <tr>
               <td><%= fuel_entry.filled_on %></td>
+              <td class="num"><%= quantity fuel_entry.amount %> <%= fuel_entry.unit %></td>
               <td class="num"><%= money fuel_entry.total_price %></td>
-              <td class="num"><%= quantity fuel_entry.gallons %></td>
+              <td class="num"><%= fuel_entry.minutes %></td>
+              <td class="num"><% if fuel_entry.amount_per_hour %><%= number_with_precision fuel_entry.amount_per_hour, precision: 2 %> <%= fuel_entry.unit %>/h<% end %></td>
               <td class="num"><%= quantity fuel_entry.odometer %></td>
               <td class="num"><%= quantity fuel_entry.trip %></td>
-              <td class="num"><%= number_with_precision fuel_entry.mpg, precision: 1 %></td>
+              <td class="num"><% if fuel_entry.distance_per_unit %><%= number_with_precision fuel_entry.distance_per_unit, precision: 1 %> mi/<%= fuel_entry.unit %><% end %></td>
               <td><%= link_to "Edit", edit_gear_fuel_entry_path(@gear, fuel_entry) %></td>
             </tr>
           <% end %>

@@ -1,5 +1,13 @@
 class Gear < ApplicationRecord
   SUGGESTED_CATEGORIES = %w[ Vehicle Tires Tools Electronics Outdoor Kitchen Clothing ].freeze
+  POWER_SOURCES = {
+    "manual" => "Manual (human-powered)",
+    "gasoline" => "Gasoline",
+    "diesel" => "Diesel",
+    "propane" => "Propane",
+    "electric" => "Electric"
+  }.freeze
+  FUEL_UNITS = { "gasoline" => "gal", "diesel" => "gal", "propane" => "gal", "electric" => "kWh" }.freeze
 
   belongs_to :user
   belongs_to :parent, class_name: "Gear", optional: true, inverse_of: :components
@@ -10,13 +18,16 @@ class Gear < ApplicationRecord
 
   scope :top_level, -> { where(parent_id: nil) }
 
+  normalizes :power_source, with: ->(source) { source.presence }
+
   validates :name, presence: true
+  validates :power_source, inclusion: { in: POWER_SOURCES.keys }, allow_nil: true
   validates :price, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
   validate :parent_is_allowed
 
   # Purchase price plus every expense and fuel entry, including those of components.
   def total_cost
-    (price || 0) + expenses.sum(&:amount) + fuel_entries.sum(&:total_price) + components.sum(&:total_cost)
+    (price || 0) + expenses.sum(&:amount) + fuel_entries.sum { it.total_price || 0 } + components.sum(&:total_cost)
   end
 
   # Counts at least one year, so a new purchase isn't extrapolated into a huge yearly figure.
@@ -27,8 +38,13 @@ class Gear < ApplicationRecord
     total_cost.to_f / [ years_owned, 1 ].max
   end
 
-  def vehicle?
-    category.to_s.strip.casecmp?("Vehicle")
+  def power_source_name
+    POWER_SOURCES[power_source]
+  end
+
+  # Gallons or kWh, or nil for gear that doesn't take fuel or electricity.
+  def fuel_unit
+    FUEL_UNITS[power_source]
   end
 
   private

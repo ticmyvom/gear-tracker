@@ -1,0 +1,9 @@
+<%# A money input with its currency picker beside it. The record keeps the currency picked here. %>
+<% options = local_assigns.fetch(:input_options, {}) %>
+<div>
+  <%= form.label field, label %>
+  <div class="money-field">
+    <%= form.number_field field, min: 0, step: "0.01", inputmode: "decimal", **options %>
+    <%= form.select :currency, currency_options, { selected: form.object.display_currency }, aria: { label: "Currency" } %>
+  </div>
+</div>

@@ -6,12 +6,14 @@ prius:
   purchased_on: <%= 2.years.ago.to_date %>
   price: 8000
   purchased_from: Private seller
+  currency: USD
 
 phev:
   user: one
   name: Plug-in hybrid
   category: Vehicle
   power_source: plug_in_hybrid
+  currency: USD
 
 tires:
   user: one
@@ -21,15 +23,18 @@ tires:
   purchased_on: <%= 1.year.ago.to_date %>
   price: 600
   purchased_from: Discount Tire
+  currency: USD
 
 truck:
   user: two
   name: Old truck
   category: Vehicle
   power_source: diesel
+  currency: EUR
 
 drill:
   user: two
   name: Cordless drill
   power_source: electric
   price: 150
+  currency: EUR

@@ -6,10 +6,7 @@
     <%= form.label :entered_amount, "#{fuel_entry.electric? ? "Energy" : "Fuel"} (#{fuel_entry.amount_label})" %>
     <%= form.number_field :entered_amount, required: true, autofocus: true, min: 0.001, step: "0.001", inputmode: "decimal" %>
   </div>
-  <div>
-    <%= form.label :total_price, "Total price (optional)" %>
-    <%= form.number_field :total_price, min: 0, step: "0.01", inputmode: "decimal" %>
-  </div>
+  <%= render "shared/money_field", form: form, field: :total_price, label: "Total price (optional)" %>
   <div>
     <%= form.label :minutes, "Minutes of use (optional)" %>
     <%= form.number_field :minutes, min: 1, step: 1, inputmode: "numeric" %>

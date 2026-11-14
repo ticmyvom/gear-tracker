@@ -7,7 +7,7 @@
   <div>
     <%= form.label :currency %>
     <%= form.select :currency, User::CURRENCIES.map { |code, currency| [ "#{currency[:name]} (#{currency[:symbol]})", code ] } %>
-    <p class="muted">Changes how amounts are shown. Amounts you already entered aren't converted.</p>
+    <p class="muted">The default for new prices and expenses. Each one can use a different currency, and amounts you already entered keep theirs.</p>
   </div>
   <div>
     <%= form.label :distance_unit, "Distance" %>

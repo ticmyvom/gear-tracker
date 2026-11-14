@@ -16,7 +16,9 @@ their own gear.
 - **Readings**: measurements over time, like tire pressure or odometer.
 - **Settings**: your currency, miles or kilometers, and US gallons, UK gallons or
   liters. Fuel entries are stored in kilometers and liters and shown in your units, so
-  changing units updates old entries too. Changing currency only changes the symbol.
+  changing units updates old entries too. Your currency is the default for new prices and
+  expenses; each one can be set to its own currency on its form. Totals in more than
+  one currency show each separately.
 
 ## Running it
 

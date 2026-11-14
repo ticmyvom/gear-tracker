@@ -43,6 +43,6 @@ class FuelEntriesController < ApplicationController
 
     # The unit can only be chosen when an entry is created, so old entries keep their meaning.
     def fuel_entry_params(*create_only)
-      params.expect(fuel_entry: [ :filled_on, :total_price, :entered_amount, :minutes, :entered_odometer, :entered_trip, *create_only ])
+      params.expect(fuel_entry: [ :filled_on, :total_price, :currency, :entered_amount, :minutes, :entered_odometer, :entered_trip, *create_only ])
     end
 end

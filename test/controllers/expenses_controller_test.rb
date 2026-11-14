@@ -34,6 +34,26 @@ class ExpensesControllerTest < ActionDispatch::IntegrationTest
     assert_equal 60, expenses(:oil_change).reload.amount
   end
 
+  test "create in another currency" do
+    post gear_expenses_path(@gear), params: { expense: { spent_on: "2026-01-02", description: "Toll", amount: "12", currency: "EUR" } }
+
+    assert_equal "EUR", Expense.last.currency
+    follow_redirect!
+    assert_select "td", text: "€12.00"
+  end
+
+  test "update amount and currency together" do
+    patch gear_expense_path(@gear, expenses(:oil_change)), params: { expense: { amount: "45", currency: "GBP" } }
+
+    assert_equal [ 45, "GBP" ], expenses(:oil_change).reload.values_at(:amount, :currency)
+  end
+
+  test "edit form picks the expense's currency" do
+    get edit_gear_expense_path(@gear, expenses(:oil_change))
+
+    assert_select "select[name=?] option[selected][value=USD]", "expense[currency]"
+  end
+
   test "destroy" do
     assert_difference -> { Expense.count }, -1 do
       delete gear_expense_path(@gear, expenses(:oil_change))

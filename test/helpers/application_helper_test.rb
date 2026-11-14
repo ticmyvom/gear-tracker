@@ -20,4 +20,13 @@ class ApplicationHelperTest < ActionView::TestCase
     users(:one).update!(currency: "VND")
     assert_equal "1,234,500 ₫", money(1_234_500)
   end
+
+  test "money uses a record's own currency when given" do
+    assert_equal "£12.00", money(12, "GBP")
+  end
+
+  test "money shows mixed totals per currency" do
+    assert_equal "$10.00 + €5.50", money(Costs.new("USD" => 10, "EUR" => 5.5))
+    assert_equal "$0.00", money(Costs.new)
+  end
 end

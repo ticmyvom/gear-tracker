@@ -4,15 +4,18 @@ oil_change:
   description: Oil change
   category: Maintenance
   amount: 50
+  currency: USD
 
 rotation:
   gear: tires
   spent_on: <%= 1.month.ago.to_date %>
   description: Rotation
   amount: 25
+  currency: USD
 
 drill_bits:
   gear: drill
   spent_on: <%= 1.month.ago.to_date %>
   description: Drill bits
   amount: 20
+  currency: EUR

@@ -6,6 +6,7 @@ fill_up:
   amount: <%= 10.5 * 3.785411784 %> # 10.5 US gal
   odometer: <%= 240042 * 1.609344 %> # 240042 mi
   trip: <%= 450.2 * 1.609344 %> # 450.2 mi
+  currency: USD
 
 truck_fill_up:
   gear: truck
@@ -13,3 +14,4 @@ truck_fill_up:
   total_price: 90
   unit: l
   amount: 100
+  currency: EUR

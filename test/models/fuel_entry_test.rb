@@ -133,6 +133,11 @@ class FuelEntryTest < ActiveSupport::TestCase
     assert_nil fuel_entries(:fill_up).reload.odometer
   end
 
+  test "takes the gear owner's currency" do
+    assert_equal "USD", gears(:prius).fuel_entries.create!(amount: 9).currency
+    assert_equal "EUR", gears(:truck).fuel_entries.create!(amount: 9).currency
+  end
+
   test "gear must run on fuel or electricity" do
     assert_not gears(:tires).fuel_entries.new(amount: 9).valid?
     assert_not users(:one).gears.create!(name: "Bike", power_source: "manual").fuel_entries.new(amount: 9).valid?

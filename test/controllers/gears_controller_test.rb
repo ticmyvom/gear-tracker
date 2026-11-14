@@ -68,6 +68,46 @@ class GearsControllerTest < ActionDispatch::IntegrationTest
     assert_select "td", text: "12.5 km/L"
   end
 
+  test "amounts keep their currency after the setting changes" do
+    users(:one).update!(currency: "EUR")
+    get gear_path(gears(:prius))
+
+    assert_select "dd", text: "$8,000.00"
+    assert_select "td", text: "$50.00"
+    assert_select "td", text: "$40.00"
+  end
+
+  test "new gear form picks the user's currency" do
+    get new_gear_path
+    assert_select "select[name=?] option[selected][value=USD]", "gear[currency]"
+
+    sign_in_as users(:two)
+    get new_gear_path
+    assert_select "select[name=?] option[selected][value=EUR]", "gear[currency]"
+  end
+
+  test "edit form picks the gear's own currency, not the setting" do
+    users(:one).update!(currency: "EUR")
+    get edit_gear_path(gears(:prius))
+
+    assert_select "select[name=?] option[selected][value=USD]", "gear[currency]"
+  end
+
+  test "create and update with a chosen currency" do
+    post gears_path, params: { gear: { name: "Souvenir", price: "2000", currency: "JPY" } }
+    assert_equal "JPY", Gear.last.currency
+
+    patch gear_path(gears(:prius)), params: { gear: { price: "7500", currency: "CAD" } }
+    assert_equal [ 7500, "CAD" ], gears(:prius).reload.values_at(:price, :currency)
+  end
+
+  test "update rejects an unknown currency" do
+    patch gear_path(gears(:prius)), params: { gear: { currency: "XYZ" } }
+
+    assert_response :unprocessable_content
+    assert_equal "USD", gears(:prius).reload.currency
+  end
+
   test "show offers energy entries for electric gear" do
     sign_in_as users(:two)
     get gear_path(gears(:drill))

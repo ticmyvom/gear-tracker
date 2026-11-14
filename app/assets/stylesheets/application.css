@@ -57,6 +57,8 @@ dd { margin: 0; overflow-wrap: anywhere; }
 form div { margin-bottom: 0.75rem; }
 label { display: block; }
 input:not([type="submit"]), select, textarea { font: inherit; width: 100%; max-width: 28rem; box-sizing: border-box; }
+.money-field { display: flex; gap: 0.5rem; max-width: 28rem; margin: 0; }
+.money-field select { width: auto; }
 .actions { display: flex; flex-wrap: wrap; gap: 1rem; align-items: baseline; }
 .actions form { margin: 0; }
 .notes { white-space: pre-wrap; }

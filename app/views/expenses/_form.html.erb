@@ -18,10 +18,7 @@
       <% end %>
     </datalist>
   </div>
-  <div>
-    <%= form.label :amount %>
-    <%= form.number_field :amount, required: true, min: 0, step: "0.01", inputmode: "decimal" %>
-  </div>
+  <%= render "shared/money_field", form: form, field: :amount, label: "Amount", input_options: { required: true } %>
   <div>
     <%= form.label :vendor %>
     <%= form.text_field :vendor %>

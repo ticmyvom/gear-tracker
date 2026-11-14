@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_14_170000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_14_180000) do
   create_table "expenses", force: :cascade do |t|
     t.integer "gear_id", null: false
     t.date "spent_on", null: false
@@ -20,6 +20,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_14_170000) do
     t.string "vendor"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "currency", null: false
     t.index ["gear_id"], name: "index_expenses_on_gear_id"
   end
 
@@ -34,6 +35,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_14_170000) do
     t.datetime "updated_at", null: false
     t.string "unit", null: false
     t.integer "minutes"
+    t.string "currency", null: false
     t.index ["gear_id"], name: "index_fuel_entries_on_gear_id"
   end
 
@@ -49,6 +51,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_14_170000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "power_source"
+    t.string "currency", null: false
     t.index ["parent_id"], name: "index_gears_on_parent_id"
     t.index ["user_id"], name: "index_gears_on_user_id"
   end

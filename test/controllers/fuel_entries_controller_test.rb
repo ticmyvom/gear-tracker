@@ -88,6 +88,12 @@ class FuelEntriesControllerTest < ActionDispatch::IntegrationTest
     assert_equal 500, FuelEntry.last.trip
   end
 
+  test "update price and currency" do
+    patch gear_fuel_entry_path(@gear, fuel_entries(:fill_up)), params: { fuel_entry: { total_price: "55", currency: "CAD" } }
+
+    assert_equal [ 55, "CAD" ], fuel_entries(:fill_up).reload.values_at(:total_price, :currency)
+  end
+
   test "only vehicles get distance fields" do
     get new_gear_fuel_entry_path(@gear)
     assert_select "input[name=?]", "fuel_entry[entered_trip]"

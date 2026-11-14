@@ -12,7 +12,7 @@
   <dt>Powered by</dt><dd><%= @gear.power_source_name || "Not powered" %></dd>
   <dt>Purchased</dt><dd><%= @gear.purchased_on || "-" %></dd>
   <dt>Bought from</dt><dd><%= @gear.purchased_from.presence || "-" %></dd>
-  <dt>Price</dt><dd><%= money @gear.price %></dd>
+  <dt>Price</dt><dd><%= money @gear.price, @gear.currency %></dd>
   <dt>Total cost</dt><dd><%= money @gear.total_cost %></dd>
   <dt>Cost per year</dt><dd><%= money @gear.cost_per_year %></dd>
 </dl>
@@ -81,7 +81,7 @@
             <tr>
               <td><%= fuel_entry.filled_on %></td>
               <td class="num"><%= quantity fuel_entry.entered_amount %> <%= fuel_entry.amount_label %></td>
-              <td class="num"><%= money fuel_entry.total_price %></td>
+              <td class="num"><%= money fuel_entry.total_price, fuel_entry.currency %></td>
               <% if show_time %>
                 <td class="num"><%= fuel_entry.minutes %></td>
                 <td class="num"><% if fuel_entry.amount_per_hour %><%= number_with_precision fuel_entry.amount_per_hour, precision: 2 %> <%= fuel_entry.amount_label %>/h<% end %></td>
@@ -115,7 +115,7 @@
             <td><%= expense.description %></td>
             <td><%= expense.category %></td>
             <td><%= expense.vendor %></td>
-            <td class="num"><%= money expense.amount %></td>
+            <td class="num"><%= money expense.amount, expense.currency %></td>
             <td><%= link_to "Edit", edit_gear_expense_path(@gear, expense) %></td>
           </tr>
         <% end %>

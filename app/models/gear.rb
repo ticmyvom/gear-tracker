@@ -1,4 +1,6 @@
 class Gear < ApplicationRecord
+  include Priced
+
   SUGGESTED_CATEGORIES = %w[ Vehicle Tires Tools Electronics Outdoor Kitchen Clothing ].freeze
   POWER_SOURCES = {
     "manual" => "Manual (human-powered)",
@@ -36,7 +38,7 @@ class Gear < ApplicationRecord
 
   # Purchase price plus every expense and fuel entry, including those of components.
   def total_cost
-    (price || 0) + expenses.sum(&:amount) + fuel_entries.sum { it.total_price || 0 } + components.sum(&:total_cost)
+    Costs.new.add(price, currency) + Costs.of(expenses, :amount) + Costs.of(fuel_entries, :total_price) + components.sum(Costs.new, &:total_cost)
   end
 
   # Counts at least one year, so a new purchase isn't extrapolated into a huge yearly figure.
@@ -44,7 +46,7 @@ class Gear < ApplicationRecord
     return unless purchased_on
 
     years_owned = (Date.current - purchased_on).to_f / 365.25
-    total_cost.to_f / [ years_owned, 1 ].max
+    total_cost / [ years_owned, 1 ].max
   end
 
   def power_source_name
@@ -62,6 +64,10 @@ class Gear < ApplicationRecord
   end
 
   private
+    def currency_owner
+      user
+    end
+
     def parent_is_allowed
       return if parent_id.blank?
 

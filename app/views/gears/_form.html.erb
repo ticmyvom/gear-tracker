@@ -28,10 +28,7 @@
     <%= form.label :purchased_on, "Purchase date" %>
     <%= form.date_field :purchased_on %>
   </div>
-  <div>
-    <%= form.label :price, "Price" %>
-    <%= form.number_field :price, min: 0, step: "0.01", inputmode: "decimal" %>
-  </div>
+  <%= render "shared/money_field", form: form, field: :price, label: "Price" %>
   <div>
     <%= form.label :purchased_from, "Bought from" %>
     <%= form.text_field :purchased_from %>

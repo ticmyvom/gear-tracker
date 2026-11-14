@@ -3,6 +3,8 @@
 # The database keeps kilometers and liters ("l") or kWh. Forms and the log use
 # the owner's preferred units through the entered_* attributes.
 class FuelEntry < ApplicationRecord
+  include Priced
+
   ENTERED_FIELDS = { amount: 3, odometer: 1, trip: 1 }.freeze # field => decimal places shown
 
   belongs_to :gear
@@ -76,6 +78,10 @@ class FuelEntry < ApplicationRecord
   end
 
   private
+    def currency_owner
+      gear&.user
+    end
+
     def entered_values
       @entered_values ||= {}
     end

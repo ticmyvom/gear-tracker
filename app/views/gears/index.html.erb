@@ -27,7 +27,7 @@
             <td><%= gear.category %></td>
             <td><%= gear.purchased_on %></td>
             <td><%= gear.purchased_from %></td>
-            <td class="num"><%= money gear.price %></td>
+            <td class="num"><%= money gear.price, gear.currency %></td>
             <td class="num"><%= money gear.total_cost %></td>
             <td class="num"><%= money gear.cost_per_year %></td>
           </tr>
@@ -36,7 +36,7 @@
       <tfoot>
         <tr>
           <th colspan="5">Total</th>
-          <th class="num"><%= money @gears.sum(&:total_cost) %></th>
+          <th class="num"><%= money @gears.sum(Costs.new, &:total_cost) %></th>
           <th></th>
         </tr>
       </tfoot>

@@ -2,23 +2,43 @@ require "test_helper"
 
 class GearTest < ActiveSupport::TestCase
   test "total cost includes price, expenses, fuel and components" do
-    assert_equal 8715, gears(:prius).total_cost
+    assert_equal Costs.new("USD" => 8715), gears(:prius).total_cost
   end
 
-  test "total cost treats a missing price as zero" do
-    assert_equal 0, users(:one).gears.create!(name: "Gift").total_cost
+  test "total cost is empty without a price or records" do
+    assert_empty users(:one).gears.create!(name: "Gift").total_cost
+  end
+
+  test "total cost keeps currencies apart" do
+    users(:one).update!(currency: "EUR")
+    gears(:prius).expenses.create!(spent_on: Date.current, description: "Toll abroad", amount: 30)
+
+    assert_equal Costs.new("USD" => 8715, "EUR" => 30), gears(:prius).reload.total_cost
+  end
+
+  test "new gear takes the owner's currency, and keeps it when the setting changes" do
+    gear = users(:one).gears.create!(name: "Tent", price: 300)
+    assert_equal "USD", gear.currency
+
+    users(:one).update!(currency: "GBP")
+    assert_equal "USD", gear.reload.currency
+    assert_equal "GBP", users(:one).gears.create!(name: "Stove").currency
+  end
+
+  test "currency must be a known one" do
+    assert_not users(:one).gears.new(name: "Tent", currency: "XYZ").valid?
   end
 
   test "cost per year divides by years owned" do
     gear = users(:one).gears.create!(name: "Tent", price: 300, purchased_on: 3.years.ago.to_date)
 
-    assert_in_delta 100, gear.cost_per_year, 0.5
+    assert_in_delta 100, gear.cost_per_year["USD"], 0.5
   end
 
   test "cost per year counts at least one year" do
     gear = users(:one).gears.create!(name: "Tent", price: 300, purchased_on: 1.week.ago.to_date)
 
-    assert_equal 300, gear.cost_per_year
+    assert_equal Costs.new("USD" => 300), gear.cost_per_year
   end
 
   test "cost per year is unknown without a purchase date" do
@@ -76,7 +96,7 @@ class GearTest < ActiveSupport::TestCase
   test "total cost counts fuel entries without a price as zero" do
     gears(:prius).fuel_entries.create!(amount: 5)
 
-    assert_equal 8715, gears(:prius).total_cost
+    assert_equal Costs.new("USD" => 8715), gears(:prius).total_cost
   end
 
   test "destroying gear removes its components and records" do

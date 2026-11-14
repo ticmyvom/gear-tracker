@@ -9,6 +9,7 @@
 - [ ] Remove old files from `storage/backups` now and then, since nothing deletes them automatically
 
 ## Before deploying
+- [ ] Turn on private vulnerability reporting in the GitHub repository's settings, so the README's "Report a vulnerability" link works
 - [ ] Buy a domain
 - [ ] Choose a host and put the app online
 - [ ] Set up Resend for password reset email (https://resend.com/setup.md)

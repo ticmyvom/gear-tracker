@@ -54,11 +54,18 @@ class GearTest < ActiveSupport::TestCase
     assert_not prius.valid?
   end
 
-  test "fuel unit depends on the power source" do
-    assert_equal "gal", Gear.new(power_source: "gasoline").fuel_unit
-    assert_equal "kWh", Gear.new(power_source: "electric").fuel_unit
-    assert_nil Gear.new(power_source: "manual").fuel_unit
-    assert_nil Gear.new.fuel_unit
+  test "fuel units depend on the power source" do
+    assert_equal %w[ gal ], Gear.new(power_source: "gasoline").fuel_units
+    assert_equal %w[ kWh ], Gear.new(power_source: "electric").fuel_units
+    assert_equal %w[ gal kWh ], Gear.new(power_source: "plug_in_hybrid").fuel_units
+    assert_empty Gear.new(power_source: "manual").fuel_units
+    assert_empty Gear.new.fuel_units
+  end
+
+  test "vehicle category ignores case and spaces" do
+    assert Gear.new(category: " vehicle ").vehicle?
+    assert_not Gear.new(category: "Tools").vehicle?
+    assert_not Gear.new.vehicle?
   end
 
   test "power source must be a known one, and blank means not powered" do

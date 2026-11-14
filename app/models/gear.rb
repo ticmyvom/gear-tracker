@@ -5,9 +5,16 @@ class Gear < ApplicationRecord
     "gasoline" => "Gasoline",
     "diesel" => "Diesel",
     "propane" => "Propane",
-    "electric" => "Electric"
+    "electric" => "Electric",
+    "plug_in_hybrid" => "Plug-in hybrid (gasoline + electric)"
   }.freeze
-  FUEL_UNITS = { "gasoline" => "gal", "diesel" => "gal", "propane" => "gal", "electric" => "kWh" }.freeze
+  FUEL_UNITS = {
+    "gasoline" => %w[ gal ],
+    "diesel" => %w[ gal ],
+    "propane" => %w[ gal ],
+    "electric" => %w[ kWh ],
+    "plug_in_hybrid" => %w[ gal kWh ]
+  }.freeze
 
   belongs_to :user
   belongs_to :parent, class_name: "Gear", optional: true, inverse_of: :components
@@ -42,9 +49,14 @@ class Gear < ApplicationRecord
     POWER_SOURCES[power_source]
   end
 
-  # Gallons or kWh, or nil for gear that doesn't take fuel or electricity.
-  def fuel_unit
-    FUEL_UNITS[power_source]
+  # Gallons and/or kWh; empty for gear that doesn't take fuel or electricity.
+  def fuel_units
+    FUEL_UNITS.fetch(power_source, [])
+  end
+
+  # Only vehicles get odometer and miles fields.
+  def vehicle?
+    category.to_s.strip.casecmp?("Vehicle")
   end
 
   private

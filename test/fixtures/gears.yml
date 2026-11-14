@@ -7,6 +7,12 @@ prius:
   price: 8000
   purchased_from: Private seller
 
+phev:
+  user: one
+  name: Plug-in hybrid
+  category: Vehicle
+  power_source: plug_in_hybrid
+
 tires:
   user: one
   parent: prius

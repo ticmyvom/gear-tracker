@@ -55,6 +55,37 @@ class FuelEntriesControllerTest < ActionDispatch::IntegrationTest
     assert_nil FuelEntry.last.total_price
   end
 
+  test "a plug-in hybrid can log either unit" do
+    get new_gear_fuel_entry_path(gears(:phev), unit: "kWh")
+    assert_select "label", text: "Energy (kWh)"
+    assert_select "input[type=hidden][name=?][value=kWh]", "fuel_entry[unit]"
+
+    post gear_fuel_entries_path(gears(:phev)), params: { fuel_entry: { amount: "12", unit: "kWh" } }
+    assert_equal "Energy entry added.", flash[:notice]
+    assert_equal "kWh", FuelEntry.last.unit
+
+    post gear_fuel_entries_path(gears(:phev)), params: { fuel_entry: { amount: "8", unit: "gal" } }
+    assert_equal "Fuel entry added.", flash[:notice]
+    assert_equal "gal", FuelEntry.last.unit
+  end
+
+  test "create rejects a unit the gear doesn't use" do
+    assert_no_difference -> { FuelEntry.count } do
+      post gear_fuel_entries_path(@gear), params: { fuel_entry: { amount: "12", unit: "kWh" } }
+    end
+
+    assert_response :unprocessable_content
+  end
+
+  test "only vehicles get distance fields" do
+    get new_gear_fuel_entry_path(@gear)
+    assert_select "input[name=?]", "fuel_entry[trip]"
+
+    sign_in_as users(:two)
+    get new_gear_fuel_entry_path(gears(:drill))
+    assert_select "input[name=?]", "fuel_entry[trip]", count: 0
+  end
+
   test "edit" do
     get edit_gear_fuel_entry_path(@gear, fuel_entries(:fill_up))
     assert_response :success
@@ -65,6 +96,12 @@ class FuelEntriesControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to @gear
     assert_equal 11, fuel_entries(:fill_up).reload.amount
+  end
+
+  test "update can't change the unit" do
+    patch gear_fuel_entry_path(gears(:phev), gears(:phev).fuel_entries.create!(amount: 8)), params: { fuel_entry: { unit: "kWh" } }
+
+    assert_equal "gal", FuelEntry.last.reload.unit
   end
 
   test "destroy" do

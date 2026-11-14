@@ -1,5 +1,6 @@
 <%= form_with model: [ gear, fuel_entry ] do |form| %>
   <%= render "shared/errors", record: fuel_entry %>
+  <%= form.hidden_field :unit if fuel_entry.new_record? %>
 
   <div>
     <%= form.label :amount, fuel_entry.electric? ? "Energy (kWh)" : "Fuel (gallons)" %>
@@ -13,14 +14,16 @@
     <%= form.label :minutes, "Minutes of use (optional)" %>
     <%= form.number_field :minutes, min: 1, step: 1, inputmode: "numeric" %>
   </div>
-  <div>
-    <%= form.label :odometer, "Current odometer (optional)" %>
-    <%= form.number_field :odometer, min: 0, step: "0.1", inputmode: "decimal" %>
-  </div>
-  <div>
-    <%= form.label :trip, fuel_entry.electric? ? "Miles driven (optional)" : "Miles since last fill-up (optional)" %>
-    <%= form.number_field :trip, min: 0, step: "0.1", inputmode: "decimal" %>
-  </div>
+  <% if gear.vehicle? || fuel_entry.odometer || fuel_entry.trip %>
+    <div>
+      <%= form.label :odometer, "Current odometer (optional)" %>
+      <%= form.number_field :odometer, min: 0, step: "0.1", inputmode: "decimal" %>
+    </div>
+    <div>
+      <%= form.label :trip, fuel_entry.electric? ? "Miles driven (optional)" : "Miles since last fill-up (optional)" %>
+      <%= form.number_field :trip, min: 0, step: "0.1", inputmode: "decimal" %>
+    </div>
+  <% end %>
   <div>
     <%= form.label :filled_on, "Date" %>
     <%= form.date_field :filled_on %>

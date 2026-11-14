@@ -4,17 +4,17 @@ class FuelEntry < ApplicationRecord
 
   before_validation { self.filled_on ||= Date.current }
   # Keeps the unit the entry was logged in, even if the gear's power source changes later.
-  before_validation(on: :create) { self.unit = gear&.fuel_unit if unit.blank? }
+  before_validation(on: :create) { self.unit = gear&.fuel_units&.first if unit.blank? }
 
   validates :amount, presence: true, numericality: { greater_than: 0 }
   validates :total_price, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
   validates :odometer, :trip, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
   validates :minutes, numericality: { only_integer: true, greater_than: 0 }, allow_nil: true
-  validate :gear_uses_fuel, on: :create
+  validate :gear_uses_unit, on: :create
 
   # Before it's saved, a new entry takes its unit from the gear.
   def display_unit
-    unit.presence || gear&.fuel_unit
+    unit.presence || gear&.fuel_units&.first
   end
 
   def electric?
@@ -22,8 +22,12 @@ class FuelEntry < ApplicationRecord
   end
 
   # The only place these names are set; views ask for them by unit.
-  def self.log_name_for(unit)
-    unit == "kWh" ? "Energy use" : "Fuel"
+  def self.log_name_for(units)
+    if units.include?("kWh")
+      units.include?("gal") ? "Fuel and energy use" : "Energy use"
+    else
+      "Fuel"
+    end
   end
 
   def self.label_for(unit)
@@ -45,7 +49,11 @@ class FuelEntry < ApplicationRecord
   end
 
   private
-    def gear_uses_fuel
-      errors.add(:gear, "must run on fuel or electricity") unless gear&.fuel_unit
+    def gear_uses_unit
+      if gear.nil? || gear.fuel_units.empty?
+        errors.add(:gear, "must run on fuel or electricity")
+      elsif gear.fuel_units.exclude?(unit)
+        errors.add(:unit, "isn't used by this gear")
+      end
     end
 end

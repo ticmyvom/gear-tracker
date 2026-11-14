@@ -32,6 +32,24 @@ class FuelEntryTest < ActiveSupport::TestCase
     assert_equal "kWh", gears(:drill).fuel_entries.create!(amount: 0.2).unit
   end
 
+  test "a plug-in hybrid logs gallons by default, or kWh when chosen" do
+    assert_equal "gal", gears(:phev).fuel_entries.create!(amount: 8).unit
+    assert_equal "kWh", gears(:phev).fuel_entries.create!(amount: 12, unit: "kWh").unit
+  end
+
+  test "unit must be one the gear uses" do
+    fuel_entry = gears(:prius).fuel_entries.new(amount: 12, unit: "kWh")
+
+    assert_not fuel_entry.valid?
+    assert fuel_entry.errors.include?(:unit)
+  end
+
+  test "log name covers the units in use" do
+    assert_equal "Fuel", FuelEntry.log_name_for(%w[ gal ])
+    assert_equal "Energy use", FuelEntry.log_name_for(%w[ kWh ])
+    assert_equal "Fuel and energy use", FuelEntry.log_name_for(%w[ gal kWh ])
+  end
+
   test "unit stays the same if the gear's power source changes" do
     gears(:prius).update!(power_source: "electric")
 

@@ -9,7 +9,7 @@ their own gear.
   Their costs count toward the parent's total.
 - **Expenses**: money spent after the purchase, like repairs or insurance.
 - **Power source**: what makes the gear go: nothing, human power, gasoline, diesel,
-  propane, or electricity.
+  propane, electricity, or both gasoline and electricity for a plug-in hybrid.
 - **Fuel entries**: fill-ups (gallons) or energy use (kWh) for gear that runs on fuel or
   electricity. Add minutes of use to see gallons or kWh per hour, or miles driven to
   see miles per gallon or per kWh.

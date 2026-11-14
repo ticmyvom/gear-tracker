@@ -40,6 +40,24 @@ class GearsControllerTest < ActionDispatch::IntegrationTest
     assert_select "a", text: "Add fuel entry", count: 0
   end
 
+  test "show offers both entries for a plug-in hybrid" do
+    get gear_path(gears(:phev))
+
+    assert_select "h2", text: "Fuel and energy use"
+    assert_select "a[href=?]", new_gear_fuel_entry_path(gears(:phev), unit: "gal"), text: "Add fuel entry"
+    assert_select "a[href=?]", new_gear_fuel_entry_path(gears(:phev), unit: "kWh"), text: "Add energy entry"
+  end
+
+  test "show leaves out fuel columns nobody filled in" do
+    get gear_path(gears(:prius))
+    assert_select "th", text: "Efficiency"
+    assert_select "th", text: "Per hour", count: 0
+
+    gears(:prius).fuel_entries.create!(amount: 1, minutes: 30)
+    get gear_path(gears(:prius))
+    assert_select "th", text: "Per hour"
+  end
+
   test "show offers energy entries for electric gear" do
     sign_in_as users(:two)
     get gear_path(gears(:drill))

@@ -3,14 +3,14 @@ class FuelEntriesController < ApplicationController
   before_action :set_fuel_entry, only: %i[ edit update destroy ]
 
   def new
-    @fuel_entry = @gear.fuel_entries.new(filled_on: Date.current)
+    @fuel_entry = @gear.fuel_entries.new(filled_on: Date.current, unit: params[:unit])
   end
 
   def edit
   end
 
   def create
-    @fuel_entry = @gear.fuel_entries.new(fuel_entry_params)
+    @fuel_entry = @gear.fuel_entries.new(fuel_entry_params(:unit))
 
     if @fuel_entry.save
       redirect_to @gear, notice: "#{@fuel_entry.label.capitalize} added."
@@ -41,7 +41,8 @@ class FuelEntriesController < ApplicationController
       @fuel_entry = @gear.fuel_entries.find(params[:id])
     end
 
-    def fuel_entry_params
-      params.expect(fuel_entry: %i[ filled_on total_price amount minutes odometer trip ])
+    # The unit can only be chosen when an entry is created, so old entries keep their meaning.
+    def fuel_entry_params(*create_only)
+      params.expect(fuel_entry: [ :filled_on, :total_price, :amount, :minutes, :odometer, :trip, *create_only ])
     end
 end

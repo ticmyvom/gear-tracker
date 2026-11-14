@@ -1,10 +1,18 @@
 # A fuel fill-up or a log of electricity used, for gear that runs on either.
+#
+# The database keeps kilometers and liters ("l") or kWh. Forms and the log use
+# the owner's preferred units through the entered_* attributes.
 class FuelEntry < ApplicationRecord
+  ENTERED_FIELDS = { amount: 3, odometer: 1, trip: 1 }.freeze # field => decimal places shown
+
   belongs_to :gear
+  delegate :distance_unit, :volume_unit, to: :gear
 
   before_validation { self.filled_on ||= Date.current }
   # Keeps the unit the entry was logged in, even if the gear's power source changes later.
   before_validation(on: :create) { self.unit = gear&.fuel_units&.first if unit.blank? }
+  # Runs after the unit is known, since that decides whether the amount is converted.
+  before_validation :store_entered_values
 
   validates :amount, presence: true, numericality: { greater_than: 0 }
   validates :total_price, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
@@ -24,7 +32,7 @@ class FuelEntry < ApplicationRecord
   # The only place these names are set; views ask for them by unit.
   def self.log_name_for(units)
     if units.include?("kWh")
-      units.include?("gal") ? "Fuel and energy use" : "Energy use"
+      units.include?("l") ? "Fuel and energy use" : "Energy use"
     else
       "Fuel"
     end
@@ -38,17 +46,68 @@ class FuelEntry < ApplicationRecord
     self.class.label_for(display_unit)
   end
 
-  # Miles per gallon or per kWh.
-  def distance_per_unit
-    trip / amount if trip&.positive?
+  ENTERED_FIELDS.each do |field, decimals|
+    # The value in the owner's units: as typed, or converted from what's stored.
+    define_method(:"entered_#{field}") do
+      entered_values.fetch(field) { preferred(field)&.round(decimals) }
+    end
+
+    define_method(:"entered_#{field}=") { |value| entered_values[field] = value }
   end
 
-  # Gallons or kWh per hour of use.
+  # "gal", "L", "UK gal" or "kWh"
+  def amount_label
+    Units::LABELS.fetch(preferred_unit_for(:amount))
+  end
+
+  # "mi" or "km"
+  def distance_label
+    Units::LABELS.fetch(distance_unit)
+  end
+
+  # Distance per unit of fuel or energy, like mi/gal or km/L.
+  def distance_per_unit
+    preferred(:trip) / preferred(:amount) if trip&.positive?
+  end
+
+  # Fuel or energy per hour of use.
   def amount_per_hour
-    amount * 60 / minutes if minutes&.positive?
+    preferred(:amount) * 60 / minutes if minutes&.positive?
   end
 
   private
+    def entered_values
+      @entered_values ||= {}
+    end
+
+    def store_entered_values
+      entered_values.each do |field, value|
+        number = BigDecimal(value.to_s, exception: false) if value.present?
+        # Anything that isn't a number is kept as typed, so validation reports it.
+        self[field] = number ? Units.convert(number, preferred_unit_for(field), stored_unit_for(field)) : value.presence
+      end
+    end
+
+    def preferred(field)
+      Units.convert(self[field], stored_unit_for(field), preferred_unit_for(field))
+    end
+
+    def stored_unit_for(field)
+      if field == :amount
+        electric? ? "kWh" : "l"
+      else
+        "km"
+      end
+    end
+
+    def preferred_unit_for(field)
+      if field == :amount
+        electric? ? "kWh" : volume_unit
+      else
+        distance_unit
+      end
+    end
+
     def gear_uses_unit
       if gear.nil? || gear.fuel_units.empty?
         errors.add(:gear, "must run on fuel or electricity")

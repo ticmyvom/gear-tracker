@@ -1,0 +1,25 @@
+<% content_for :title, "Settings" %>
+<h1>Settings</h1>
+
+<%= form_with model: @user, url: settings_path, method: :patch do |form| %>
+  <%= render "shared/errors", record: @user %>
+
+  <div>
+    <%= form.label :currency %>
+    <%= form.select :currency, User::CURRENCIES.map { |code, currency| [ "#{currency[:name]} (#{currency[:symbol]})", code ] } %>
+    <p class="muted">Changes how amounts are shown. Amounts you already entered aren't converted.</p>
+  </div>
+  <div>
+    <%= form.label :distance_unit, "Distance" %>
+    <%= form.select :distance_unit, Units::DISTANCES.invert %>
+  </div>
+  <div>
+    <%= form.label :volume_unit, "Fuel volume" %>
+    <%= form.select :volume_unit, Units::VOLUMES.invert %>
+    <p class="muted">Fuel entries you already made are shown in the new units.</p>
+  </div>
+  <div class="actions">
+    <%= form.submit "Save settings" %>
+    <%= link_to "Cancel", root_path %>
+  </div>
+<% end %>

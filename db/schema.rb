@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_14_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_14_170000) do
   create_table "expenses", force: :cascade do |t|
     t.integer "gear_id", null: false
     t.date "spent_on", null: false
@@ -27,9 +27,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_14_120000) do
     t.integer "gear_id", null: false
     t.date "filled_on", null: false
     t.decimal "total_price", precision: 12, scale: 2
-    t.decimal "amount", precision: 10, scale: 3, null: false
-    t.decimal "odometer", precision: 10, scale: 1
-    t.decimal "trip", precision: 10, scale: 1
+    t.decimal "amount", precision: 16, scale: 6, null: false
+    t.decimal "odometer", precision: 16, scale: 6
+    t.decimal "trip", precision: 16, scale: 6
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "unit", null: false
@@ -78,6 +78,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_14_120000) do
     t.string "password_digest", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "currency", default: "USD", null: false
+    t.string "distance_unit", default: "mi", null: false
+    t.string "volume_unit", default: "us_gal", null: false
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
   end
 

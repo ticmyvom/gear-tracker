@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   resource :session
   resources :passwords, param: :token
   resource :registration, only: %i[ new create ]
+  resource :settings, only: %i[ edit update ]
 
   resources :gears do
     resources :expenses, except: %i[ index show ]

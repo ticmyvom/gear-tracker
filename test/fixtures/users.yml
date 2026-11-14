@@ -7,3 +7,6 @@ one:
 two:
   email_address: two@example.com
   password_digest: <%= password_digest %>
+  currency: EUR
+  distance_unit: km
+  volume_unit: l

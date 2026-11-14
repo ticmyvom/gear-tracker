@@ -3,8 +3,8 @@
   <%= form.hidden_field :unit if fuel_entry.new_record? %>
 
   <div>
-    <%= form.label :amount, fuel_entry.electric? ? "Energy (kWh)" : "Fuel (gallons)" %>
-    <%= form.number_field :amount, required: true, autofocus: true, min: 0.001, step: "0.001", inputmode: "decimal" %>
+    <%= form.label :entered_amount, "#{fuel_entry.electric? ? "Energy" : "Fuel"} (#{fuel_entry.amount_label})" %>
+    <%= form.number_field :entered_amount, required: true, autofocus: true, min: 0.001, step: "0.001", inputmode: "decimal" %>
   </div>
   <div>
     <%= form.label :total_price, "Total price (optional)" %>
@@ -14,14 +14,14 @@
     <%= form.label :minutes, "Minutes of use (optional)" %>
     <%= form.number_field :minutes, min: 1, step: 1, inputmode: "numeric" %>
   </div>
-  <% if gear.vehicle? || fuel_entry.odometer || fuel_entry.trip %>
+  <% if gear.vehicle? || fuel_entry.entered_odometer.present? || fuel_entry.entered_trip.present? %>
     <div>
-      <%= form.label :odometer, "Current odometer (optional)" %>
-      <%= form.number_field :odometer, min: 0, step: "0.1", inputmode: "decimal" %>
+      <%= form.label :entered_odometer, "Current odometer (#{fuel_entry.distance_label}, optional)" %>
+      <%= form.number_field :entered_odometer, min: 0, step: "0.1", inputmode: "decimal" %>
     </div>
     <div>
-      <%= form.label :trip, fuel_entry.electric? ? "Miles driven (optional)" : "Miles since last fill-up (optional)" %>
-      <%= form.number_field :trip, min: 0, step: "0.1", inputmode: "decimal" %>
+      <%= form.label :entered_trip, "#{fuel_entry.electric? ? "Distance driven" : "Distance since last fill-up"} (#{fuel_entry.distance_label}, optional)" %>
+      <%= form.number_field :entered_trip, min: 0, step: "0.1", inputmode: "decimal" %>
     </div>
   <% end %>
   <div>

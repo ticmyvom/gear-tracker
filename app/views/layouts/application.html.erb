@@ -30,6 +30,7 @@
       <nav>
         <% if authenticated? %>
           <%= Current.user.email_address %>
+          <%= link_to "Settings", edit_settings_path %>
           <%= button_to "Sign out", session_path, method: :delete %>
         <% else %>
           <%= link_to "Sign in", new_session_path %>

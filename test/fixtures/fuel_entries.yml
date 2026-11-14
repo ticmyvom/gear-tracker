@@ -2,14 +2,14 @@ fill_up:
   gear: prius
   filled_on: <%= 1.week.ago.to_date %>
   total_price: 40
-  unit: gal
-  amount: 10.5
-  odometer: 240042
-  trip: 450.2
+  unit: l
+  amount: <%= 10.5 * 3.785411784 %> # 10.5 US gal
+  odometer: <%= 240042 * 1.609344 %> # 240042 mi
+  trip: <%= 450.2 * 1.609344 %> # 450.2 mi
 
 truck_fill_up:
   gear: truck
   filled_on: <%= 1.week.ago.to_date %>
   total_price: 90
-  unit: gal
-  amount: 25
+  unit: l
+  amount: 100

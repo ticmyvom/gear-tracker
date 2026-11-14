@@ -55,9 +55,9 @@ class GearTest < ActiveSupport::TestCase
   end
 
   test "fuel units depend on the power source" do
-    assert_equal %w[ gal ], Gear.new(power_source: "gasoline").fuel_units
+    assert_equal %w[ l ], Gear.new(power_source: "gasoline").fuel_units
     assert_equal %w[ kWh ], Gear.new(power_source: "electric").fuel_units
-    assert_equal %w[ gal kWh ], Gear.new(power_source: "plug_in_hybrid").fuel_units
+    assert_equal %w[ l kWh ], Gear.new(power_source: "plug_in_hybrid").fuel_units
     assert_empty Gear.new(power_source: "manual").fuel_units
     assert_empty Gear.new.fuel_units
   end

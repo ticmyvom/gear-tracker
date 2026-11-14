@@ -9,11 +9,11 @@ class Gear < ApplicationRecord
     "plug_in_hybrid" => "Plug-in hybrid (gasoline + electric)"
   }.freeze
   FUEL_UNITS = {
-    "gasoline" => %w[ gal ],
-    "diesel" => %w[ gal ],
-    "propane" => %w[ gal ],
+    "gasoline" => %w[ l ],
+    "diesel" => %w[ l ],
+    "propane" => %w[ l ],
     "electric" => %w[ kWh ],
-    "plug_in_hybrid" => %w[ gal kWh ]
+    "plug_in_hybrid" => %w[ l kWh ]
   }.freeze
 
   belongs_to :user
@@ -22,6 +22,8 @@ class Gear < ApplicationRecord
   has_many :expenses, dependent: :destroy
   has_many :readings, dependent: :destroy
   has_many :fuel_entries, dependent: :destroy
+
+  delegate :distance_unit, :volume_unit, to: :user
 
   scope :top_level, -> { where(parent_id: nil) }
 
@@ -49,7 +51,7 @@ class Gear < ApplicationRecord
     POWER_SOURCES[power_source]
   end
 
-  # Gallons and/or kWh; empty for gear that doesn't take fuel or electricity.
+  # Liters and/or kWh; empty for gear that doesn't take fuel or electricity.
   def fuel_units
     FUEL_UNITS.fetch(power_source, [])
   end

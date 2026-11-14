@@ -44,7 +44,7 @@ class GearsControllerTest < ActionDispatch::IntegrationTest
     get gear_path(gears(:phev))
 
     assert_select "h2", text: "Fuel and energy use"
-    assert_select "a[href=?]", new_gear_fuel_entry_path(gears(:phev), unit: "gal"), text: "Add fuel entry"
+    assert_select "a[href=?]", new_gear_fuel_entry_path(gears(:phev), unit: "l"), text: "Add fuel entry"
     assert_select "a[href=?]", new_gear_fuel_entry_path(gears(:phev), unit: "kWh"), text: "Add energy entry"
   end
 
@@ -56,6 +56,16 @@ class GearsControllerTest < ActionDispatch::IntegrationTest
     gears(:prius).fuel_entries.create!(amount: 1, minutes: 30)
     get gear_path(gears(:prius))
     assert_select "th", text: "Per hour"
+  end
+
+  test "show uses the user's currency and units" do
+    sign_in_as users(:two)
+    gears(:truck).fuel_entries.create!(entered_amount: "40", entered_trip: "500", total_price: "70")
+    get gear_path(gears(:truck))
+
+    assert_select "td", text: "€70.00"
+    assert_select "td", text: "40 L"
+    assert_select "td", text: "12.5 km/L"
   end
 
   test "show offers energy entries for electric gear" do

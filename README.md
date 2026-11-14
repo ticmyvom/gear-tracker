@@ -14,6 +14,9 @@ their own gear.
   electricity. Add minutes of use to see gallons or kWh per hour, or miles driven to
   see miles per gallon or per kWh.
 - **Readings**: measurements over time, like tire pressure or odometer.
+- **Settings**: your currency, miles or kilometers, and US gallons, UK gallons or
+  liters. Fuel entries are stored in kilometers and liters and shown in your units, so
+  changing units updates old entries too. Changing currency only changes the symbol.
 
 ## Running it
 

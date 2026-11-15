@@ -23,6 +23,28 @@ their own gear.
   expenses; each one can be set to its own currency on its form. Totals in more than
   one currency show each separately.
 
+## Screenshots
+
+From version 0.1.0, with the demo's sample gear.
+
+**Your gear**, with what each has really cost, in total and per year:
+
+![Gear list with total cost and cost per year](docs/screenshots/gear-list.png)
+
+**A plug-in hybrid** (2020 Toyota Prius Prime at 150,000 miles) logging both gas
+fill-ups and charging, with miles per gallon and miles per kWh:
+
+![Prius Prime page with fuel and energy log, expenses and readings](docs/screenshots/prius-prime.png)
+
+**An appliance's energy use**: a heated mattress pad that averaged 32 W over a
+9-hour night:
+
+![Heated mattress pad page with energy use in watts](docs/screenshots/mattress-pad.png)
+
+**On a phone**, adding an energy entry with time used in hours and minutes:
+
+<img src="docs/screenshots/phone-energy-entry.png" alt="Adding an energy entry on a phone" width="300">
+
 ## Try the demo
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/ticmyvom/gear-tracker?devcontainer_path=.devcontainer/demo/devcontainer.json&quickstart=1)
@@ -166,6 +188,20 @@ fix, open an issue first so we can agree on the approach before you write code.
   known vulnerabilities. Fix what they find; if a warning is truly a false alarm,
   record why in the pull request.
 - **Use made-up data** in fixtures, screenshots and issues, never real people's.
+
+### Releasing a version
+
+Versions follow [Semantic Versioning](https://semver.org/) and are listed in
+[CHANGELOG.md](CHANGELOG.md). To release one:
+
+1. Pick the number: patch (0.1.**1**) for fixes, minor (0.**2**.0) for new features,
+   major (**1**.0.0) for changes that break something users or API clients rely on.
+2. Change `VERSION`, and add a dated section for it at the top of `CHANGELOG.md`
+   (a test fails if you forget).
+3. Commit, then tag the commit: `git tag -a v0.2.0 -m "Version 0.2.0"`, and push
+   with `git push --follow-tags`.
+
+Pull requests don't change the version; it's set when a release is made.
 
 ### Reporting a bug
 

@@ -45,5 +45,7 @@
       <%= tag.p(flash[:alert], class: "alert") if flash[:alert] %>
       <%= yield %>
     </main>
+
+    <footer class="muted">Gear Tracker <%= GearTracker::VERSION %></footer>
   </body>
 </html>

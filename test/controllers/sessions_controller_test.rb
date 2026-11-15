@@ -48,4 +48,10 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_select ".demo", count: 0
     assert_no_match Demo::PASSWORD, response.body
   end
+
+  test "every page shows the app version" do
+    get new_session_path
+
+    assert_select "footer", text: /Gear Tracker #{Regexp.escape(GearTracker::VERSION)}/
+  end
 end

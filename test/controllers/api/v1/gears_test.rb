@@ -1,0 +1,67 @@
+require "test_helper"
+
+class Api::V1::GearsTest < ActionDispatch::IntegrationTest
+  test "index lists gear with totals per currency" do
+    get api_v1_gears_path, headers: api_headers
+
+    assert_response :success
+    prius = json["gears"].find { it["name"] == "2010 Toyota Prius" }
+    assert_equal [ { "currency" => "USD", "amount" => 8715.0 } ], prius["total_cost"]
+    assert_equal [ "fuel" ], prius["fuel_kinds"]
+    assert_equal 8000.0, prius["price"]
+  end
+
+  test "show includes components" do
+    get api_v1_gear_path(gears(:prius)), headers: api_headers
+
+    assert_equal [ { "id" => gears(:tires).id, "name" => "Michelin tires" } ], json["components"]
+  end
+
+  test "create" do
+    post api_v1_gears_path, params: { name: "Air filter", category: "Home", power_source: "electric", price: 89.99, purchased_on: "2026-11-01" }, headers: api_headers, as: :json
+
+    assert_response :created
+    gear = users(:one).gears.find(json["id"])
+    assert_equal [ "Air filter", "electric", 89.99, "USD" ], [ gear.name, gear.power_source, gear.price, gear.currency ]
+    assert_equal api_v1_gear_url(gear), response.location
+    assert_equal [ "energy" ], json["fuel_kinds"]
+  end
+
+  test "create reports validation errors per field" do
+    post api_v1_gears_path, params: { name: "", power_source: "nuclear" }, headers: api_headers, as: :json
+
+    assert_response :unprocessable_content
+    assert_includes json["details"]["name"], "can't be blank"
+    assert_includes json["details"]["power_source"], "is not included in the list"
+  end
+
+  test "update changes only the fields sent" do
+    patch api_v1_gear_path(gears(:prius)), params: { notes: "Bought in Austin" }, headers: api_headers, as: :json
+
+    assert_response :success
+    assert_equal [ "Bought in Austin", "2010 Toyota Prius" ], gears(:prius).reload.values_at(:notes, :name)
+  end
+
+  test "null clears a field" do
+    gears(:prius).update!(notes: "Old note")
+    patch api_v1_gear_path(gears(:prius)), params: { notes: nil }, headers: api_headers, as: :json
+
+    assert_response :success
+    assert_nil gears(:prius).reload.notes
+  end
+
+  test "a misspelled field is reported, not ignored" do
+    post api_v1_gears_path, params: { name: "Tent", prise: 200 }, headers: api_headers, as: :json
+
+    assert_response :unprocessable_content
+    assert_match "Unknown field: prise", json["error"]
+    assert_match "Allowed: name", json["error"]
+  end
+
+  test "a date that isn't YYYY-MM-DD is reported" do
+    post api_v1_gears_path, params: { name: "Tent", purchased_on: "last Tuesday" }, headers: api_headers, as: :json
+
+    assert_response :unprocessable_content
+    assert_equal "purchased_on must be a date like 2026-01-31", json["error"]
+  end
+end

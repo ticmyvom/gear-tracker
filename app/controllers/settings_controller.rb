@@ -1,6 +1,7 @@
 class SettingsController < ApplicationController
   def edit
     @user = Current.user
+    @api_token = Current.user.api_tokens.new
   end
 
   def update
@@ -9,6 +10,7 @@ class SettingsController < ApplicationController
     if @user.update(settings_params)
       redirect_to edit_settings_path, notice: "Settings saved."
     else
+      @api_token = Current.user.api_tokens.new
       render :edit, status: :unprocessable_content
     end
   end

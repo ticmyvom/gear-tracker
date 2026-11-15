@@ -1,0 +1,18 @@
+# The plain tokens are "one_write", "one_read" and "two_write"; tests sign in with them.
+one_write:
+  user: one
+  name: Agent on laptop
+  permission: write
+  token_digest: <%= OpenSSL::Digest::SHA256.hexdigest("gt_one_write") %>
+
+one_read:
+  user: one
+  name: Read-only dashboard
+  permission: read
+  token_digest: <%= OpenSSL::Digest::SHA256.hexdigest("gt_one_read") %>
+
+two_write:
+  user: two
+  name: Other user's agent
+  permission: write
+  token_digest: <%= OpenSSL::Digest::SHA256.hexdigest("gt_two_write") %>

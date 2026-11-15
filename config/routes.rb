@@ -3,6 +3,19 @@ Rails.application.routes.draw do
   resources :passwords, param: :token
   resource :registration, only: %i[ new create ]
   resource :settings, only: %i[ edit update ]
+  resources :api_tokens, only: %i[ create destroy ]
+
+  # JSON API for agents and scripts; see docs/api.md.
+  namespace :api do
+    # Ids must be all digits, so "12abc" doesn't quietly match record 12.
+    namespace :v1, defaults: { format: :json }, constraints: { id: /\d+/, gear_id: /\d+/ } do
+      get "/", to: "docs#show", as: :docs
+      resource :me, only: :show, controller: :me
+      resources :gears, only: %i[ index show create update ] do
+        resources :expenses, :fuel_entries, :readings, only: %i[ index show create update destroy ]
+      end
+    end
+  end
 
   resources :gears do
     resources :expenses, except: %i[ index show ]

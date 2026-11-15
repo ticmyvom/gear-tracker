@@ -1,0 +1,13 @@
+<% content_for :title, "New API token" %>
+<h1>New API token</h1>
+
+<p>Copy this token now and give it to your agent. It won't be shown again.</p>
+<p><code id="new-api-token"><%= @api_token.token %></code></p>
+
+<dl>
+  <dt>Name</dt><dd><%= @api_token.name %></dd>
+  <dt>Access</dt><dd><%= ApiToken::PERMISSIONS[@api_token.permission] %></dd>
+</dl>
+
+<p>Your agent sends it in the <code>Authorization: Bearer …</code> header. See the <%= link_to "API documentation", api_v1_docs_path %>.</p>
+<p><%= link_to "Back to settings", edit_settings_path %></p>

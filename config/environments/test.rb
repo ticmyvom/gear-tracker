@@ -22,6 +22,9 @@ Rails.application.configure do
   config.consider_all_requests_local = true
   config.cache_store = :null_store
 
+  # Rate limits need a real store to be tested; the API test helper clears it between tests.
+  config.x.rate_limit_store = ActiveSupport::Cache::MemoryStore.new
+
   # Render exception templates for rescuable exceptions and raise for other exceptions.
   config.action_dispatch.show_exceptions = :rescuable
 

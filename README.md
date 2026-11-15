@@ -14,6 +14,9 @@ their own gear.
   electricity. Add the time used to see fuel per hour or average watts, or miles
   driven to see miles per gallon or per kWh.
 - **Readings**: measurements over time, like tire pressure or odometer.
+- **API for agents**: let an agent or script read your gear and log expenses, fuel and
+  energy use, and readings, with a token you create in Settings. See
+  [docs/api.md](docs/api.md), also served at `/api/v1`.
 - **Settings**: your currency, miles or kilometers, and US gallons, UK gallons or
   liters. Fuel entries are stored in kilometers and liters and shown in your units, so
   changing units updates old entries too. Your currency is the default for new prices and
@@ -124,6 +127,13 @@ fix, open an issue first so we can agree on the approach before you write code.
   don't log passwords, tokens or personal data.
 - **Test authentication changes,** including wrong passwords, expired tokens and rate
   limits.
+- **Keep the API locked to its token.** Every API endpoint signs in only with a token
+  in the `Authorization` header, finds records through `current_user`, and checks
+  write access before changing anything. Each new endpoint needs tests for: no token,
+  a revoked token, a read-only token, and another user's records. See
+  `test/controllers/api/v1/security_test.rb`.
+- **Document every API change** in `docs/api.md`, which the app also serves to agents.
+  A field that's added, renamed or removed must change there in the same pull request.
 - **Pass the security scans.** `bin/ci` runs Brakeman, which checks the code for
   common Rails security mistakes, and audits the gems and JavaScript packages for
   known vulnerabilities. Fix what they find; if a warning is truly a false alarm,

@@ -1,6 +1,7 @@
 # To do
 
 ## Features
+- [ ] Try the API token section of Settings in a real browser: create a token, copy it, check it works with `curl`, then revoke it (so far only tested by automated tests)
 - [ ] Mark gear as sold or retired, so cost per year stops falling after you let it go
 - [ ] Show the latest value of each reading, and filter reading history (e.g. one tire's pressure)
 
@@ -20,4 +21,5 @@
 - [ ] Choose a host with a persistent disk or volume, since many hosts wipe files on deploy, and set the production path in `config/database.yml` to it
 - [ ] Run `bin/rails db:migrate` when deploying, not `db:prepare`, or call `db:backup` first, because only `db:migrate` backs up automatically
 - [ ] Set up scheduled backups in production, stored away from the server
+- [ ] If the app runs on more than one server, give rate limits a shared cache (e.g. Solid Cache), since each server otherwise counts API and sign-in requests separately
 - [ ] Give the queue a durable backend, since emails queued in the web process are lost on restart

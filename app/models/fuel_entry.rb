@@ -32,6 +32,17 @@ class FuelEntry < ApplicationRecord
     display_unit == "kWh"
   end
 
+  # What the API calls each stored unit.
+  KINDS = { "fuel" => "l", "energy" => "kWh" }.freeze
+
+  def self.unit_for_kind(kind)
+    KINDS.fetch(kind.to_s, kind) # an unknown kind fails the unit validation
+  end
+
+  def kind
+    KINDS.key(display_unit)
+  end
+
   # The only place these names are set; views ask for them by unit.
   def self.log_name_for(units)
     if units.include?("kWh")

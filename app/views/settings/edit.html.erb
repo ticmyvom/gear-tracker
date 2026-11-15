@@ -23,3 +23,43 @@
     <%= link_to "Cancel", root_path %>
   </div>
 <% end %>
+
+<h2>API tokens</h2>
+<p class="muted">Let an agent or script read and log your gear through the <%= link_to "API", api_v1_docs_path %>. Give each agent its own token, so you can revoke one without affecting the others.</p>
+
+<% tokens = Current.user.api_tokens.order(:created_at) %>
+<% if tokens.any? %>
+  <div class="scroll">
+    <table>
+      <thead>
+        <tr><th>Name</th><th>Access</th><th>Created</th><th>Last used</th><th></th></tr>
+      </thead>
+      <tbody>
+        <% tokens.each do |token| %>
+          <tr>
+            <td><%= token.name %></td>
+            <td><%= ApiToken::PERMISSIONS[token.permission] %></td>
+            <td><%= token.created_at.to_date %></td>
+            <td><%= token.last_used_at&.to_date || "Never" %></td>
+            <td><%= button_to "Revoke", token, method: :delete, data: { turbo_confirm: "Revoke #{token.name}? Agents using it will stop working." } %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>
+
+<%# Turbo is off so the new token is shown directly, without a redirect that would carry it in a cookie. %>
+<%= form_with model: @api_token, data: { turbo: false } do |form| %>
+  <%= render "shared/errors", record: @api_token %>
+
+  <div>
+    <%= form.label :name, "New token name" %>
+    <%= form.text_field :name, required: true, maxlength: 100, placeholder: "Claude on my laptop" %>
+  </div>
+  <div>
+    <%= form.label :permission, "Access" %>
+    <%= form.select :permission, ApiToken::PERMISSIONS.invert %>
+  </div>
+  <%= form.submit "Create token" %>
+<% end %>

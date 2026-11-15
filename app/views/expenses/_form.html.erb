@@ -23,6 +23,7 @@
     <%= form.label :vendor %>
     <%= form.text_field :vendor %>
   </div>
+  <%= render "shared/notes_field", form: form %>
   <div class="actions">
     <%= form.submit %>
     <%= link_to "Cancel", gear %>

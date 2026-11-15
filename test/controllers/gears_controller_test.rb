@@ -123,6 +123,21 @@ class GearsControllerTest < ActionDispatch::IntegrationTest
     assert_select "td", text: "0.025 gal/h"
   end
 
+  test "show adds a notes column only to tables that have notes" do
+    get gear_path(gears(:prius))
+    assert_select "th", text: "Notes", count: 0
+
+    expenses(:oil_change).update!(notes: "Synthetic 0W-20")
+    fuel_entries(:fill_up).update!(notes: "Costco")
+    gears(:prius).readings.first.update!(notes: "Cold morning")
+    get gear_path(gears(:prius))
+
+    assert_select "th", text: "Notes", count: 3
+    assert_select "td.notes", text: "Synthetic 0W-20"
+    assert_select "td.notes", text: "Costco"
+    assert_select "td.notes", text: "Cold morning"
+  end
+
   test "show offers energy entries for electric gear" do
     sign_in_as users(:two)
     get gear_path(gears(:drill))

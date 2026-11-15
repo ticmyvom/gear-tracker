@@ -22,6 +22,7 @@
     <%= form.label :unit %>
     <%= form.text_field :unit, placeholder: "psi" %>
   </div>
+  <%= render "shared/notes_field", form: form %>
   <div class="actions">
     <%= form.submit %>
     <%= link_to "Cancel", gear %>

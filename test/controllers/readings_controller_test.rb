@@ -19,6 +19,12 @@ class ReadingsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to @gear
   end
 
+  test "create with notes" do
+    post gear_readings_path(@gear), params: { reading: { read_on: "2026-01-02", name: "Tire pressure FR", value: "30", notes: "Slow leak?" } }
+
+    assert_equal "Slow leak?", Reading.last.notes
+  end
+
   test "create requires a value" do
     assert_no_difference -> { Reading.count } do
       post gear_readings_path(@gear), params: { reading: { read_on: "2026-01-02", name: "Odometer", value: "" } }

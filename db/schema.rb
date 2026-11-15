@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_14_180000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_15_120000) do
   create_table "expenses", force: :cascade do |t|
     t.integer "gear_id", null: false
     t.date "spent_on", null: false
@@ -21,6 +21,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_14_180000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "currency", null: false
+    t.text "notes"
     t.index ["gear_id"], name: "index_expenses_on_gear_id"
   end
 
@@ -36,6 +37,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_14_180000) do
     t.string "unit", null: false
     t.integer "minutes"
     t.string "currency", null: false
+    t.text "notes"
     t.index ["gear_id"], name: "index_fuel_entries_on_gear_id"
   end
 
@@ -64,6 +66,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_14_180000) do
     t.string "unit"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "notes"
     t.index ["gear_id"], name: "index_readings_on_gear_id"
   end
 

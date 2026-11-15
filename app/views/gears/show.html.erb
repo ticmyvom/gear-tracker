@@ -66,6 +66,7 @@
     <%# Columns nobody has filled in are left out. %>
     <% show_time = @fuel_entries.any?(&:minutes) %>
     <% show_distance = @fuel_entries.any? { it.odometer || it.trip } %>
+    <% fuel_notes = any_notes?(@fuel_entries) %>
     <div class="scroll">
       <table>
         <thead>
@@ -73,6 +74,7 @@
             <th>Date</th><th class="num">Amount</th><th class="num">Total price</th>
             <% if show_time %><th class="num">Minutes</th><th class="num">Rate</th><% end %>
             <% if show_distance %><th class="num">Odometer</th><th class="num">Distance</th><th class="num">Efficiency</th><% end %>
+            <% if fuel_notes %><th>Notes</th><% end %>
             <th></th>
           </tr>
         </thead>
@@ -91,6 +93,7 @@
                 <td class="num"><%= quantity fuel_entry.entered_trip %></td>
                 <td class="num"><% if fuel_entry.distance_per_unit %><%= number_with_precision fuel_entry.distance_per_unit, precision: 1 %> <%= fuel_entry.distance_label %>/<%= fuel_entry.amount_label %><% end %></td>
               <% end %>
+              <% if fuel_notes %><td class="notes"><%= fuel_entry.notes %></td><% end %>
               <td><%= link_to "Edit", edit_gear_fuel_entry_path(@gear, fuel_entry) %></td>
             </tr>
           <% end %>
@@ -103,10 +106,11 @@
 <h2>Expenses</h2>
 <p><%= link_to "Add expense", new_gear_expense_path(@gear) %></p>
 <% if @expenses.any? %>
+  <% expense_notes = any_notes?(@expenses) %>
   <div class="scroll">
     <table>
       <thead>
-        <tr><th>Date</th><th>Description</th><th>Category</th><th>Vendor</th><th class="num">Amount</th><th></th></tr>
+        <tr><th>Date</th><th>Description</th><th>Category</th><th>Vendor</th><th class="num">Amount</th><% if expense_notes %><th>Notes</th><% end %><th></th></tr>
       </thead>
       <tbody>
         <% @expenses.each do |expense| %>
@@ -116,6 +120,7 @@
             <td><%= expense.category %></td>
             <td><%= expense.vendor %></td>
             <td class="num"><%= money expense.amount, expense.currency %></td>
+            <% if expense_notes %><td class="notes"><%= expense.notes %></td><% end %>
             <td><%= link_to "Edit", edit_gear_expense_path(@gear, expense) %></td>
           </tr>
         <% end %>
@@ -128,10 +133,11 @@
 <p class="muted">Measurements over time, like tire pressure or odometer.</p>
 <p><%= link_to "Add reading", new_gear_reading_path(@gear) %></p>
 <% if @readings.any? %>
+  <% reading_notes = any_notes?(@readings) %>
   <div class="scroll">
     <table>
       <thead>
-        <tr><th>Date</th><th>Reading</th><th class="num">Value</th><th>Unit</th><th></th></tr>
+        <tr><th>Date</th><th>Reading</th><th class="num">Value</th><th>Unit</th><% if reading_notes %><th>Notes</th><% end %><th></th></tr>
       </thead>
       <tbody>
         <% @readings.each do |reading| %>
@@ -140,6 +146,7 @@
             <td><%= reading.name %></td>
             <td class="num"><%= quantity reading.value %></td>
             <td><%= reading.unit %></td>
+            <% if reading_notes %><td class="notes"><%= reading.notes %></td><% end %>
             <td><%= link_to "Edit", edit_gear_reading_path(@gear, reading) %></td>
           </tr>
         <% end %>

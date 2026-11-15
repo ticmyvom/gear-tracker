@@ -42,6 +42,6 @@ class ExpensesController < ApplicationController
     end
 
     def expense_params
-      params.expect(expense: %i[ spent_on description category amount currency vendor ])
+      params.expect(expense: %i[ spent_on description category amount currency vendor notes ])
     end
 end

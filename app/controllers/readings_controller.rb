@@ -42,6 +42,6 @@ class ReadingsController < ApplicationController
     end
 
     def reading_params
-      params.expect(reading: %i[ read_on name value unit ])
+      params.expect(reading: %i[ read_on name value unit notes ])
     end
 end

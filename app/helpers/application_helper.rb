@@ -1,4 +1,9 @@
 module ApplicationHelper
+  # Tables show a Notes column only when some row has a note.
+  def any_notes?(records)
+    records.any? { it.notes.present? }
+  end
+
   def currency_options
     User::CURRENCIES.map { |code, currency| [ "#{code} #{currency[:symbol]}", code ] }
   end

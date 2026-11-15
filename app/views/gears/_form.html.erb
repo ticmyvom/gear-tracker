@@ -33,10 +33,7 @@
     <%= form.label :purchased_from, "Bought from" %>
     <%= form.text_field :purchased_from %>
   </div>
-  <div>
-    <%= form.label :notes %>
-    <%= form.text_area :notes, rows: 4 %>
-  </div>
+  <%= render "shared/notes_field", form: form %>
   <div class="actions">
     <%= form.submit %>
     <%= link_to "Cancel", gear.persisted? ? gear : gears_path %>

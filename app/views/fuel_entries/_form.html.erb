@@ -25,6 +25,7 @@
     <%= form.label :filled_on, "Date" %>
     <%= form.date_field :filled_on %>
   </div>
+  <%= render "shared/notes_field", form: form %>
   <div class="actions">
     <%= form.submit "Save #{fuel_entry.label}" %>
     <%= link_to "Cancel", gear %>

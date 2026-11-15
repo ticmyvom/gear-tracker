@@ -94,6 +94,12 @@ class FuelEntriesControllerTest < ActionDispatch::IntegrationTest
     assert_equal [ 55, "CAD" ], fuel_entries(:fill_up).reload.values_at(:total_price, :currency)
   end
 
+  test "create with notes" do
+    post gear_fuel_entries_path(@gear), params: { fuel_entry: { entered_amount: "9", notes: "Road trip" } }
+
+    assert_equal "Road trip", FuelEntry.last.notes
+  end
+
   test "only vehicles get distance fields" do
     get new_gear_fuel_entry_path(@gear)
     assert_select "input[name=?]", "fuel_entry[entered_trip]"

@@ -54,6 +54,14 @@ class ExpensesControllerTest < ActionDispatch::IntegrationTest
     assert_select "select[name=?] option[selected][value=USD]", "expense[currency]"
   end
 
+  test "create and edit with notes" do
+    post gear_expenses_path(@gear), params: { expense: { spent_on: "2026-01-02", description: "Brakes", amount: "300", notes: "Front pads only.\nRotors next time." } }
+    assert_equal "Front pads only.\nRotors next time.", Expense.last.notes
+
+    get edit_gear_expense_path(@gear, Expense.last)
+    assert_select "textarea[name=?]", "expense[notes]", text: "Front pads only.\nRotors next time."
+  end
+
   test "destroy" do
     assert_difference -> { Expense.count }, -1 do
       delete gear_expense_path(@gear, expenses(:oil_change))

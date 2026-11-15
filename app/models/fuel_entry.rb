@@ -72,9 +72,17 @@ class FuelEntry < ApplicationRecord
     preferred(:trip) / preferred(:amount) if trip&.positive?
   end
 
-  # Fuel or energy per hour of use.
-  def amount_per_hour
-    preferred(:amount) * 60 / minutes if minutes&.positive?
+  # Average power in watts for electricity, or fuel per hour, like L/h.
+  def usage_rate
+    return unless minutes&.positive?
+
+    per_hour = preferred(:amount) * 60 / minutes
+    electric? ? per_hour * 1000 : per_hour # kWh per hour is kW
+  end
+
+  # "W", or fuel per hour like "L/h"
+  def usage_rate_label
+    electric? ? "W" : "#{amount_label}/h"
   end
 
   private

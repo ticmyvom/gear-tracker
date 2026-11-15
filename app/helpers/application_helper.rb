@@ -16,6 +16,11 @@ module ApplicationHelper
     end
   end
 
+  # Three significant digits, so small rates like 0.00467 don't round to 0.00.
+  def rate(value)
+    number_with_precision value, precision: 3, significant: true, strip_insignificant_zeros: true, delimiter: ","
+  end
+
   def quantity(value)
     number_with_precision value, precision: 3, strip_insignificant_zeros: true
   end

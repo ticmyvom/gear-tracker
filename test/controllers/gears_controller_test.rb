@@ -51,11 +51,11 @@ class GearsControllerTest < ActionDispatch::IntegrationTest
   test "show leaves out fuel columns nobody filled in" do
     get gear_path(gears(:prius))
     assert_select "th", text: "Efficiency"
-    assert_select "th", text: "Per hour", count: 0
+    assert_select "th", text: "Rate", count: 0
 
     gears(:prius).fuel_entries.create!(amount: 1, minutes: 30)
     get gear_path(gears(:prius))
-    assert_select "th", text: "Per hour"
+    assert_select "th", text: "Rate"
   end
 
   test "show uses the user's currency and units" do
@@ -106,6 +106,21 @@ class GearsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :unprocessable_content
     assert_equal "USD", gears(:prius).reload.currency
+  end
+
+  test "small electricity use shows as average watts, not 0.00" do
+    sign_in_as users(:two)
+    gears(:drill).fuel_entries.create!(entered_amount: "0.014", minutes: 180)
+    get gear_path(gears(:drill))
+
+    assert_select "td", text: "4.67 W"
+  end
+
+  test "fuel use per hour keeps small values readable" do
+    gears(:prius).fuel_entries.create!(entered_amount: "0.05", minutes: 120)
+    get gear_path(gears(:prius))
+
+    assert_select "td", text: "0.025 gal/h"
   end
 
   test "show offers energy entries for electric gear" do

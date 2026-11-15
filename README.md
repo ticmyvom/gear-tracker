@@ -11,8 +11,8 @@ their own gear.
 - **Power source**: what makes the gear go: nothing, human power, gasoline, diesel,
   propane, electricity, or both gasoline and electricity for a plug-in hybrid.
 - **Fuel entries**: fill-ups (gallons) or energy use (kWh) for gear that runs on fuel or
-  electricity. Add minutes of use to see gallons or kWh per hour, or miles driven to
-  see miles per gallon or per kWh.
+  electricity. Add minutes of use to see fuel per hour or average watts, or miles
+  driven to see miles per gallon or per kWh.
 - **Readings**: measurements over time, like tire pressure or odometer.
 - **Settings**: your currency, miles or kilometers, and US gallons, UK gallons or
   liters. Fuel entries are stored in kilometers and liters and shown in your units, so

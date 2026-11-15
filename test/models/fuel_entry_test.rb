@@ -66,9 +66,10 @@ class FuelEntryTest < ActiveSupport::TestCase
     assert_nil FuelEntry.new(amount: 9, trip: 0).distance_per_unit
   end
 
-  test "amount per hour uses the minutes of use" do
-    assert_in_delta 1.2, gears(:drill).fuel_entries.new(amount: 0.3, minutes: 15).amount_per_hour, 0.001
-    assert_nil gears(:drill).fuel_entries.new(amount: 0.3).amount_per_hour
+  test "usage rate is average watts for electricity" do
+    assert_in_delta 1200, gears(:drill).fuel_entries.new(amount: 0.3, minutes: 15).usage_rate, 0.001
+    assert_equal "W", gears(:drill).fuel_entries.new.usage_rate_label
+    assert_nil gears(:drill).fuel_entries.new(amount: 0.3).usage_rate
   end
 
   test "values typed in miles and US gallons are stored in km and liters" do
@@ -100,7 +101,8 @@ class FuelEntryTest < ActiveSupport::TestCase
     fuel_entry = gears(:truck).fuel_entries.create!(entered_amount: "40", entered_trip: "500", minutes: 120)
 
     assert_in_delta 12.5, fuel_entry.distance_per_unit, 0.001
-    assert_in_delta 20, fuel_entry.amount_per_hour, 0.001
+    assert_in_delta 20, fuel_entry.usage_rate, 0.001
+    assert_equal "L/h", fuel_entry.usage_rate_label
     assert_equal "km", fuel_entry.distance_label
     assert_equal "L", fuel_entry.amount_label
   end

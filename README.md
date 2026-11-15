@@ -62,6 +62,9 @@ them in). Add, change and delete anything: the demo resets every time the Codesp
 starts, and your changes never leave your Codespace. Delete the Codespace from
 [github.com/codespaces](https://github.com/codespaces) when you're done.
 
+A Codespace keeps the version it was created with; the page footer shows which one.
+To try a newer version, delete the old Codespace and create a new one.
+
 To run the demo on your own computer, use a separate database so your own data isn't
 wiped:
 

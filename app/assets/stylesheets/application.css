@@ -66,5 +66,6 @@ legend { padding: 0; }
 .actions { display: flex; flex-wrap: wrap; gap: 1rem; align-items: baseline; }
 .actions form { margin: 0; }
 .notes { white-space: pre-wrap; }
+.demo { padding: 0.5rem; border: 1px dashed var(--line); }
 .notice { color: light-dark(#17692b, #6fcf8a); }
 .alert, .errors { color: light-dark(#b3261e, #f28b82); }

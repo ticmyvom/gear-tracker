@@ -30,4 +30,22 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to new_session_path
     assert_empty cookies[:session_id]
   end
+
+  test "demo mode shows and fills in the demo sign-in" do
+    ENV["GEAR_TRACKER_DEMO"] = "1"
+    get new_session_path
+
+    assert_select ".demo", text: /changes are thrown away/
+    assert_select "input[name=email_address][value=?]", Demo::EMAIL
+    assert_select "input[name=password][value=?]", Demo::PASSWORD
+  ensure
+    ENV.delete("GEAR_TRACKER_DEMO")
+  end
+
+  test "outside demo mode the sign-in page doesn't mention the demo" do
+    get new_session_path
+
+    assert_select ".demo", count: 0
+    assert_no_match Demo::PASSWORD, response.body
+  end
 end

@@ -1,0 +1,17 @@
+// The demo Codespace: the app with sample gear, reset to the same state every
+// time the Codespace starts. Visitors' changes stay in their own Codespace and
+// are thrown away. It wipes the database, so don't use it for development.
+{
+  "name": "Gear Tracker demo",
+  "image": "ghcr.io/rails/devcontainer/images/ruby:3.4.2",
+  "containerEnv": {
+    "GEAR_TRACKER_DEMO": "1"
+  },
+  "forwardPorts": [3000],
+  "portsAttributes": {
+    "3000": { "label": "Gear Tracker", "onAutoForward": "openBrowser" }
+  },
+  "postCreateCommand": "bundle install",
+  "postStartCommand": "bin/rails demo:reset",
+  "postAttachCommand": "bin/rails server --binding 0.0.0.0"
+}

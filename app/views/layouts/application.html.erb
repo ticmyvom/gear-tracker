@@ -40,6 +40,7 @@
     </header>
 
     <main>
+      <%= tag.p("Demo: try anything. Changes are thrown away when the demo restarts.", class: "demo") if Demo.enabled? && authenticated? %>
       <%= tag.p(flash[:notice], class: "notice") if flash[:notice] %>
       <%= tag.p(flash[:alert], class: "alert") if flash[:alert] %>
       <%= yield %>

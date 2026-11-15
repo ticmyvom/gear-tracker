@@ -66,4 +66,13 @@ Rails.application.configure do
 
   # Raise error when a before_action's only/except options reference missing actions.
   config.action_controller.raise_on_missing_callback_actions = true
+
+  # GitHub Codespaces serves the app at a forwarded address and rewrites the
+  # browser's Origin header to localhost, which fails Rails' origin check.
+  # Allow that address, and skip only the origin comparison there; the CSRF
+  # token in every form is still checked.
+  if (codespaces_domain = ENV["GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN"].presence)
+    config.hosts << ".#{codespaces_domain}"
+    config.action_controller.forgery_protection_origin_check = false
+  end
 end

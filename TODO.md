@@ -9,6 +9,9 @@
 - [ ] Regularly copy `storage/backups` off this machine (external drive or cloud), since a disk failure would take the backups too
 - [ ] Remove old files from `storage/backups` now and then, since nothing deletes them automatically
 
+## After putting the code on GitHub
+- [ ] Try the demo Codespace for real: it opens, signs in, resets on restart (so far only simulated locally)
+
 ## Before deploying
 - [ ] Turn on private vulnerability reporting in the GitHub repository's settings, so the README's "Report a vulnerability" link works
 - [ ] Buy a domain

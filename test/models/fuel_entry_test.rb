@@ -140,6 +140,15 @@ class FuelEntryTest < ActiveSupport::TestCase
     assert_equal "EUR", gears(:truck).fuel_entries.create!(amount: 9).currency
   end
 
+  test "time used rejects text and negative numbers" do
+    [ [ "abc", "" ], [ "1", "-30" ], [ "-1", "" ] ].each do |hours, minutes|
+      fuel_entry = gears(:drill).fuel_entries.new(amount: 0.1, used_hours: hours, used_minutes: minutes)
+
+      assert_not fuel_entry.valid?, "#{hours} h #{minutes} min"
+      assert fuel_entry.errors.include?(:minutes)
+    end
+  end
+
   test "gear must run on fuel or electricity" do
     assert_not gears(:tires).fuel_entries.new(amount: 9).valid?
     assert_not users(:one).gears.create!(name: "Bike", power_source: "manual").fuel_entries.new(amount: 9).valid?

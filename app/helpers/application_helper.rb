@@ -26,6 +26,14 @@ module ApplicationHelper
     number_with_precision value, precision: 3, significant: true, strip_insignificant_zeros: true, delimiter: ","
   end
 
+  # 90 => "1 h 30 min", 180 => "3 h", 45 => "45 min"
+  def duration(minutes)
+    return if minutes.nil?
+
+    hours, mins = minutes.divmod(60)
+    [ ("#{hours} h" if hours.positive?), ("#{mins} min" if mins.positive?) ].compact.join(" ")
+  end
+
   def quantity(value)
     number_with_precision value, precision: 3, strip_insignificant_zeros: true
   end

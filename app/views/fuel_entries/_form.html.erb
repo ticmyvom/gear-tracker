@@ -7,10 +7,13 @@
     <%= form.number_field :entered_amount, required: true, autofocus: true, min: 0.001, step: "0.001", inputmode: "decimal" %>
   </div>
   <%= render "shared/money_field", form: form, field: :total_price, label: "Total price (optional)" %>
-  <div>
-    <%= form.label :minutes, "Minutes of use (optional)" %>
-    <%= form.number_field :minutes, min: 1, step: 1, inputmode: "numeric" %>
-  </div>
+  <fieldset>
+    <legend>Time used (optional)</legend>
+    <div class="inline-fields">
+      <label><%= form.number_field :used_hours, min: 0, step: "any", inputmode: "decimal" %> h</label>
+      <label><%= form.number_field :used_minutes, min: 0, step: 1, inputmode: "numeric" %> min</label>
+    </div>
+  </fieldset>
   <% if gear.vehicle? || fuel_entry.entered_odometer.present? || fuel_entry.entered_trip.present? %>
     <div>
       <%= form.label :entered_odometer, "Current odometer (#{fuel_entry.distance_label}, optional)" %>

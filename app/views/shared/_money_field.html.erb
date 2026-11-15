@@ -2,7 +2,7 @@
 <% options = local_assigns.fetch(:input_options, {}) %>
 <div>
   <%= form.label field, label %>
-  <div class="money-field">
+  <div class="inline-fields">
     <%= form.number_field field, min: 0, step: "0.01", inputmode: "decimal", **options %>
     <%= form.select :currency, currency_options, { selected: form.object.display_currency }, aria: { label: "Currency" } %>
   </div>

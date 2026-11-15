@@ -54,7 +54,7 @@
 <% fuel_units = (@gear.fuel_units + @fuel_entries.map(&:unit)).uniq %>
 <% if fuel_units.any? %>
   <h2><%= FuelEntry.log_name_for(fuel_units) %></h2>
-  <p class="muted">Add minutes of use to see the rate (watts for electricity)<%= ", or distance to see efficiency" if @gear.vehicle? %>.</p>
+  <p class="muted">Add the time used to see the rate (watts for electricity)<%= ", or distance to see efficiency" if @gear.vehicle? %>.</p>
   <% if @gear.fuel_units.any? %>
     <p class="actions">
       <% @gear.fuel_units.each do |unit| %>
@@ -72,7 +72,7 @@
         <thead>
           <tr>
             <th>Date</th><th class="num">Amount</th><th class="num">Total price</th>
-            <% if show_time %><th class="num">Minutes</th><th class="num">Rate</th><% end %>
+            <% if show_time %><th class="num">Time used</th><th class="num">Rate</th><% end %>
             <% if show_distance %><th class="num">Odometer</th><th class="num">Distance</th><th class="num">Efficiency</th><% end %>
             <% if fuel_notes %><th>Notes</th><% end %>
             <th></th>
@@ -85,7 +85,7 @@
               <td class="num"><%= quantity fuel_entry.entered_amount %> <%= fuel_entry.amount_label %></td>
               <td class="num"><%= money fuel_entry.total_price, fuel_entry.currency %></td>
               <% if show_time %>
-                <td class="num"><%= fuel_entry.minutes %></td>
+                <td class="num"><%= duration fuel_entry.minutes %></td>
                 <td class="num"><% if fuel_entry.usage_rate %><%= rate fuel_entry.usage_rate %> <%= fuel_entry.usage_rate_label %><% end %></td>
               <% end %>
               <% if show_distance %>

@@ -116,6 +116,19 @@ class GearsControllerTest < ActionDispatch::IntegrationTest
     assert_select "td", text: "4.67 W"
   end
 
+  test "time used shows as hours and minutes" do
+    sign_in_as users(:two)
+    gears(:drill).fuel_entries.create!(amount: 0.1, minutes: 90)
+    gears(:drill).fuel_entries.create!(amount: 0.1, minutes: 180)
+    gears(:drill).fuel_entries.create!(amount: 0.1, minutes: 45)
+    get gear_path(gears(:drill))
+
+    assert_select "th", text: "Time used"
+    assert_select "td", text: "1 h 30 min"
+    assert_select "td", text: "3 h"
+    assert_select "td", text: "45 min"
+  end
+
   test "fuel use per hour keeps small values readable" do
     gears(:prius).fuel_entries.create!(entered_amount: "0.05", minutes: 120)
     get gear_path(gears(:prius))

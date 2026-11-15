@@ -15,6 +15,7 @@ class FuelEntry < ApplicationRecord
   before_validation(on: :create) { self.unit = gear&.fuel_units&.first if unit.blank? }
   # Runs after the unit is known, since that decides whether the amount is converted.
   before_validation :store_entered_values
+  before_validation :store_time_used
 
   validates :amount, presence: true, numericality: { greater_than: 0 }
   validates :total_price, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
@@ -55,6 +56,17 @@ class FuelEntry < ApplicationRecord
     end
 
     define_method(:"entered_#{field}=") { |value| entered_values[field] = value }
+  end
+
+  # Time used is typed as hours and/or minutes, and stored as total minutes.
+  attr_writer :used_hours, :used_minutes
+
+  def used_hours
+    defined?(@used_hours) ? @used_hours : minutes&.div(60)&.nonzero?
+  end
+
+  def used_minutes
+    defined?(@used_minutes) ? @used_minutes : minutes&.modulo(60)&.nonzero?
   end
 
   # "gal", "L", "UK gal" or "kWh"
@@ -100,6 +112,22 @@ class FuelEntry < ApplicationRecord
         # Anything that isn't a number is kept as typed, so validation reports it.
         self[field] = number ? Units.convert(number, preferred_unit_for(field), stored_unit_for(field)) : value.presence
       end
+    end
+
+    def store_time_used
+      return unless defined?(@used_hours) || defined?(@used_minutes)
+
+      typed = [ @used_hours, @used_minutes ]
+      hours, mins = numbers = typed.map { BigDecimal(it.to_s, exception: false) if it.present? }
+
+      self.minutes =
+        if typed.all?(&:blank?)
+          nil
+        elsif typed.zip(numbers).any? { |text, number| text.present? && (number.nil? || number.negative?) }
+          typed.join(" ") # not a valid number, so validation reports it
+        else
+          ((hours || 0) * 60 + (mins || 0)).round
+        end
     end
 
     def preferred(field)

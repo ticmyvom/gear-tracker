@@ -44,9 +44,9 @@ class FuelEntriesControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_content
   end
 
-  test "create an energy entry with minutes of use" do
+  test "create an energy entry with time used" do
     sign_in_as users(:two)
-    post gear_fuel_entries_path(gears(:drill)), params: { fuel_entry: { entered_amount: "0.25", minutes: "20", total_price: "" } }
+    post gear_fuel_entries_path(gears(:drill)), params: { fuel_entry: { entered_amount: "0.25", used_hours: "", used_minutes: "20", total_price: "" } }
 
     assert_redirected_to gears(:drill)
     assert_equal "Energy entry added.", flash[:notice]
@@ -98,6 +98,39 @@ class FuelEntriesControllerTest < ActionDispatch::IntegrationTest
     post gear_fuel_entries_path(@gear), params: { fuel_entry: { entered_amount: "9", notes: "Road trip" } }
 
     assert_equal "Road trip", FuelEntry.last.notes
+  end
+
+  test "time used can be typed in hours, minutes or both" do
+    sign_in_as users(:two)
+
+    { [ "3", "" ] => 180, [ "1", "30" ] => 90, [ "2.5", "" ] => 150, [ "", "90" ] => 90 }.each do |(hours, minutes), total|
+      post gear_fuel_entries_path(gears(:drill)), params: { fuel_entry: { entered_amount: "0.1", used_hours: hours, used_minutes: minutes } }
+      assert_equal total, FuelEntry.last.minutes, "#{hours} h #{minutes} min"
+    end
+  end
+
+  test "clearing both time boxes removes the time used" do
+    fuel_entries(:fill_up).update!(minutes: 30)
+    patch gear_fuel_entry_path(@gear, fuel_entries(:fill_up)), params: { fuel_entry: { used_hours: "", used_minutes: "" } }
+
+    assert_nil fuel_entries(:fill_up).reload.minutes
+  end
+
+  test "time used of zero is rejected" do
+    assert_no_difference -> { FuelEntry.count } do
+      post gear_fuel_entries_path(@gear), params: { fuel_entry: { entered_amount: "9", used_hours: "0", used_minutes: "0" } }
+    end
+
+    assert_response :unprocessable_content
+    assert_select ".errors", text: /Time used must be greater than 0/
+  end
+
+  test "edit splits time used into hours and minutes" do
+    fuel_entries(:fill_up).update!(minutes: 95)
+    get edit_gear_fuel_entry_path(@gear, fuel_entries(:fill_up))
+
+    assert_select "input[name=?][value=1]", "fuel_entry[used_hours]"
+    assert_select "input[name=?][value=35]", "fuel_entry[used_minutes]"
   end
 
   test "only vehicles get distance fields" do

@@ -4,6 +4,10 @@ Rails.application.routes.draw do
   resource :registration, only: %i[ new create ]
   resource :settings, only: %i[ edit update ]
   resources :api_tokens, only: %i[ create destroy ]
+  resource :account, only: :destroy do
+    get :export
+  end
+  get "privacy", to: "pages#privacy"
 
   # JSON API for agents and scripts; see docs/api.md.
   namespace :api do

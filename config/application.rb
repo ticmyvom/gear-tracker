@@ -23,6 +23,9 @@ module GearTracker
   VERSION = File.read(File.expand_path("../VERSION", __dir__)).strip
 
   class Application < Rails::Application
+    # How long backups keep deleted data; the privacy page promises this.
+    config.x.backup_retention_days = 7
+
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 8.1
 

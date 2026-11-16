@@ -63,3 +63,16 @@
   </div>
   <%= form.submit "Create token" %>
 <% end %>
+
+<h2>Your data</h2>
+<p><%= link_to "Download all your data", export_account_path %> <span class="muted">(a JSON file you can keep or move elsewhere)</span></p>
+
+<h3>Delete your account</h3>
+<p class="muted">Deletes your account and everything you entered, right away. This can't be undone, so download your data first if you want a copy.</p>
+<%= form_with url: account_path, method: :delete, data: { turbo_confirm: "Delete your account and all your data? This can't be undone." } do |form| %>
+  <div>
+    <%= form.label :password, "Your password" %>
+    <%= form.password_field :password, required: true, autocomplete: "current-password", maxlength: 72 %>
+  </div>
+  <%= form.submit "Delete my account" %>
+<% end %>

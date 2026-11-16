@@ -1,0 +1,33 @@
+<% content_for :title, "Privacy" %>
+<h1>Privacy</h1>
+
+<p>Gear Tracker keeps what you enter so you can see what your things really cost. It isn't used for anything else.</p>
+
+<h2>What's stored</h2>
+<ul>
+  <li><strong>Your account:</strong> your email address and your password, which is stored only as a one-way hash, so nobody can read it.</li>
+  <li><strong>What you enter:</strong> your gear, expenses, fuel and energy entries, readings, notes and settings.</li>
+  <li><strong>Sign-ins:</strong> for each signed-in browser, its IP address and browser name, so a session can be recognized.</li>
+  <li><strong>API tokens:</strong> their names and when they were last used. The tokens themselves are stored only as a fingerprint.</li>
+  <li><strong>Server logs:</strong> requests, with IP addresses, kept briefly to keep the site running and safe. Passwords and tokens are never logged.</li>
+</ul>
+
+<h2>What isn't done</h2>
+<ul>
+  <li>No ads, no tracking and no analytics. The only cookies are the ones that keep you signed in and protect your forms.</li>
+  <li>Your data is never sold or shared, except with the services needed to run the site, listed below.</li>
+</ul>
+
+<h2>Services the site uses</h2>
+<ul>
+  <li><strong>Email:</strong> password reset emails are sent through an email delivery service, which sees your email address and the message.</li>
+  <li><strong>Backups:</strong> the database is copied continuously to encrypted cloud storage, so it can be restored if the server fails.</li>
+</ul>
+
+<h2>Your choices</h2>
+<ul>
+  <li><strong>Download your data</strong> at any time from Settings, as a JSON file.</li>
+  <li><strong>Delete your account</strong> from Settings. Everything you entered is deleted at once. Copies in backups are deleted as old backups expire, within <%= Rails.configuration.x.backup_retention_days %> days.</li>
+</ul>
+
+<p class="muted">Questions? Open an issue on <%= link_to "the project's GitHub page", "https://github.com/ticmyvom/gear-tracker" %>.</p>

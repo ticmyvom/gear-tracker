@@ -1,0 +1,71 @@
+# Kamal deploy configuration. See docs/hosting.md for the full setup.
+# Change these two values to your server's IP address and your domain.
+<% server = "203.0.113.10" %>
+<% domain = "gear.example.com" %>
+
+# Name of the application, used to name its containers.
+service: gear_tracker
+
+# Name of the container image.
+image: ticmyvom/gear-tracker
+
+# Deploy to this server.
+servers:
+  web:
+    - <%= server %>
+
+# HTTPS with a free, automatically renewed Let's Encrypt certificate. If the
+# domain goes through Cloudflare's proxy, set SSL/TLS to "Full (strict)".
+proxy:
+  ssl: true
+  host: <%= domain %>
+
+# Kamal runs a registry on your computer and sends the image to the server over
+# SSH, so no registry account is needed. Requires Docker on your computer.
+registry:
+  server: localhost:5555
+
+# Settings and secrets for the app (secrets come from .kamal/secrets).
+env:
+  clear:
+    APP_HOST: <%= domain %>
+    MAIL_FROM: "Gear Tracker <no-reply@<%= domain %>>"
+    # Run background jobs, like password reset emails, inside the web server.
+    SOLID_QUEUE_IN_PUMA: true
+  secret:
+    - RAILS_MASTER_KEY
+    - SMTP_PASSWORD
+    - LITESTREAM_REPLICA_BUCKET
+    - LITESTREAM_REPLICA_ENDPOINT
+    - LITESTREAM_ACCESS_KEY_ID
+    - LITESTREAM_SECRET_ACCESS_KEY
+
+# Connect as a non-root user that can run Docker (docs/hosting.md sets it up).
+ssh:
+  user: deploy
+
+# Keep container logs small and short-lived: at most 5 files of 10 MB. The
+# privacy page says logs are only kept briefly.
+logging:
+  driver: json-file
+  options:
+    max-size: 10m
+    max-file: 5
+
+# Shortcuts: "bin/kamal console", "bin/kamal logs", and so on.
+aliases:
+  console: app exec --interactive --reuse "bin/rails console"
+  shell: app exec --interactive --reuse "bash"
+  logs: app logs -f
+  dbc: app exec --interactive --reuse "bin/rails dbconsole"
+
+# The databases (and their local backups) live on this persistent volume.
+volumes:
+  - "gear_tracker_storage:/rails/storage"
+
+# Keep old and new versions' assets during a deploy, so pages loading mid-deploy don't break.
+asset_path: /rails/public/assets
+
+# Build for the usual Intel/AMD servers.
+builder:
+  arch: amd64

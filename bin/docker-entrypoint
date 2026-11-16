@@ -1,0 +1,9 @@
+#!/bin/bash -e
+
+# If running the rails server then create or migrate the database. db:prepare
+# backs the database up first when there are migrations to run.
+if [ "${@: -2:1}" == "./bin/rails" ] && [ "${@: -1:1}" == "server" ]; then
+  ./bin/rails db:prepare
+fi
+
+exec "${@}"

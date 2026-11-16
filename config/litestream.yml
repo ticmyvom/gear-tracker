@@ -1,0 +1,21 @@
+# Litestream copies the production database to S3-compatible storage (such as
+# Cloudflare R2) continuously, so it can be restored if the server is lost.
+# Puma runs it when LITESTREAM_REPLICA_BUCKET is set; the values come from
+# secrets in config/deploy.yml. See https://litestream.io/reference/config/
+#
+# Retention must match config.x.backup_retention_days (7 days), which the
+# privacy page promises: deleted data leaves the backups within that time.
+snapshot:
+  interval: 24h
+  retention: 168h
+
+dbs:
+  - path: /rails/storage/production.sqlite3
+    replica:
+      type: s3
+      bucket: $LITESTREAM_REPLICA_BUCKET
+      path: production
+      endpoint: $LITESTREAM_REPLICA_ENDPOINT
+      region: auto
+      access-key-id: $LITESTREAM_ACCESS_KEY_ID
+      secret-access-key: $LITESTREAM_SECRET_ACCESS_KEY

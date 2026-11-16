@@ -26,6 +26,17 @@ test:
 #
 # Similarly, if you deploy your application as a Docker container, you must
 # ensure the database is located in a persisted volume.
+# Production databases live in storage/, which config/deploy.yml mounts as a
+# persistent Docker volume. Litestream copies the primary one off-site.
 production:
-  <<: *default
-  # database: path/to/persistent/storage/production.sqlite3
+  primary:
+    <<: *default
+    database: storage/production.sqlite3
+  cache:
+    <<: *default
+    database: storage/production_cache.sqlite3
+    migrations_paths: db/cache_migrate
+  queue:
+    <<: *default
+    database: storage/production_queue.sqlite3
+    migrations_paths: db/queue_migrate

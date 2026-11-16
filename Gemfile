@@ -26,6 +26,19 @@ gem "tzinfo-data", platforms: %i[ windows jruby ]
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
 
+# Database-backed jobs and cache, so emails and rate limits survive restarts [https://github.com/rails/solid_queue]
+gem "solid_queue"
+gem "solid_cache"
+
+# Copies the SQLite database to off-site storage continuously [https://github.com/fractaledmind/litestream-ruby]
+gem "litestream"
+
+# Deploy this application anywhere as a Docker container [https://kamal-deploy.org]
+gem "kamal", require: false
+
+# Add HTTP asset caching/compression and X-Sendfile acceleration to Puma [https://github.com/basecamp/thruster/]
+gem "thruster", require: false
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"

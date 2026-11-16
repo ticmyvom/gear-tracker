@@ -25,6 +25,11 @@ module GearTracker
   class Application < Rails::Application
     # How long backups keep deleted data; the privacy page promises this.
     config.x.backup_retention_days = 7
+    # Local backups in storage/backups are kept forever unless set (production sets it).
+    config.x.local_backup_retention_days = nil
+
+    # Who emails come from; production sets the real address.
+    config.x.mail_from = "Gear Tracker <no-reply@example.com>"
 
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 8.1

@@ -4,10 +4,7 @@ namespace :db do
   end
 
   def backup_database
-    backup_path = Rails.root.join("storage/backups", "#{Rails.env}-#{Time.current.strftime('%Y%m%d-%H%M%S-%L')}.sqlite3")
-    FileUtils.mkdir_p(backup_path.dirname)
-    # VACUUM INTO takes a consistent copy, even while the server is running.
-    ActiveRecord::Base.lease_connection.execute("VACUUM INTO #{ActiveRecord::Base.lease_connection.quote(backup_path.to_s)}")
+    backup_path = DatabaseBackup.new.create
     puts "Backed up database to #{backup_path.relative_path_from(Rails.root)}"
   end
 
@@ -48,5 +45,7 @@ namespace :db do
   end
 
   task migrate: :backup_before_migrate
+  # Deploys run db:prepare (see bin/docker-entrypoint), so it backs up too.
+  task prepare: :backup_before_migrate
   task rollback: :backup
 end

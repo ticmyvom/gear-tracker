@@ -103,10 +103,12 @@ changing anything. To make or restore a copy yourself:
 Stop the server before restoring. Restoring saves a copy of the current database
 first. Backups live on the same disk, so copy them elsewhere too.
 
-## Before deploying
+## Hosting
 
-Password reset emails need SMTP settings and a real host in
-`config/environments/production.rb`.
+[docs/hosting.md](docs/hosting.md) walks through putting Gear Tracker online on a
+small server with Kamal, for about $60–80 a year: the domain, locking the server
+down, HTTPS, email, off-site backups, the first deploy, a backup-restore drill,
+and upkeep.
 
 ## Contributing
 

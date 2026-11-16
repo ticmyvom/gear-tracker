@@ -8,6 +8,18 @@ publicly hosted yet.
 The API has its own version in its path (`/api/v1`), which changes only when the API
 changes in a way that breaks existing clients.
 
+## [Unreleased]
+
+Ready to host.
+
+- Delete your account, or download all your data as a JSON file, from Settings
+- A privacy page, linked from every page
+- Production setup: a Docker image deployed with Kamal, with HTTPS, durable
+  background jobs for email, and rate limits that survive restarts
+- Off-site backups with Litestream, kept 7 days; the server's own pre-update
+  backups are also deleted after 7 days
+- A hosting guide (`docs/hosting.md`) and a script that locks a new server down
+
 ## [0.1.0] - 2026-11-15
 
 The first version.

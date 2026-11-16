@@ -1,7 +1,7 @@
 # Kamal deploy configuration. See docs/hosting.md for the full setup.
 # Change these two values to your server's IP address and your domain.
 <% server = "203.0.113.10" %>
-<% domain = "gear.example.com" %>
+<% domain = "yourdomain.com" %>
 
 # Name of the application, used to name its containers.
 service: gear_tracker
@@ -29,7 +29,8 @@ registry:
 env:
   clear:
     APP_HOST: <%= domain %>
-    MAIL_FROM: "Gear Tracker <no-reply@<%= domain %>>"
+    # Sent from a subdomain verified in Resend, which keeps the main domain's email reputation separate.
+    MAIL_FROM: "Gear Tracker <no-reply@mail.<%= domain %>>"
     # Run background jobs, like password reset emails, inside the web server.
     SOLID_QUEUE_IN_PUMA: true
   secret:

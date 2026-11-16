@@ -8,7 +8,7 @@ publicly hosted yet.
 The API has its own version in its path (`/api/v1`), which changes only when the API
 changes in a way that breaks existing clients.
 
-## [Unreleased]
+## [0.2.0] - 2026-11-15
 
 Ready to host.
 

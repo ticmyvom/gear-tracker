@@ -1,7 +1,9 @@
 # Kamal deploy configuration. See docs/hosting.md for the full setup.
-# Change these two values to your server's IP address and your domain.
+# Change these to your server's IP address, your domain, and this app's address
+# on it (a subdomain, so the domain can host other apps too).
 <% server = "203.0.113.10" %>
-<% domain = "yourdomain.com" %>
+<% domain = "ndcct.dev" %>
+<% host = "gear.#{domain}" %>
 
 # Name of the application, used to name its containers.
 service: gear_tracker
@@ -18,7 +20,7 @@ servers:
 # domain goes through Cloudflare's proxy, set SSL/TLS to "Full (strict)".
 proxy:
   ssl: true
-  host: <%= domain %>
+  host: <%= host %>
 
 # Kamal runs a registry on your computer and sends the image to the server over
 # SSH, so no registry account is needed. Requires Docker on your computer.
@@ -28,8 +30,9 @@ registry:
 # Settings and secrets for the app (secrets come from .kamal/secrets).
 env:
   clear:
-    APP_HOST: <%= domain %>
-    # Sent from a subdomain verified in Resend, which keeps the main domain's email reputation separate.
+    APP_HOST: <%= host %>
+    # Sent from a subdomain verified in Resend, which keeps the main domain's email
+    # reputation separate. Shared by all apps on the domain (Resend's free plan allows one).
     MAIL_FROM: "Gear Tracker <no-reply@mail.<%= domain %>>"
     # Run background jobs, like password reset emails, inside the web server.
     SOLID_QUEUE_IN_PUMA: true

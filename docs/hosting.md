@@ -10,7 +10,7 @@ Plan for an afternoon, plus waiting time for DNS (minutes to a few hours).
 
 | What | Where | About |
 | --- | --- | --- |
-| Domain | Cloudflare Registrar | $10–11 a year for a `.com` |
+| Domain | Cloudflare Registrar | $10–13 a year for a `.com` or `.dev` |
 | Server | A small VPS, e.g. Hetzner, DigitalOcean or Vultr | $4–6 a month |
 | Email (password resets) | Resend, free plan | $0 up to 3,000 emails a month |
 | Off-site backups | Cloudflare R2, free tier | $0 up to 10 GB |
@@ -70,7 +70,8 @@ away when you stop it with Ctrl+C.
    Cloudflare sells at cost and doesn't mark up renewals.
 2. Turn on auto-renew, so the domain can't lapse and be bought by someone else.
 
-The examples below use `yourdomain.com`; use your own.
+The examples below use `yourdomain.com`; use your own. The app goes on a
+subdomain, `gear.yourdomain.com`, so the same domain can host other apps later.
 
 ## 4. Server
 
@@ -115,12 +116,12 @@ In Cloudflare, under the domain's **DNS → Records**, add:
 
 | Type | Name | Content | Proxy status |
 | --- | --- | --- | --- |
-| A | `@` (the domain itself) | your server's IPv4 address | DNS only (grey cloud) |
+| A | `gear` | your server's IPv4 address | DNS only (grey cloud) |
 
 "DNS only" lets Kamal's proxy get the HTTPS certificate directly. (If you later
 turn the orange cloud on, set **SSL/TLS** to **Full (strict)**.)
 
-**Check:** `getent hosts yourdomain.com` prints your server's address. This can
+**Check:** `getent hosts gear.yourdomain.com` prints your server's address. This can
 take a few minutes.
 
 ## 7. Email for password resets
@@ -128,7 +129,8 @@ take a few minutes.
 1. Create a Resend account and add the domain **`mail.yourdomain.com`** under
    **Domains**. A subdomain keeps the main domain's email reputation separate;
    the app sends from `no-reply@mail.yourdomain.com` (`MAIL_FROM` in
-   `config/deploy.yml`).
+   `config/deploy.yml`). Resend's free plan allows one domain, so later apps
+   share this one.
 2. Add the DNS records Resend shows to Cloudflare. Resend can add them for you
    if you let it connect to Cloudflare.
 3. Add a DMARC record so others can't easily send email pretending to be you:
@@ -178,10 +180,12 @@ Keep a copy in your password manager too. Never put the values in the project.
 
 ## 10. Configure and deploy
 
-At the top of `config/deploy.yml`, set your server's address and domain:
+At the top of `config/deploy.yml`, set your server's address, your domain and
+the app's subdomain:
 
     <% server = "YOUR_SERVER_IP" %>
     <% domain = "yourdomain.com" %>
+    <% host = "gear.#{domain}" %>
 
 Commit that change. Then, with the secrets loaded:
 
@@ -194,7 +198,7 @@ time. Later updates use `bin/kamal deploy` (see step 13).
 
 ## 11. Check it works
 
-- [ ] `https://yourdomain.com` loads, with a padlock, and `http://` redirects to it.
+- [ ] `https://gear.yourdomain.com` loads, with a padlock, and `http://` redirects to it.
 - [ ] Sign up, add a gear, and sign out and in again.
 - [ ] **Forgot password?** sends an email that arrives, and its link works.
 - [ ] `bin/kamal logs` shows requests and no errors.

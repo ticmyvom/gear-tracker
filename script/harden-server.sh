@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Prepares a fresh Ubuntu 24.04 server for Gear Tracker, safely. Run it once,
+# Prepares a fresh Ubuntu 26.04 LTS server for Gear Tracker, safely. Run it once,
 # as root, from your computer (see docs/hosting.md):
 #
 #   ssh root@YOUR_SERVER_IP 'bash -s' < script/harden-server.sh
@@ -32,6 +32,15 @@ apt-get update
 apt-get -y upgrade
 apt-get install -y docker.io ufw fail2ban unattended-upgrades
 systemctl enable --now docker
+
+echo "== Swap, so a small server slows down instead of crashing when memory runs out"
+if [[ -z "$(swapon --show)" ]]; then
+  fallocate -l 1G /swapfile
+  chmod 600 /swapfile
+  mkswap /swapfile
+  swapon /swapfile
+  echo "/swapfile none swap sw 0 0" >> /etc/fstab
+fi
 
 echo "== Creating the $DEPLOY_USER user"
 # Same SSH key as root, no password. Being in the docker group lets Kamal run

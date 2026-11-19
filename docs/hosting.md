@@ -77,7 +77,7 @@ subdomain, `gear.yourdomain.com`, so the same domain can host other apps later.
 
 Create the smallest VPS with at least 1 GB of memory (2 GB is more comfortable):
 
-- **Image:** Ubuntu 24.04 LTS.
+- **Image:** Ubuntu 26.04 LTS.
 - **Architecture:** x86 (Intel/AMD). For an ARM server, change `arch` under
   `builder` in `config/deploy.yml` to `arm64`.
 - **SSH key:** add yours, and no password. If you don't have one:
@@ -95,8 +95,8 @@ without asking for a password (only your key's passphrase).
 
 From the project folder on your computer, run the hardening script on the
 server. It installs Docker, a firewall (only SSH and web traffic), fail2ban and
-automatic security updates, creates the `deploy` user Kamal connects as, and
-turns off password and root logins:
+automatic security updates, adds swap if the server has none, creates the
+`deploy` user Kamal connects as, and turns off password and root logins:
 
     ssh root@YOUR_SERVER_IP 'bash -s' < script/harden-server.sh
 
@@ -280,4 +280,6 @@ Kamal deploys the same way to any Ubuntu machine. For a home server, run it on a
 dedicated machine or VM on a separate network from your other devices (a guest
 network or VLAN), use `script/harden-server.sh` the same way, and reach it
 through a Cloudflare Tunnel instead of opening router ports, which keeps your
-home address private.
+home address private. Don't commit a home IP address to `config/deploy.yml` (a
+VPS's address is fine, since its DNS record makes it public anyway); the tunnel
+means the config doesn't need one.

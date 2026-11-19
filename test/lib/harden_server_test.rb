@@ -36,6 +36,12 @@ class HardenServerTest < ActiveSupport::TestCase
     assert_equal [ "OpenSSH", "80/tcp", "443/tcp" ], allowed
   end
 
+  test "adds swap only when there is none, privately and permanently" do
+    assert_includes script, 'if [[ -z "$(swapon --show)" ]]'
+    assert_operator script.index("chmod 600 /swapfile"), :<, script.index("mkswap /swapfile")
+    assert_includes script, "/swapfile none swap sw 0 0"
+  end
+
   test "installs security updates automatically" do
     assert_includes script, "unattended-upgrades"
     assert_includes script, 'APT::Periodic::Unattended-Upgrade "1";'

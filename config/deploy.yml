@@ -1,7 +1,7 @@
 # Kamal deploy configuration. See docs/hosting.md for the full setup.
 # Change these to your server's IP address, your domain, and this app's address
 # on it (a subdomain, so the domain can host other apps too).
-<% server = "203.0.113.10" %>
+<% server = "104.207.149.154" %>
 <% domain = "ndcct.dev" %>
 <% host = "gear.#{domain}" %>
 

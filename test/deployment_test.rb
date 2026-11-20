@@ -24,6 +24,13 @@ class DeploymentTest < ActiveSupport::TestCase
     assert_equal "s3", litestream["dbs"].first.dig("replica", "type")
   end
 
+  test "backups upload rarely enough to stay inside R2's free tier" do
+    seconds = litestream["dbs"].first.dig("replica", "sync-interval")[/\A(\d+)s\z/, 1].to_i
+    uploads_a_month = 30.days / seconds
+
+    assert_operator uploads_a_month, :<=, 300_000, "leaves room under R2's 1 million free uploads for compaction"
+  end
+
   test "backups keep deleted data no longer than the privacy page says" do
     days = Rails.configuration.x.backup_retention_days
 

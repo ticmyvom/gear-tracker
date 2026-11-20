@@ -15,6 +15,10 @@ dbs:
       type: s3
       bucket: $LITESTREAM_REPLICA_BUCKET
       path: production
+      # Upload changes at most every 10 seconds (the default is every second).
+      # Even with constant activity that stays under R2's free million uploads
+      # a month; a crash can lose at most the last 10 seconds.
+      sync-interval: 10s
       endpoint: $LITESTREAM_REPLICA_ENDPOINT
       region: auto
       access-key-id: $LITESTREAM_ACCESS_KEY_ID

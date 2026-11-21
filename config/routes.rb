@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   resources :api_tokens, only: %i[ create destroy ]
   resource :account, only: :destroy do
     get :export
+    post :import
   end
   get "privacy", to: "pages#privacy"
 

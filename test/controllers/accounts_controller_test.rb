@@ -78,6 +78,59 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to new_session_path
   end
 
+  # --- Importing your data ---
+
+  def upload(json) = Rack::Test::UploadedFile.new(StringIO.new(json), "application/json", original_filename: "data.json")
+
+  test "a downloaded file imports into another account, converted to its units" do
+    get export_account_path
+    exported = response.body
+    sign_in_as users(:two) # kilometers and liters
+
+    post import_account_path, params: { file: upload(exported) }
+
+    assert_redirected_to root_path
+    assert_equal "Imported 3 gears, 2 expenses, 1 fuel entry, and 1 reading.", flash[:notice]
+    copy = users(:two).gears.find_by!(name: "2010 Toyota Prius")
+    original = fuel_entries(:fill_up)
+    assert_in_delta original.amount, copy.fuel_entries.sole.amount, 0.01
+    assert_in_delta original.odometer, copy.fuel_entries.sole.odometer, 0.1
+    assert_equal copy, users(:two).gears.find_by!(name: "Michelin tires").parent
+    assert_equal [ "Oil change" ], copy.expenses.pluck(:description)
+  end
+
+  test "settings has the import form" do
+    get edit_settings_path
+
+    assert_select "form[action=?][enctype='multipart/form-data'] input[type=file][name=file]", import_account_path
+  end
+
+  test "a bad file imports nothing and says why" do
+    assert_no_difference -> { Gear.count } do
+      post import_account_path, params: { file: upload("not json") }
+    end
+
+    assert_redirected_to edit_settings_path
+    assert_equal "That isn't a Gear Tracker data file. Use one from “Download all your data”. Nothing was imported.", flash[:alert]
+  end
+
+  test "importing needs a file, no bigger than the limit" do
+    post import_account_path
+    assert_match "Choose a file", flash[:alert]
+
+    post import_account_path, params: { file: upload(" " * (AccountImport::MAX_SIZE + 1)) }
+    assert_match "too big", flash[:alert]
+  end
+
+  test "importing needs to be signed in" do
+    sign_out
+    assert_no_difference -> { Gear.count } do
+      post import_account_path, params: { file: upload("{}") }
+    end
+
+    assert_redirected_to new_session_path
+  end
+
   # --- Privacy ---
 
   test "the privacy page is public and linked from every page" do

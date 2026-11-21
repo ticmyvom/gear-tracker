@@ -67,6 +67,16 @@
 <h2>Your data</h2>
 <p><%= link_to "Download all your data", export_account_path %> <span class="muted">(a JSON file you can keep or move elsewhere)</span></p>
 
+<h3>Import data</h3>
+<p class="muted">Adds the gear and records from a downloaded file to this account, converted to your units. What you already have stays, so importing the same file twice makes copies.</p>
+<%= form_with url: import_account_path, multipart: true, data: { turbo_confirm: "Add everything in this file to your account?" } do |form| %>
+  <div>
+    <%= form.label :file, "Data file" %>
+    <%= form.file_field :file, accept: ".json,application/json", required: true %>
+  </div>
+  <%= form.submit "Import" %>
+<% end %>
+
 <h3>Delete your account</h3>
 <p class="muted">Deletes your account and everything you entered, right away. This can't be undone, so download your data first if you want a copy.</p>
 <%= form_with url: account_path, method: :delete, data: { turbo_confirm: "Delete your account and all your data? This can't be undone." } do |form| %>

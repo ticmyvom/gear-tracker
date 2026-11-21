@@ -53,3 +53,6 @@
 # Ignore Docker-related files
 /.dockerignore
 /Dockerfile*
+
+# Source images; the sized copies the site serves are in public/.
+/design/

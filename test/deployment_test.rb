@@ -9,6 +9,15 @@ class DeploymentTest < ActiveSupport::TestCase
   def database = YAML.load(ERB.new(Rails.root.join("config/database.yml").read).result, aliases: true)
   def litestream = YAML.load_file(Rails.root.join("config/litestream.yml"))
 
+  # Litestream durations are written like "10s", "5m" or "1h30m".
+  DURATION_UNITS = { "h" => 1.hour, "m" => 1.minute, "s" => 1.second }
+
+  def duration(text)
+    parts = text.to_s.scan(/(\d+)([hms])/)
+    assert parts.any? && parts.join == text, "can't read the duration #{text.inspect}"
+    parts.sum(0.seconds) { |amount, unit| amount.to_i * DURATION_UNITS[unit] }
+  end
+
   # --- Data and backups ---
 
   test "every production database lives in storage/, which is the persistent volume" do
@@ -25,17 +34,25 @@ class DeploymentTest < ActiveSupport::TestCase
   end
 
   test "backups upload rarely enough to stay inside R2's free tier" do
-    seconds = litestream["dbs"].first.dig("replica", "sync-interval")[/\A(\d+)s\z/, 1].to_i
-    uploads_a_month = 30.days / seconds
+    uploads_a_month = 30.days / duration(litestream["dbs"].first.dig("replica", "sync-interval"))
 
     assert_operator uploads_a_month, :<=, 300_000, "leaves room under R2's 1 million free uploads for compaction"
   end
 
   test "backups keep deleted data no longer than the privacy page says" do
-    days = Rails.configuration.x.backup_retention_days
+    days = Rails.configuration.x.backup_retention_days.days
 
-    assert_equal "#{days * 24}h", litestream.dig("snapshot", "retention")
-    assert_operator litestream.dig("snapshot", "interval").to_i, :<=, days * 24
+    assert_equal days, duration(litestream.dig("snapshot", "retention"))
+    assert_operator duration(litestream.dig("snapshot", "interval")), :<=, days
+  end
+
+  test "reads Litestream durations, and refuses ones it doesn't understand" do
+    assert_equal 10.seconds, duration("10s")
+    assert_equal 90.minutes, duration("1h30m")
+    assert_equal 168.hours, duration("168h")
+    [ "500ms", "7d", "10", nil ].each do |text|
+      assert_raises(Minitest::Assertion) { duration(text) }
+    end
   end
 
   test "the database is backed up before deploys change it" do

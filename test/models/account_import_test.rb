@@ -1,7 +1,7 @@
 require "test_helper"
 
 class AccountImportTest < ActiveSupport::TestCase
-  setup { @user = users(:two) } # EUR, km and liters
+  setup { @user = User.create!(email_address: "new@example.com", password: "password", currency: "EUR", distance_unit: "km", volume_unit: "l") }
 
   # A small export file, written in miles and US gallons.
   def file(gears = [ gear ], account: { "distance_unit" => "mi", "volume_unit" => "us_gal" })
@@ -62,11 +62,13 @@ class AccountImportTest < ActiveSupport::TestCase
     assert_nothing_imported file([ other ]), "is a component of gear that isn't in the file"
   end
 
-  test "keeps the account's existing data" do
-    assert_difference -> { @user.gears.count }, 1 do
-      import(file)
-    end
-    assert @user.gears.exists?(name: "Old truck")
+  test "only imports into an account with no gear, so a second import can't make copies" do
+    import(file)
+
+    assert_nothing_imported file, "already has gear"
+
+    @user = users(:two) # had gear before any import
+    assert_nothing_imported file, "already has gear"
   end
 
   test "imports nothing if any record is invalid, and says which" do

@@ -68,13 +68,17 @@
 <p><%= link_to "Download all your data", export_account_path %> <span class="muted">(a JSON file you can keep or move elsewhere)</span></p>
 
 <h3>Import data</h3>
-<p class="muted">Adds the gear and records from a downloaded file to this account, converted to your units. What you already have stays, so importing the same file twice makes copies.</p>
-<%= form_with url: import_account_path, multipart: true, data: { turbo_confirm: "Add everything in this file to your account?" } do |form| %>
-  <div>
-    <%= form.label :file, "Data file" %>
-    <%= form.file_field :file, accept: ".json,application/json", required: true %>
-  </div>
-  <%= form.submit "Import" %>
+<% if Current.user.gears.exists? %>
+  <p class="muted">Importing a downloaded file only works into an account with no gear, so nothing gets copied twice.</p>
+<% else %>
+  <p class="muted">Brings in the gear and records from a downloaded file, converted to your units.</p>
+  <%= form_with url: import_account_path, multipart: true do |form| %>
+    <div>
+      <%= form.label :file, "Data file" %>
+      <%= form.file_field :file, accept: ".json,application/json", required: true %>
+    </div>
+    <%= form.submit "Import" %>
+  <% end %>
 <% end %>
 
 <h3>Delete your account</h3>

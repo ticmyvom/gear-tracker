@@ -1,5 +1,6 @@
-# Adds the gear and records from a "Download all your data" file to an account.
-# It all happens in one transaction, so a file with a problem changes nothing.
+# Adds the gear and records from a "Download all your data" file to an account
+# that has no gear yet, so importing a file twice can't make copies. It all
+# happens in one transaction, so a file with a problem changes nothing.
 # Ids and computed fields (totals, rates, efficiency) in the file are ignored,
 # and fuel amounts and distances are converted from the file's units.
 class AccountImport
@@ -35,6 +36,8 @@ class AccountImport
     new_ids = {}
 
     ActiveRecord::Base.transaction do
+      raise Invalid, "Your account already has gear. Import only works into an account with none, so nothing gets copied twice." if @user.gears.exists?
+
       # Top-level gear first, so components can be attached to their new parent.
       gears = @data["gears"].each { check_hash(it) }.sort_by { it["parent_id"] ? 1 : 0 }
       gears.each do |item|

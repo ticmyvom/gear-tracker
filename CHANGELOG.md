@@ -10,8 +10,9 @@ changes in a way that breaks existing clients.
 
 ## [Unreleased]
 
-- Import a downloaded data file into your account from Settings, converted to
-  your units; a file with any problem imports nothing
+- Import a downloaded data file into a new account from Settings, converted to
+  your units; a file with any problem imports nothing, and an account that
+  already has gear can't import, so nothing gets copied twice
 
 ## [0.2.0] - 2026-11-15
 

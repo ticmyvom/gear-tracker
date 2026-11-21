@@ -85,23 +85,28 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
   test "a downloaded file imports into another account, converted to its units" do
     get export_account_path
     exported = response.body
-    sign_in_as users(:two) # kilometers and liters
+    new_user = User.create!(email_address: "new@example.com", password: "password", distance_unit: "km", volume_unit: "l")
+    sign_in_as new_user
 
     post import_account_path, params: { file: upload(exported) }
 
     assert_redirected_to root_path
     assert_equal "Imported 3 gears, 2 expenses, 1 fuel entry, and 1 reading.", flash[:notice]
-    copy = users(:two).gears.find_by!(name: "2010 Toyota Prius")
+    copy = new_user.gears.find_by!(name: "2010 Toyota Prius")
     original = fuel_entries(:fill_up)
     assert_in_delta original.amount, copy.fuel_entries.sole.amount, 0.01
     assert_in_delta original.odometer, copy.fuel_entries.sole.odometer, 0.1
-    assert_equal copy, users(:two).gears.find_by!(name: "Michelin tires").parent
+    assert_equal copy, new_user.gears.find_by!(name: "Michelin tires").parent
     assert_equal [ "Oil change" ], copy.expenses.pluck(:description)
   end
 
-  test "settings has the import form" do
+  test "settings offers the import form only while the account has no gear" do
     get edit_settings_path
+    assert_select "form[action=?]", import_account_path, count: 0
+    assert_select "p", text: /only works into an account with no gear/
 
+    sign_in_as User.create!(email_address: "new@example.com", password: "password")
+    get edit_settings_path
     assert_select "form[action=?][enctype='multipart/form-data'] input[type=file][name=file]", import_account_path
   end
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_15_150000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_20_120000) do
   create_table "api_tokens", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "name", null: false
@@ -66,6 +66,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_15_150000) do
     t.datetime "updated_at", null: false
     t.string "power_source"
     t.string "currency", null: false
+    t.boolean "public", default: false, null: false
+    t.boolean "public_costs", default: false, null: false
     t.index ["parent_id"], name: "index_gears_on_parent_id"
     t.index ["user_id"], name: "index_gears_on_user_id"
   end
@@ -99,7 +101,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_15_150000) do
     t.string "currency", default: "USD", null: false
     t.string "distance_unit", default: "mi", null: false
     t.string "volume_unit", default: "us_gal", null: false
+    t.string "username"
+    t.string "display_name"
+    t.boolean "profile_public", default: false, null: false
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
+    t.index ["username"], name: "index_users_on_username", unique: true
   end
 
   add_foreign_key "api_tokens", "users"

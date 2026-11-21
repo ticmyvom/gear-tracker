@@ -30,6 +30,9 @@ class Gear < ApplicationRecord
   scope :top_level, -> { where(parent_id: nil) }
 
   normalizes :power_source, with: ->(source) { source.presence }
+  # Components are shown as part of their parent, so only top-level gear is made public on its own.
+  before_validation { self.public = self.public_costs = false if parent_id.present? }
+  before_validation { self.public_costs = false unless public? }
 
   validates :name, presence: true
   validates :power_source, inclusion: { in: POWER_SOURCES.keys }, allow_nil: true

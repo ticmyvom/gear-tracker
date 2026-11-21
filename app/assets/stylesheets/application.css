@@ -56,7 +56,8 @@ dd { margin: 0; overflow-wrap: anywhere; }
 
 form div { margin-bottom: 0.75rem; }
 label { display: block; }
-input:not([type="submit"]), select, textarea { font: inherit; width: 100%; max-width: 28rem; box-sizing: border-box; }
+input:not([type="submit"], [type="checkbox"]), select, textarea { font: inherit; width: 100%; max-width: 28rem; box-sizing: border-box; }
+label:has(> input[type="checkbox"]) { display: flex; gap: 0.5rem; align-items: center; }
 fieldset { border: 0; padding: 0; margin: 0 0 0.75rem; }
 legend { padding: 0; }
 .inline-fields { display: flex; gap: 0.5rem; max-width: 28rem; margin: 0; }

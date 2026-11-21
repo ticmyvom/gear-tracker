@@ -9,6 +9,7 @@ Rails.application.routes.draw do
     post :import
   end
   get "privacy", to: "pages#privacy"
+  get "u/:username", to: "profiles#show", as: :profile
 
   # JSON API for agents and scripts; see docs/api.md.
   namespace :api do

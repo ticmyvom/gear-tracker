@@ -91,4 +91,11 @@ class AccountImportTest < ActiveSupport::TestCase
       assert_nothing_imported json, "isn't a Gear Tracker data file"
     end
   end
+
+  test "imported gear starts private, whatever the file says" do
+    import(file([ gear("public" => true, "public_costs" => true) ]))
+
+    van = @user.gears.find_by!(name: "Van")
+    assert_equal [ false, false ], [ van.public, van.public_costs ]
+  end
 end

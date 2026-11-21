@@ -24,6 +24,29 @@
   </div>
 <% end %>
 
+<h2>Public profile</h2>
+<p class="muted">Off by default. When it's on, anyone with the link sees your display name and the gear you mark public, and nothing else: never your email or your other gear.</p>
+<%= form_with model: @user, url: settings_path, method: :patch do |form| %>
+  <div>
+    <%= form.label :display_name %>
+    <%= form.text_field :display_name, maxlength: 50, placeholder: "Trail Runner" %>
+  </div>
+  <div>
+    <%= form.label :username %>
+    <%= form.text_field :username, maxlength: 30, autocapitalize: "none", spellcheck: false, placeholder: "trail-runner" %>
+    <p class="muted">Your profile's address: <%= profile_url(username: "username") %>. Lowercase letters, numbers and dashes.</p>
+  </div>
+  <div>
+    <%= form.label :profile_public do %>
+      <%= form.check_box :profile_public %> Make my profile public
+    <% end %>
+  </div>
+  <% if @user.profile_public? && @user.username_in_database %>
+    <p>Your profile: <%= link_to profile_url(username: @user.username_in_database), profile_path(username: @user.username_in_database) %></p>
+  <% end %>
+  <%= form.submit "Save profile" %>
+<% end %>
+
 <h2>API tokens</h2>
 <p class="muted">Let an agent or script read and log your gear through the <%= link_to "API", api_v1_docs_path %>. Give each agent its own token, so you can revoke one without affecting the others.</p>
 

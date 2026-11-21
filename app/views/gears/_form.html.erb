@@ -34,6 +34,23 @@
     <%= form.text_field :purchased_from %>
   </div>
   <%= render "shared/notes_field", form: form %>
+  <% if gear.parent_id.nil? %>
+    <fieldset>
+      <legend>Public profile</legend>
+      <div>
+        <%= form.label :public do %>
+          <%= form.check_box :public %> Show on my public profile
+        <% end %>
+        <p class="muted">Shows its name, category, power source and components.
+          <%= "Your profile is private, so nobody sees it until you make your profile public in Settings." unless Current.user.profile_public? %></p>
+      </div>
+      <div>
+        <%= form.label :public_costs do %>
+          <%= form.check_box :public_costs %> Also show its total cost and cost per year
+        <% end %>
+      </div>
+    </fieldset>
+  <% end %>
   <div class="actions">
     <%= form.submit %>
     <%= link_to "Cancel", gear.persisted? ? gear : gears_path %>

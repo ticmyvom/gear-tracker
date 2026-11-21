@@ -5,7 +5,7 @@
 
 <h2>What's stored</h2>
 <ul>
-  <li><strong>Your account:</strong> your email address and your password, which is stored only as a one-way hash, so nobody can read it.</li>
+  <li><strong>Your account:</strong> your email address and your password, which is stored only as a one-way hash, so nobody can read it. If you set them, also a display name and username.</li>
   <li><strong>What you enter:</strong> your gear, expenses, fuel and energy entries, readings, notes and settings.</li>
   <li><strong>Sign-ins:</strong> for each signed-in browser, its IP address and browser name, so a session can be recognized.</li>
   <li><strong>API tokens:</strong> their names and when they were last used. The tokens themselves are stored only as a fingerprint.</li>
@@ -26,6 +26,7 @@
 
 <h2>Your choices</h2>
 <ul>
+  <li><strong>Public profile:</strong> off by default. If you turn it on in Settings, anyone with the link sees your display name, username and only the gear you mark public, with its costs only if you choose. Your email and other gear are never shown. Public pages ask search engines not to list them.</li>
   <li><strong>Download your data</strong> at any time from Settings, as a JSON file.</li>
   <li><strong>Delete your account</strong> from Settings. Everything you entered is deleted at once. Copies in backups are deleted as old backups expire, within <%= Rails.configuration.x.backup_retention_days %> days.</li>
 </ul>

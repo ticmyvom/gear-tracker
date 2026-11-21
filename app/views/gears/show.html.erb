@@ -15,6 +15,9 @@
   <dt>Price</dt><dd><%= money @gear.price, @gear.currency %></dd>
   <dt>Total cost</dt><dd><%= money @gear.total_cost %></dd>
   <dt>Cost per year</dt><dd><%= money @gear.cost_per_year %></dd>
+  <% if @gear.parent_id.nil? %>
+    <dt>Public profile</dt><dd><%= @gear.public? ? (@gear.public_costs? ? "Shown, with costs" : "Shown, without costs") : "Not shown" %></dd>
+  <% end %>
 </dl>
 
 <% if @gear.notes.present? %>

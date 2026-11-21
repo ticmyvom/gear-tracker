@@ -104,4 +104,14 @@ class GearTest < ActiveSupport::TestCase
       gears(:prius).destroy!
     end
   end
+
+  test "only top-level gear can be public, and costs are shown only on public gear" do
+    tires = gears(:tires)
+    tires.update!(public: true, public_costs: true)
+    assert_equal [ false, false ], [ tires.public, tires.public_costs ]
+
+    prius = gears(:prius)
+    prius.update!(public: false, public_costs: true)
+    assert_not prius.public_costs
+  end
 end

@@ -60,6 +60,8 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 10.5, prius["fuel_entries"].first["amount"]
     assert_equal "Tire pressure FL", prius["readings"].first["name"]
     assert_includes data["gears"].pluck("name"), "Michelin tires"
+    assert_equal [ nil, nil, false ], data["account"].values_at("username", "display_name", "profile_public")
+    assert_equal [ false, false ], prius.values_at("public", "public_costs")
   end
 
   test "export has nothing from other users and no secrets" do

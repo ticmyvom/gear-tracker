@@ -22,6 +22,10 @@ their own gear.
   changing units updates old entries too. Your currency is the default for new prices and
   expenses; each one can be set to its own currency on its form. Totals in more than
   one currency show each separately.
+- **Public profile**: optional. Pick a display name and username, turn your profile on,
+  and choose which gear to show at `/u/<username>`, with or without its costs.
+- **Your data**: download everything as a JSON file, import that file into a new
+  account, or delete your account, all from Settings.
 
 ## Screenshots
 

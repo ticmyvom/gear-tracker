@@ -227,4 +227,23 @@ class GearsControllerTest < ActionDispatch::IntegrationTest
 
     assert_equal "Cordless drill", drill.reload.name
   end
+
+  # --- Public profile ---
+
+  test "top-level gear can be made public, with or without costs" do
+    patch gear_path(gears(:prius)), params: { gear: { public: "1", public_costs: "1" } }
+
+    assert gears(:prius).reload.public_costs
+    get gear_path(gears(:prius))
+    assert_select "dd", "Shown, with costs"
+  end
+
+  test "the public checkboxes are only on top-level gear, with a hint while the profile is private" do
+    get edit_gear_path(gears(:prius))
+    assert_select "input[type=checkbox][name='gear[public]']"
+    assert_select "p", text: /Your profile is private/
+
+    get edit_gear_path(gears(:tires))
+    assert_select "input[name='gear[public]']", count: 0
+  end
 end

@@ -1,0 +1,32 @@
+<% content_for :title, @user.display_name %>
+<% content_for :head, tag.meta(name: "robots", content: "noindex") %>
+
+<h1><%= @user.display_name %></h1>
+<p class="muted">@<%= @user.username %></p>
+
+<% if @gears.any? %>
+  <h2>Gear</h2>
+  <% @gears.each do |gear| %>
+    <section class="public-gear">
+      <h3><%= gear.name %></h3>
+      <dl>
+        <dt>Category</dt><dd><%= gear.category.presence || "-" %></dd>
+        <dt>Powered by</dt><dd><%= gear.power_source_name || "Not powered" %></dd>
+        <% if gear.public_costs? %>
+          <dt>Total cost</dt><dd><%= money gear.total_cost, @user.currency %></dd>
+          <dt>Cost per year</dt><dd><%= money gear.cost_per_year, @user.currency %></dd>
+        <% end %>
+      </dl>
+      <% if gear.components.any? %>
+        <p>Components:</p>
+        <ul>
+          <% gear.components.sort_by(&:name).each do |component| %>
+            <li><%= component.name %><%= " (#{component.category})" if component.category.present? %></li>
+          <% end %>
+        </ul>
+      <% end %>
+    </section>
+  <% end %>
+<% else %>
+  <p class="muted">No public gear yet.</p>
+<% end %>

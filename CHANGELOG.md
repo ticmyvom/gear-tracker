@@ -14,6 +14,7 @@ changes in a way that breaks existing clients.
   instead of typed. Existing categories move to the closest one; any that don't
   fit become Other, with the old text kept in the notes. In the API, `category`
   is now one of the list's keys, and responses add `category_name`
+- Readings of vehicles and their parts can note the odometer, in your units
 - `bin/backup-drill` proves the off-site backups work in one command: it restores
   the latest one, checks it, compares it with the live database and deletes it
 - Public profiles: pick a display name and username in Settings and turn your

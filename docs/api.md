@@ -132,6 +132,7 @@ for energy, or fuel per hour) and `efficiency` (like miles per gallon).
 | `name` | Required, like `Tire pressure FL` |
 | `value` | Required number |
 | `unit` | Text, like `psi` |
+| `odometer` | Optional, in your distance unit (`distance_unit` in responses) |
 | `notes` | Text |
 
 ## Errors

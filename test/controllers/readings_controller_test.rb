@@ -55,4 +55,25 @@ class ReadingsControllerTest < ActionDispatch::IntegrationTest
 
     assert Reading.exists?(readings(:drill_hours).id)
   end
+
+  # --- Odometer ---
+
+  test "vehicles and their parts get an odometer field, other gear doesn't" do
+    [ gears(:prius), gears(:tires) ].each do |gear|
+      get new_gear_reading_path(gear)
+      assert_select "label", "Odometer (mi, optional)"
+    end
+
+    get new_gear_reading_path(gears(:phev).tap { it.update!(category: "household") })
+    assert_select "input[name='reading[entered_odometer]']", count: 0
+  end
+
+  test "a reading saves the odometer, and the gear page shows it in the owner's units" do
+    post gear_readings_path(@gear), params: { reading: { read_on: "2026-01-02", name: "Tread depth", value: "6", entered_odometer: "120000" } }
+
+    assert_in_delta 120000 * 1.609344, @gear.readings.find_by!(name: "Tread depth").odometer, 0.01
+    get gear_path(@gear)
+    assert_select "th", "Odometer (mi)"
+    assert_select "td", "120,000"
+  end
 end

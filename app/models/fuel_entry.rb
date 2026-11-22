@@ -4,8 +4,9 @@
 # the owner's preferred units through the entered_* attributes.
 class FuelEntry < ApplicationRecord
   include Priced
+  include EnteredUnits
 
-  ENTERED_FIELDS = { amount: 3, odometer: 1, trip: 1 }.freeze # field => decimal places shown
+  entered_fields amount: 3, odometer: 1, trip: 1
 
   belongs_to :gear
   delegate :distance_unit, :volume_unit, to: :gear
@@ -60,15 +61,6 @@ class FuelEntry < ApplicationRecord
     self.class.label_for(display_unit)
   end
 
-  ENTERED_FIELDS.each do |field, decimals|
-    # The value in the owner's units: as typed, or converted from what's stored.
-    define_method(:"entered_#{field}") do
-      entered_values.fetch(field) { preferred(field)&.round(decimals) }
-    end
-
-    define_method(:"entered_#{field}=") { |value| entered_values[field] = value }
-  end
-
   # Time used is typed as hours and/or minutes, and stored as total minutes.
   attr_writer :used_hours, :used_minutes
 
@@ -83,11 +75,6 @@ class FuelEntry < ApplicationRecord
   # "gal", "L", "UK gal" or "kWh"
   def amount_label
     Units::LABELS.fetch(preferred_unit_for(:amount))
-  end
-
-  # "mi" or "km"
-  def distance_label
-    Units::LABELS.fetch(distance_unit)
   end
 
   # Distance per unit of fuel or energy, like mi/gal or km/L.
@@ -113,18 +100,6 @@ class FuelEntry < ApplicationRecord
       gear&.user
     end
 
-    def entered_values
-      @entered_values ||= {}
-    end
-
-    def store_entered_values
-      entered_values.each do |field, value|
-        number = BigDecimal(value.to_s, exception: false) if value.present?
-        # Anything that isn't a number is kept as typed, so validation reports it.
-        self[field] = number ? Units.convert(number, preferred_unit_for(field), stored_unit_for(field)) : value.presence
-      end
-    end
-
     def store_time_used
       return unless defined?(@used_hours) || defined?(@used_minutes)
 
@@ -139,10 +114,6 @@ class FuelEntry < ApplicationRecord
         else
           ((hours || 0) * 60 + (mins || 0)).round
         end
-    end
-
-    def preferred(field)
-      Units.convert(self[field], stored_unit_for(field), preferred_unit_for(field))
     end
 
     def stored_unit_for(field)

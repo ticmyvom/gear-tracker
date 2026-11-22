@@ -13,7 +13,8 @@ their own gear.
 - **Fuel entries**: fill-ups (gallons) or energy use (kWh) for gear that runs on fuel or
   electricity. Add the time used to see fuel per hour or average watts, or miles
   driven to see miles per gallon or per kWh.
-- **Readings**: measurements over time, like tire pressure or odometer.
+- **Readings**: measurements over time, like tire pressure or tread depth. Readings of
+  vehicles and their parts can also note the odometer.
 - **API for agents**: let an agent or script read your gear and log expenses, fuel and
   energy use, and readings, with a token you create in Settings. See
   [docs/api.md](docs/api.md), also served at `/api/v1`.

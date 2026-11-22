@@ -92,8 +92,8 @@
                 <td class="num"><% if fuel_entry.usage_rate %><%= rate fuel_entry.usage_rate %> <%= fuel_entry.usage_rate_label %><% end %></td>
               <% end %>
               <% if show_distance %>
-                <td class="num"><%= quantity fuel_entry.entered_odometer %></td>
-                <td class="num"><%= quantity fuel_entry.entered_trip %></td>
+                <td class="num"><%= distance fuel_entry.entered_odometer %></td>
+                <td class="num"><%= distance fuel_entry.entered_trip %></td>
                 <td class="num"><% if fuel_entry.distance_per_unit %><%= number_with_precision fuel_entry.distance_per_unit, precision: 1 %> <%= fuel_entry.distance_label %>/<%= fuel_entry.amount_label %><% end %></td>
               <% end %>
               <% if fuel_notes %><td class="notes"><%= fuel_entry.notes %></td><% end %>
@@ -137,10 +137,11 @@
 <p><%= link_to "Add reading", new_gear_reading_path(@gear) %></p>
 <% if @readings.any? %>
   <% reading_notes = any_notes?(@readings) %>
+  <% reading_odometer = @readings.any?(&:odometer) %>
   <div class="scroll">
     <table>
       <thead>
-        <tr><th>Date</th><th>Reading</th><th class="num">Value</th><th>Unit</th><% if reading_notes %><th>Notes</th><% end %><th></th></tr>
+        <tr><th>Date</th><th>Reading</th><th class="num">Value</th><th>Unit</th><% if reading_odometer %><th class="num">Odometer (<%= @readings.first.distance_label %>)</th><% end %><% if reading_notes %><th>Notes</th><% end %><th></th></tr>
       </thead>
       <tbody>
         <% @readings.each do |reading| %>
@@ -149,6 +150,7 @@
             <td><%= reading.name %></td>
             <td class="num"><%= quantity reading.value %></td>
             <td><%= reading.unit %></td>
+            <% if reading_odometer %><td class="num"><%= distance reading.entered_odometer %></td><% end %>
             <% if reading_notes %><td class="notes"><%= reading.notes %></td><% end %>
             <td><%= link_to "Edit", edit_gear_reading_path(@gear, reading) %></td>
           </tr>

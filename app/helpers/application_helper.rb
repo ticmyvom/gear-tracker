@@ -37,4 +37,9 @@ module ApplicationHelper
   def quantity(value)
     number_with_precision value, precision: 3, strip_insignificant_zeros: true
   end
+
+  # Odometers and trips, with commas for easy reading, like 120,000.5.
+  def distance(value)
+    number_with_precision value, precision: 1, strip_insignificant_zeros: true, delimiter: ","
+  end
 end

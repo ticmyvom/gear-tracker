@@ -106,4 +106,11 @@ class AccountImportTest < ActiveSupport::TestCase
     bed = @user.gears.find_by!(name: "Bed")
     assert_equal [ "other", "Category: Bedroom stuff\n\nSoft" ], [ bed.category, bed.notes ]
   end
+
+  test "converts a reading's odometer from the file's units" do
+    reading = { "date" => "2025-03-04", "name" => "Tread depth", "value" => 6, "odometer" => 1000 }
+    import(file([ gear("readings" => [ reading ]) ]))
+
+    assert_in_delta 1609.344, @user.gears.find_by!(name: "Van").readings.sole.odometer, 0.001
+  end
 end

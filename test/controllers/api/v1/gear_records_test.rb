@@ -74,4 +74,12 @@ class Api::V1::GearRecordsTest < ActionDispatch::IntegrationTest
 
     assert_equal [ "Rotation" ], json["expenses"].pluck("description")
   end
+
+  test "a reading's odometer is in the user's distance unit" do
+    post api_v1_gear_readings_path(@prius), params: { date: "2026-11-02", name: "Tread depth", value: 6, odometer: 1000 }, headers: api_headers, as: :json
+
+    assert_response :created
+    assert_equal [ 1000.0, "mi" ], json.values_at("odometer", "distance_unit")
+    assert_in_delta 1609.344, Reading.find(json["id"]).odometer, 0.001
+  end
 end

@@ -1,5 +1,6 @@
 require "test_helper"
 require "rake"
+require "open3"
 
 # Checks the production and deploy configuration for the promises the app
 # makes: data on a persistent volume, backups that keep deleted data only as
@@ -105,5 +106,18 @@ class DeploymentTest < ActiveSupport::TestCase
 
     [ "/config/master.key", "/.env*", "/storage/*", "/.kamal" ].each { assert_includes ignored, it }
     assert_not ignored.any? { File.fnmatch?(it.delete_prefix("/"), "docs/api.md") || it == "/docs" || it == "/docs/" }
+  end
+
+  test "deploying stops if a secret from the shell isn't loaded, naming it" do
+    hook = Rails.root.join(".kamal/hooks/pre-deploy").to_s
+    names = Rails.root.join(".kamal/secrets").read.scan(/^([A-Z_]+)=\$\1$/).flatten
+    assert_includes names, "LITESTREAM_REPLICA_BUCKET"
+    all_set = names.to_h { [ it, "x" ] }
+
+    _, error, status = Open3.capture3(all_set.merge("LITESTREAM_REPLICA_BUCKET" => ""), hook)
+    assert_not status.success?
+    assert_match "missing LITESTREAM_REPLICA_BUCKET.", error
+
+    assert Open3.capture3(all_set, hook).last.success?
   end
 end

@@ -227,7 +227,9 @@ someone used the site that minute, run it again a minute later.
 1. Run `bin/ci`, and fix anything that fails.
 2. For a release, follow **Releasing a version** in the README (version,
    changelog, tag).
-3. Load the secrets and run `bin/kamal deploy`.
+3. Load the secrets and run `bin/kamal deploy`. If they aren't loaded, the deploy
+   stops before changing anything (`.kamal/hooks/pre-deploy`); without them the
+   app can't start, since it won't run without its backups.
 
 The database is backed up on the server before any migration runs. If a deploy
 goes wrong, `bin/kamal rollback VERSION` returns to an earlier image; versions

@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Kamal runs this before every deploy, redeploy or rollback. It stops if a
+# secret that .kamal/secrets reads from your shell isn't loaded: without them
+# the app can't back up (Litestream) or send email, and it won't start.
+set -euo pipefail
+
+secrets="$(dirname "$0")/../secrets"
+missing=()
+for name in $(sed -n 's/^\([A-Z_]*\)=\$\1$/\1/p' "$secrets"); do
+  [[ -n "${!name:-}" ]] || missing+=("$name")
+done
+
+if (( ${#missing[@]} )); then
+  echo "Not deploying: missing ${missing[*]}." >&2
+  echo "Load the secrets first: source ~/.config/gear-tracker/production.env" >&2
+  exit 1
+fi

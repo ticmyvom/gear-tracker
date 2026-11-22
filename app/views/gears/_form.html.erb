@@ -7,12 +7,7 @@
   </div>
   <div>
     <%= form.label :category %>
-    <%= form.text_field :category, list: "gear-categories" %>
-    <datalist id="gear-categories">
-      <% Gear::SUGGESTED_CATEGORIES.each do |category| %>
-        <option value="<%= category %>"></option>
-      <% end %>
-    </datalist>
+    <%= form.select :category, Gear::CATEGORIES.invert, include_blank: "None" %>
   </div>
   <div>
     <%= form.label :power_source, "Powered by" %>

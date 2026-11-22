@@ -10,6 +10,10 @@ changes in a way that breaks existing clients.
 
 ## [Unreleased]
 
+- Gear categories are picked from a list, like Vehicle, Electronics or Household,
+  instead of typed. Existing categories move to the closest one; any that don't
+  fit become Other, with the old text kept in the notes. In the API, `category`
+  is now one of the list's keys, and responses add `category_name`
 - `bin/backup-drill` proves the off-site backups work in one command: it restores
   the latest one, checks it, compares it with the live database and deletes it
 - Public profiles: pick a display name and username in Settings and turn your

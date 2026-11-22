@@ -1,7 +1,7 @@
 prius:
   user: one
   name: 2010 Toyota Prius
-  category: Vehicle
+  category: vehicle
   power_source: gasoline
   purchased_on: <%= 2.years.ago.to_date %>
   price: 8000
@@ -11,7 +11,7 @@ prius:
 phev:
   user: one
   name: Plug-in hybrid
-  category: Vehicle
+  category: vehicle
   power_source: plug_in_hybrid
   currency: USD
 
@@ -19,7 +19,7 @@ tires:
   user: one
   parent: prius
   name: Michelin tires
-  category: Tires
+  category: parts
   purchased_on: <%= 1.year.ago.to_date %>
   price: 600
   purchased_from: Discount Tire
@@ -28,7 +28,7 @@ tires:
 truck:
   user: two
   name: Old truck
-  category: Vehicle
+  category: vehicle
   power_source: diesel
   currency: EUR
 

@@ -18,14 +18,14 @@ module Demo
       add_prius_prime(user)
       add_heated_mattress_pad(user)
       add_bicycle(user)
-      user.gears.create!(name: "Rain jacket", category: "Clothing", price: 120, purchased_on: 4.years.ago.to_date, purchased_from: "Outdoor store")
+      user.gears.create!(name: "Rain jacket", category: "clothing", price: 120, purchased_on: 4.years.ago.to_date, purchased_from: "Outdoor store")
     end
   end
 
   class << self
     private
       def add_prius_prime(user)
-        prius = user.gears.create!(name: "2020 Toyota Prius Prime", category: "Vehicle", power_source: "plug_in_hybrid",
+        prius = user.gears.create!(name: "2020 Toyota Prius Prime", category: "vehicle", power_source: "plug_in_hybrid",
           price: 21_500, purchased_on: 2.years.ago.to_date, purchased_from: "Used car dealer",
           notes: "Plug-in hybrid: about 25 miles on a charge, then about 54 mpg on gas.")
 
@@ -46,12 +46,12 @@ module Demo
         prius.readings.create!(read_on: 2.days.ago.to_date, name: "Odometer", value: 150_000, unit: "mi")
         prius.readings.create!(read_on: 2.days.ago.to_date, name: "Tire pressure FL", value: 36, unit: "psi")
 
-        tires = user.gears.create!(name: "All-season tires", category: "Tires", parent: prius, price: 640, purchased_on: 1.year.ago.to_date, purchased_from: "Tire shop")
+        tires = user.gears.create!(name: "All-season tires", category: "parts", parent: prius, price: 640, purchased_on: 1.year.ago.to_date, purchased_from: "Tire shop")
         tires.expenses.create!(spent_on: 90.days.ago.to_date, description: "Rotation", category: "Maintenance", amount: 25, vendor: "Tire shop")
       end
 
       def add_heated_mattress_pad(user)
-        pad = user.gears.create!(name: "Heated mattress pad", category: "Bedroom", power_source: "electric",
+        pad = user.gears.create!(name: "Heated mattress pad", category: "heating_cooling", power_source: "electric",
           price: 59.99, purchased_on: 1.year.ago.to_date, purchased_from: "Online store")
 
         # 0.288 kWh over 9 hours is 32 W on average.
@@ -60,7 +60,7 @@ module Demo
       end
 
       def add_bicycle(user)
-        bike = user.gears.create!(name: "Commuter bicycle", category: "Bike", power_source: "manual",
+        bike = user.gears.create!(name: "Commuter bicycle", category: "bicycle", power_source: "manual",
           price: 450, purchased_on: 3.years.ago.to_date, purchased_from: "Bike shop")
         bike.expenses.create!(spent_on: 45.days.ago.to_date, description: "Tune-up", category: "Maintenance", amount: 60, vendor: "Bike shop")
       end

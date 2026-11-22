@@ -1,7 +1,24 @@
 class Gear < ApplicationRecord
   include Priced
 
-  SUGGESTED_CATEGORIES = %w[ Vehicle Tires Tools Electronics Outdoor Kitchen Clothing ].freeze
+  # Stored by key, so a name can change without touching saved gear.
+  CATEGORIES = {
+    "vehicle" => "Vehicle",
+    "bicycle" => "Bicycle",
+    "parts" => "Parts & accessories",
+    "tools" => "Tools",
+    "electronics" => "Electronics",
+    "computers" => "Computers",
+    "appliances" => "Appliances",
+    "kitchen" => "Kitchen",
+    "heating_cooling" => "Heating & cooling",
+    "household" => "Household",
+    "outdoor" => "Outdoor & camping",
+    "sports" => "Sports & fitness",
+    "clothing" => "Clothing & shoes",
+    "music" => "Music",
+    "other" => "Other"
+  }.freeze
   POWER_SOURCES = {
     "manual" => "Manual (human-powered)",
     "gasoline" => "Gasoline",
@@ -30,12 +47,15 @@ class Gear < ApplicationRecord
   scope :top_level, -> { where(parent_id: nil) }
 
   normalizes :power_source, with: ->(source) { source.presence }
+  # Accepts a key or a name in any case, like "Vehicle"; anything else fails validation.
+  normalizes :category, with: ->(text) { category_key_for(text) || text.strip.presence }
   # Components are shown as part of their parent, so only top-level gear is made public on its own.
   before_validation { self.public = self.public_costs = false if parent_id.present? }
   before_validation { self.public_costs = false unless public? }
 
   validates :name, presence: true
   validates :power_source, inclusion: { in: POWER_SOURCES.keys }, allow_nil: true
+  validates :category, inclusion: { in: CATEGORIES.keys, message: "must be one of: #{CATEGORIES.keys.join(", ")}" }, allow_nil: true
   validates :price, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
   validate :parent_is_allowed
 
@@ -61,9 +81,23 @@ class Gear < ApplicationRecord
     FUEL_UNITS.fetch(power_source, [])
   end
 
+  def self.category_key_for(text)
+    text = text.to_s.strip
+    CATEGORIES.find { |key, name| text.casecmp?(key) || text.casecmp?(name) }&.first
+  end
+
+  def category_name
+    CATEGORIES[category]
+  end
+
   # Only vehicles get odometer and miles fields.
   def vehicle?
-    category.to_s.strip.casecmp?("Vehicle")
+    category == "vehicle"
+  end
+
+  # Vehicles and their parts, like tires, can note the odometer on readings.
+  def tracks_odometer?
+    vehicle? || parent&.vehicle?
   end
 
   private

@@ -98,4 +98,12 @@ class AccountImportTest < ActiveSupport::TestCase
     van = @user.gears.find_by!(name: "Van")
     assert_equal [ false, false ], [ van.public, van.public_costs ]
   end
+
+  test "keeps known categories and turns older free-text ones into Other, keeping the text" do
+    import(file([ gear("category" => "Heating & cooling"), gear("id" => 2, "name" => "Bed", "category" => "Bedroom stuff", "notes" => "Soft", "fuel_entries" => []) ]))
+
+    assert_equal "heating_cooling", @user.gears.find_by!(name: "Van").category
+    bed = @user.gears.find_by!(name: "Bed")
+    assert_equal [ "other", "Category: Bedroom stuff\n\nSoft" ], [ bed.category, bed.notes ]
+  end
 end

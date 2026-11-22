@@ -82,9 +82,25 @@ class GearTest < ActiveSupport::TestCase
     assert_empty Gear.new.fuel_units
   end
 
-  test "vehicle category ignores case and spaces" do
-    assert Gear.new(category: " vehicle ").vehicle?
-    assert_not Gear.new(category: "Tools").vehicle?
+  test "category takes a key or a name in any case, and stores the key" do
+    assert_equal "vehicle", Gear.new(category: " Vehicle ").category
+    assert_equal "heating_cooling", Gear.new(category: "heating & COOLING").category
+    assert_equal "Heating & cooling", Gear.new(category: "heating_cooling").category_name
+    assert_nil Gear.new(category: " ").category
+  end
+
+  test "category must be on the list" do
+    gear = Gear.new(category: "Spaceship")
+
+    assert_not gear.valid?
+    assert_match "must be one of", gear.errors[:category].first
+  end
+
+  test "vehicles and their parts track the odometer" do
+    assert gears(:prius).vehicle?
+    assert gears(:tires).tracks_odometer? # a part of the Prius
+    assert_not gears(:tires).vehicle?
+    assert_not gears(:drill).tracks_odometer?
     assert_not Gear.new.vehicle?
   end
 

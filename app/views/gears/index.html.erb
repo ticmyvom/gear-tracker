@@ -24,7 +24,7 @@
         <% @gears.each do |gear| %>
           <tr>
             <td><%= link_to gear.name, gear %></td>
-            <td><%= gear.category %></td>
+            <td><%= gear.category_name %></td>
             <td><%= gear.purchased_on %></td>
             <td><%= gear.purchased_from %></td>
             <td class="num"><%= money gear.price, gear.currency %></td>

@@ -9,7 +9,7 @@ class AccountImport
 
   class Invalid < StandardError; end
 
-  GEAR_FIELDS = %w[ name category power_source price currency purchased_from notes created_at ].freeze
+  GEAR_FIELDS = %w[ name power_source price currency purchased_from notes created_at ].freeze
   # Each record type: its association, date column, and the fields copied as they are.
   RECORDS = {
     "expenses" => [ :spent_on, %w[ description category amount currency vendor notes created_at ] ],
@@ -42,7 +42,7 @@ class AccountImport
       # Top-level gear first, so components can be attached to their new parent.
       gears = @data["gears"].each { check_hash(it) }.sort_by { it["parent_id"] ? 1 : 0 }
       gears.each do |item|
-        gear = @user.gears.new(fields(item, GEAR_FIELDS).merge(purchased_on: date(item["purchased_on"], "purchased_on")))
+        gear = @user.gears.new(fields(item, GEAR_FIELDS).merge(purchased_on: date(item["purchased_on"], "purchased_on"), **category(item)))
         if item["parent_id"]
           gear.parent_id = new_ids.fetch(item["parent_id"]) { raise Invalid, "#{describe(item)} is a component of gear that isn't in the file." }
         end
@@ -74,8 +74,25 @@ class AccountImport
     def convert_fuel_units(record, entry)
       record.unit = FuelEntry.unit_for_kind(entry["kind"])
       record.amount = number(entry["amount"], "amount").then { record.unit == "l" ? Units.convert(it, @volume_unit, "l") : it }
-      record.odometer = Units.convert(number(entry["odometer"], "odometer"), @distance_unit, "km")
-      record.trip = Units.convert(number(entry["trip"], "trip"), @distance_unit, "km")
+      record.odometer = distance(entry)
+      record.trip = distance(entry, "trip")
+    end
+
+    def distance(entry, field = "odometer")
+      Units.convert(number(entry[field], field), @distance_unit, "km")
+    end
+
+    # Older files have free-text categories: a known name is kept, and anything
+    # else becomes "other", with the old text at the top of the notes.
+    def category(item)
+      text = item["category"].tap { check_value(it, "category") }.to_s.strip
+      return { category: nil } if text.empty?
+
+      if (key = Gear.category_key_for(text))
+        { category: key }
+      else
+        { category: "other", notes: [ "Category: #{text}", item["notes"].presence ].compact.join("\n\n") }
+      end
     end
 
     def number(value, name)

@@ -11,7 +11,7 @@
     <section class="public-gear">
       <h3><%= gear.name %></h3>
       <dl>
-        <dt>Category</dt><dd><%= gear.category.presence || "-" %></dd>
+        <dt>Category</dt><dd><%= gear.category_name || "-" %></dd>
         <dt>Powered by</dt><dd><%= gear.power_source_name || "Not powered" %></dd>
         <% if gear.public_costs? %>
           <dt>Total cost</dt><dd><%= money gear.total_cost, @user.currency %></dd>
@@ -22,7 +22,7 @@
         <p>Components:</p>
         <ul>
           <% gear.components.sort_by(&:name).each do |component| %>
-            <li><%= component.name %><%= " (#{component.category})" if component.category.present? %></li>
+            <li><%= component.name %><%= " (#{component.category_name})" if component.category %></li>
           <% end %>
         </ul>
       <% end %>

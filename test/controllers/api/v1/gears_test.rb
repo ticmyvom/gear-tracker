@@ -18,13 +18,21 @@ class Api::V1::GearsTest < ActionDispatch::IntegrationTest
   end
 
   test "create" do
-    post api_v1_gears_path, params: { name: "Air filter", category: "Home", power_source: "electric", price: 89.99, purchased_on: "2026-11-01" }, headers: api_headers, as: :json
+    post api_v1_gears_path, params: { name: "Air filter", category: "Household", power_source: "electric", price: 89.99, purchased_on: "2026-11-01" }, headers: api_headers, as: :json
 
     assert_response :created
     gear = users(:one).gears.find(json["id"])
     assert_equal [ "Air filter", "electric", 89.99, "USD" ], [ gear.name, gear.power_source, gear.price, gear.currency ]
     assert_equal api_v1_gear_url(gear), response.location
     assert_equal [ "energy" ], json["fuel_kinds"]
+    assert_equal [ "household", "Household" ], json.values_at("category", "category_name")
+  end
+
+  test "create refuses a category that isn't on the list, and names the allowed ones" do
+    post api_v1_gears_path, params: { name: "Air filter", category: "Home" }, headers: api_headers, as: :json
+
+    assert_response :unprocessable_content
+    assert_match "must be one of: vehicle, bicycle", json["details"]["category"].first
   end
 
   test "create reports validation errors per field" do

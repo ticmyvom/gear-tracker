@@ -85,7 +85,7 @@ Optional fields can be left out. Send `null` to clear one.
 | Field | Notes |
 | --- | --- |
 | `name` | Required |
-| `category` | Free text, like `Vehicle` or `Kitchen`. Vehicles get odometer and distance fields on the website. |
+| `category` | One of `vehicle`, `bicycle`, `parts`, `tools`, `electronics`, `computers`, `appliances`, `kitchen`, `heating_cooling`, `household`, `outdoor`, `sports`, `clothing`, `music` or `other`; the name, like `Heating & cooling`, works too. Leave out for none. Responses include its `category_name`. Vehicles and their parts get odometer fields on the website. |
 | `power_source` | `manual`, `gasoline`, `diesel`, `propane`, `electric` or `plug_in_hybrid`. Leave out for gear that isn't powered. |
 | `parent_id` | Makes this gear a component of another of your top-level gear |
 | `purchased_on` | Date |

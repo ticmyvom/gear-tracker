@@ -4,7 +4,7 @@
 - [ ] Try the API token section of Settings in a real browser: create a token, copy it, check it works with `curl`, then revoke it (so far only tested by automated tests)
 - [ ] Mark gear as sold or retired, so cost per year stops falling after you let it go
 - [ ] Show the latest value of each reading, and filter reading history (e.g. one tire's pressure)
-- [ ] A page listing all public profiles, each name in a box with a transparent border
+- [x] A page listing all public profiles, each name in a box with a transparent border
 - [ ] A support page; supporters' names get a colored border with the year attached, like a license plate registration sticker
 
 ## Data

@@ -1,5 +1,6 @@
 <% content_for :title, @user.display_name %>
 <% content_for :head, tag.meta(name: "robots", content: "noindex") %>
+<p><%= link_to "< People", profiles_path %></p>
 
 <h1><%= @user.display_name %></h1>
 <p class="muted">@<%= @user.username %></p>

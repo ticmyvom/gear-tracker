@@ -65,4 +65,35 @@ class ProfilesControllerTest < ActionDispatch::IntegrationTest
     assert_select "h1", "Trail Runner"
     assert_select "p", "No public gear yet."
   end
+
+  # --- People page ---
+
+  test "lists every public profile, sorted by name, linked to each" do
+    users(:two).update!(username: "amy", display_name: "amy", profile_public: true)
+
+    get profiles_path
+
+    assert_response :success
+    assert_equal [ "amy", "Trail Runner" ], css_select(".name-tag").map { it.children.first.text.strip }
+    assert_select "a.name-tag[href=?]", profile_path(username: "trail-runner")
+  end
+
+  test "leaves out private profiles and never shows email" do
+    users(:two).update!(username: "amy", display_name: "Amy", profile_public: false)
+
+    get profiles_path
+
+    assert_select ".name-tag", count: 1
+    [ "Amy", "one@example.com", "two@example.com" ].each { assert_no_match it, response.body }
+    assert_equal "noindex", response.headers["X-Robots-Tag"]
+  end
+
+  test "says so when nobody is public, and every page links to it" do
+    @user.update!(profile_public: false)
+
+    get profiles_path
+
+    assert_select "p", "Nobody yet."
+    assert_select "header nav a[href=?]", profiles_path
+  end
 end

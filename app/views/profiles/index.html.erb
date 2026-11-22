@@ -1,0 +1,20 @@
+<% content_for :title, "People" %>
+<% content_for :head, tag.meta(name: "robots", content: "noindex") %>
+
+<h1>People</h1>
+<p class="muted">Everyone who made their profile public. Turn yours on in Settings.</p>
+
+<% if @users.any? %>
+  <ul class="name-tags">
+    <% @users.each do |user| %>
+      <li>
+        <%= link_to profile_path(username: user.username), class: "name-tag" do %>
+          <%= user.display_name %>
+          <small>@<%= user.username %></small>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p class="muted">Nobody yet.</p>
+<% end %>

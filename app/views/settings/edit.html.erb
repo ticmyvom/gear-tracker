@@ -25,7 +25,7 @@
 <% end %>
 
 <h2>Public profile</h2>
-<p class="muted">Off by default. When it's on, anyone with the link sees your display name and the gear you mark public, and nothing else: never your email or your other gear.</p>
+<p class="muted">Off by default. When it's on, you're listed on the <%= link_to "People", profiles_path %> page, and anyone can see your display name and the gear you mark public, and nothing else: never your email or your other gear.</p>
 <%= form_with model: @user, url: settings_path, method: :patch do |form| %>
   <div>
     <%= form.label :display_name %>

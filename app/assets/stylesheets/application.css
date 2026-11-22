@@ -69,5 +69,11 @@ legend { padding: 0; }
 .notes { white-space: pre-wrap; }
 footer { margin-top: 3rem; padding-top: 0.5rem; border-top: 1px solid var(--line); font-size: 0.85rem; }
 .demo { padding: 0.5rem; border: 1px dashed var(--line); }
+
+/* People page: each public profile is a name tag. Its border is transparent for
+   now; set --tag-border on a tag to give it a color, like a supporter badge. */
+.name-tags { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.name-tag { --tag-border: transparent; display: block; padding: 0.5rem 0.75rem; border: 3px solid var(--tag-border); border-radius: 0.5rem; text-decoration: none; }
+.name-tag small { display: block; }
 .notice { color: light-dark(#17692b, #6fcf8a); }
 .alert, .errors { color: light-dark(#b3261e, #f28b82); }

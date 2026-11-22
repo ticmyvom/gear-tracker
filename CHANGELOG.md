@@ -16,6 +16,7 @@ changes in a way that breaks existing clients.
   profile on, then choose which gear to show at `/u/<username>`, each with or
   without its costs. Everything is private by default, and private profiles
   look the same as ones that don't exist
+- A People page at `/u` lists every public profile, linked from every page
 - Import a downloaded data file into a new account from Settings, converted to
   your units; a file with any problem imports nothing, and an account that
   already has gear can't import, so nothing gets copied twice

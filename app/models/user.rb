@@ -36,6 +36,8 @@ class User < ApplicationRecord
   validates :display_name, length: { maximum: 50 }
   validates :username, :display_name, presence: { message: "is needed for a public profile" }, if: :profile_public?
 
+  scope :public_profiles, -> { where(profile_public: true) }
+
   # Gear shown on the public profile: public top-level gear, while the profile is public.
   def public_gears
     profile_public? ? gears.top_level.where(public: true) : gears.none

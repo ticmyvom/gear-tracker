@@ -214,13 +214,13 @@ time. Later updates use `bin/kamal deploy` (see step 13).
 Backups only count once you've restored one. Do this after the first deploy,
 then every few months. On your computer, with the secrets loaded:
 
-    bundle exec litestream restore -config config/litestream.yml -o /tmp/gear-tracker-restore.sqlite3 /rails/storage/production.sqlite3
-    sqlite3 /tmp/gear-tracker-restore.sqlite3 "PRAGMA integrity_check; SELECT COUNT(*) FROM users;"
+    bin/backup-drill
 
-It should print `ok` and the number of users. The copy holds real people's data,
-so **delete it right away**:
-
-    rm /tmp/gear-tracker-restore.sqlite3
+It restores the latest backup from R2 into a private temporary folder, checks
+the copy isn't damaged, compares each table's row count with the live database,
+and deletes the copy, which holds real people's data. It prints only counts and
+ends with `PASSED` or `FAILED` and the reason. If the counts differ because
+someone used the site that minute, run it again a minute later.
 
 ## 13. Updating the site
 

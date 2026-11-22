@@ -10,6 +10,8 @@ changes in a way that breaks existing clients.
 
 ## [Unreleased]
 
+- `bin/backup-drill` proves the off-site backups work in one command: it restores
+  the latest one, checks it, compares it with the live database and deletes it
 - Public profiles: pick a display name and username in Settings and turn your
   profile on, then choose which gear to show at `/u/<username>`, each with or
   without its costs. Everything is private by default, and private profiles

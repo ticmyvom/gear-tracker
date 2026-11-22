@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby
+# Proves the off-site backups work. Run it every few months, with the secrets loaded:
+#
+#   source ~/.config/gear-tracker/production.env
+#   bin/backup-drill
+require_relative "../config/boot" # loads the gems, without starting the app
+require_relative "../lib/backup_drill"
+
+begin
+  BackupDrill.new.run
+rescue BackupDrill::Failed => error
+  warn "FAILED: #{error.message}"
+  exit 1
+end

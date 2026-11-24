@@ -30,6 +30,16 @@ class Api::V1::GearRecordsTest < ActionDispatch::IntegrationTest
     assert_equal api_v1_gear_expense_url(@prius, expense), response.location
   end
 
+  test "an expense's category is stored by key, and must be on the list" do
+    expense = { date: "2026-11-02", description: "Bridge", amount: 8 }
+    post api_v1_gear_expenses_path(@prius), params: expense.merge(category: "Parking & tolls"), headers: api_headers, as: :json
+    assert_equal [ "parking", "Parking & tolls" ], json.values_at("category", "category_name")
+
+    post api_v1_gear_expenses_path(@prius), params: expense.merge(category: "Snacks"), headers: api_headers, as: :json
+    assert_response :unprocessable_content
+    assert_match "must be one of: maintenance", json["details"]["category"].first
+  end
+
   test "an expense in the default currency" do
     post api_v1_gear_expenses_path(@prius), params: { date: "2026-11-02", description: "Wash", amount: 10 }, headers: api_headers, as: :json
 

@@ -10,6 +10,10 @@ changes in a way that breaks existing clients.
 
 ## [Unreleased]
 
+- Expense categories are picked from a list too, like Maintenance, Insurance or
+  Parking & tolls, and move over the same way gear categories did. In the API,
+  an expense's `category` is now one of the list's keys, and responses add
+  `category_name`
 - Vehicles can note their year, make, model and trim, on the website, in the API
   and in data files. Their name is now an optional nickname; without one, they're
   named by those details

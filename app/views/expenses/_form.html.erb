@@ -11,12 +11,7 @@
   </div>
   <div>
     <%= form.label :category %>
-    <%= form.text_field :category, list: "expense-categories" %>
-    <datalist id="expense-categories">
-      <% Expense::SUGGESTED_CATEGORIES.each do |category| %>
-        <option value="<%= category %>"></option>
-      <% end %>
-    </datalist>
+    <%= form.select :category, Expense::CATEGORIES.invert, include_blank: "None" %>
   </div>
   <%= render "shared/money_field", form: form, field: :amount, label: "Amount", input_options: { required: true } %>
   <div>

@@ -19,6 +19,23 @@ class ExpensesControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to @gear
   end
 
+  test "category is picked from the list, and shown by name" do
+    get new_gear_expense_path(@gear)
+    assert_select "select[name=?] option[value=parking]", "expense[category]", text: "Parking & tolls"
+
+    post gear_expenses_path(@gear), params: { expense: { spent_on: "2026-01-02", description: "Bridge", category: "parking", amount: "8" } }
+    follow_redirect!
+    assert_select "td", text: "Parking & tolls"
+  end
+
+  test "create refuses a category that isn't on the list" do
+    assert_no_difference -> { Expense.count } do
+      post gear_expenses_path(@gear), params: { expense: { spent_on: "2026-01-02", description: "Chips", category: "Snacks", amount: "8" } }
+    end
+
+    assert_response :unprocessable_content
+  end
+
   test "create requires an amount" do
     assert_no_difference -> { Expense.count } do
       post gear_expenses_path(@gear), params: { expense: { spent_on: "2026-01-02", description: "Fuel", amount: "" } }

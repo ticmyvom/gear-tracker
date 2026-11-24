@@ -1,0 +1,24 @@
+require "test_helper"
+
+class ExpenseTest < ActiveSupport::TestCase
+  test "category takes a key, a name in any case or an alias, and stores the key" do
+    assert_equal "parking", Expense.new(category: " parking & TOLLS ").category
+    assert_equal "Parking & tolls", Expense.new(category: "parking").category_name
+    assert_equal "parts", Expense.new(category: "Accessory").category
+    assert_nil Expense.new(category: " ").category
+  end
+
+  test "category is optional, but must be on the list" do
+    expense = expenses(:oil_change)
+    expense.category = nil
+    assert expense.valid?
+
+    expense.category = "Snacks"
+    assert_not expense.valid?
+    assert_match "must be one of: maintenance, repair", expense.errors[:category].first
+  end
+
+  test "aliases lead to keys on the list" do
+    assert_empty Expense::CATEGORY_ALIASES.values - Expense::CATEGORIES.keys
+  end
+end

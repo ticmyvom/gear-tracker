@@ -2,7 +2,7 @@ oil_change:
   gear: prius
   spent_on: <%= 1.month.ago.to_date %>
   description: Oil change
-  category: Maintenance
+  category: maintenance
   amount: 50
   currency: USD
 

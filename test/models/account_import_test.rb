@@ -107,6 +107,14 @@ class AccountImportTest < ActiveSupport::TestCase
     assert_equal [ "other", "Category: Bedroom stuff\n\nSoft" ], [ bed.category, bed.notes ]
   end
 
+  test "does the same for an expense's category" do
+    expense = { "date" => "2025-01-02", "description" => "Trip", "amount" => 5, "currency" => "USD" }
+    import(file([ gear("expenses" => [ expense.merge("category" => "Accessory"), expense.merge("category" => "Snacks", "notes" => "Chips"), expense ]) ]))
+
+    expenses = @user.gears.find_by!(name: "Van").expenses.order(:id)
+    assert_equal [ [ "parts", nil ], [ "other", "Category: Snacks\n\nChips" ], [ nil, nil ] ], expenses.pluck(:category, :notes)
+  end
+
   test "converts a reading's odometer from the file's units" do
     reading = { "date" => "2025-03-04", "name" => "Tread depth", "value" => 6, "odometer" => 1000 }
     import(file([ gear("readings" => [ reading ]) ]))

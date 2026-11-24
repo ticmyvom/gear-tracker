@@ -41,13 +41,13 @@ module Demo
             entered_amount: amount, total_price: price, entered_odometer: odometer, entered_trip: trip, minutes: minutes, notes: notes)
         end
 
-        prius.expenses.create!(spent_on: 70.days.ago.to_date, description: "Oil change", category: "Maintenance", amount: 69.99, vendor: "Quick lube", notes: "0W-16 synthetic")
-        prius.expenses.create!(spent_on: 120.days.ago.to_date, description: "Registration", category: "Registration", amount: 85.50, vendor: "DMV")
+        prius.expenses.create!(spent_on: 70.days.ago.to_date, description: "Oil change", category: "maintenance", amount: 69.99, vendor: "Quick lube", notes: "0W-16 synthetic")
+        prius.expenses.create!(spent_on: 120.days.ago.to_date, description: "Registration", category: "registration", amount: 85.50, vendor: "DMV")
         prius.readings.create!(read_on: 2.days.ago.to_date, name: "Odometer", value: 150_000, unit: "mi")
         prius.readings.create!(read_on: 2.days.ago.to_date, name: "Tire pressure FL", value: 36, unit: "psi")
 
         tires = user.gears.create!(name: "All-season tires", category: "parts", parent: prius, price: 640, purchased_on: 1.year.ago.to_date, purchased_from: "Tire shop")
-        tires.expenses.create!(spent_on: 90.days.ago.to_date, description: "Rotation", category: "Maintenance", amount: 25, vendor: "Tire shop")
+        tires.expenses.create!(spent_on: 90.days.ago.to_date, description: "Rotation", category: "maintenance", amount: 25, vendor: "Tire shop")
       end
 
       def add_heated_mattress_pad(user)
@@ -62,7 +62,7 @@ module Demo
       def add_bicycle(user)
         bike = user.gears.create!(name: "Commuter bicycle", category: "bicycle", power_source: "manual",
           price: 450, purchased_on: 3.years.ago.to_date, purchased_from: "Bike shop")
-        bike.expenses.create!(spent_on: 45.days.ago.to_date, description: "Tune-up", category: "Maintenance", amount: 60, vendor: "Bike shop")
+        bike.expenses.create!(spent_on: 45.days.ago.to_date, description: "Tune-up", category: "maintenance", amount: 60, vendor: "Bike shop")
       end
   end
 end

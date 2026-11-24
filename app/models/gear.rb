@@ -1,7 +1,7 @@
 class Gear < ApplicationRecord
   include Priced
+  include Categorized
 
-  # Stored by key, so a name can change without touching saved gear.
   CATEGORIES = {
     "vehicle" => "Vehicle",
     "bicycle" => "Bicycle",
@@ -58,8 +58,6 @@ class Gear < ApplicationRecord
   scope :top_level, -> { where(parent_id: nil) }
 
   normalizes :power_source, with: ->(source) { source.presence }
-  # Accepts a key or a name in any case, like "Vehicle"; anything else fails validation.
-  normalizes :category, with: ->(text) { category_key_for(text) || text.strip.presence }
   normalizes :make, with: ->(text) { text.squish.then { |typed| MAKES.find { it.casecmp?(typed) } || typed.presence } }
   normalizes :model, :trim, with: ->(text) { text.squish.presence }
   before_validation :name_after_vehicle, if: :vehicle?
@@ -70,7 +68,6 @@ class Gear < ApplicationRecord
   validates :name, presence: true, unless: :vehicle?
   validate { errors.add(:base, "Add a year, make or model, or a nickname") if vehicle? && name.blank? }
   validates :power_source, inclusion: { in: POWER_SOURCES.keys }, allow_nil: true
-  validates :category, inclusion: { in: CATEGORIES.keys, message: "must be one of: #{CATEGORIES.keys.join(", ")}" }, allow_nil: true
   validates :price, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
   # Cars date from 1885, and next year's models are sold early.
   validates :year, allow_nil: true, numericality: { only_integer: true, greater_than_or_equal_to: 1885, less_than_or_equal_to: ->(_) { Date.current.year + 1 } }
@@ -97,15 +94,6 @@ class Gear < ApplicationRecord
   # Liters and/or kWh; empty for gear that doesn't take fuel or electricity.
   def fuel_units
     FUEL_UNITS.fetch(power_source, [])
-  end
-
-  def self.category_key_for(text)
-    text = text.to_s.strip
-    CATEGORIES.find { |key, name| text.casecmp?(key) || text.casecmp?(name) }&.first
-  end
-
-  def category_name
-    CATEGORIES[category]
   end
 
   # Only vehicles get odometer and miles fields.

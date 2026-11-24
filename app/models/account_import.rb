@@ -12,7 +12,7 @@ class AccountImport
   GEAR_FIELDS = [ "name", *Gear::VEHICLE_FIELDS.map(&:to_s), "power_source", "price", "currency", "purchased_from", "notes", "created_at" ].freeze
   # Each record type: its association, date column, and the fields copied as they are.
   RECORDS = {
-    "expenses" => [ :spent_on, %w[ description category amount currency vendor notes created_at ] ],
+    "expenses" => [ :spent_on, %w[ description amount currency vendor notes created_at ] ],
     "fuel_entries" => [ :filled_on, %w[ total_price currency minutes notes created_at ] ],
     "readings" => [ :read_on, %w[ name value unit notes created_at ] ]
   }.freeze
@@ -42,7 +42,7 @@ class AccountImport
       # Top-level gear first, so components can be attached to their new parent.
       gears = @data["gears"].each { check_hash(it) }.sort_by { it["parent_id"] ? 1 : 0 }
       gears.each do |item|
-        gear = @user.gears.new(fields(item, GEAR_FIELDS).merge(purchased_on: date(item["purchased_on"], "purchased_on"), **category(item)))
+        gear = @user.gears.new(fields(item, GEAR_FIELDS).merge(purchased_on: date(item["purchased_on"], "purchased_on"), **category(item, Gear)))
         if item["parent_id"]
           gear.parent_id = new_ids.fetch(item["parent_id"]) { raise Invalid, "#{describe(item)} is a component of gear that isn't in the file." }
         end
@@ -55,6 +55,7 @@ class AccountImport
             record = gear.public_send(association).new(fields(entry, copied).merge(date_column => date(entry["date"], "date")))
             convert_fuel_units(record, entry) if record.is_a?(FuelEntry)
             record.odometer = distance(entry) if record.is_a?(Reading)
+            record.assign_attributes(category(entry, Expense)) if record.is_a?(Expense)
             save(record, "A #{association.singularize.humanize(capitalize: false)} of #{describe(item)}")
           end
         end
@@ -85,11 +86,11 @@ class AccountImport
 
     # Older files have free-text categories: a known name is kept, and anything
     # else becomes "other", with the old text at the top of the notes.
-    def category(item)
+    def category(item, model)
       text = item["category"].tap { check_value(it, "category") }.to_s.strip
       return { category: nil } if text.empty?
 
-      if (key = Gear.category_key_for(text))
+      if (key = model.category_key_for(text))
         { category: key }
       else
         { category: "other", notes: [ "Category: #{text}", item["notes"].presence ].compact.join("\n\n") }

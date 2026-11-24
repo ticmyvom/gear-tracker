@@ -123,7 +123,7 @@
           <tr>
             <td><%= expense.spent_on %></td>
             <td><%= expense.description %></td>
-            <td><%= expense.category %></td>
+            <td><%= expense.category_name %></td>
             <td><%= expense.vendor %></td>
             <td class="num"><%= money expense.amount, expense.currency %></td>
             <% if expense_notes %><td class="notes"><%= expense.notes %></td><% end %>

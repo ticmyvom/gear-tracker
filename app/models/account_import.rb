@@ -78,10 +78,19 @@ class AccountImport
       record.amount = number(entry["amount"], "amount").then { record.unit == "l" ? Units.convert(it, @volume_unit, "l") : it }
       record.odometer = distance(entry)
       record.trip = distance(entry, "trip")
+      record.filled_up = boolean(entry, "filled_up", default: true)
+      record.missed_previous = boolean(entry, "missed_previous", default: false)
     end
 
     def distance(entry, field = "odometer")
       Units.convert(number(entry[field], field), @distance_unit, "km")
+    end
+
+    # Older files leave these out, and get the default, like entries made back then.
+    def boolean(entry, name, default:)
+      entry.fetch(name, default).tap do |value|
+        raise Invalid, "The file has an unexpected value for #{name}." unless [ true, false ].include?(value)
+      end
     end
 
     # Older files have free-text categories: a known name is kept, and anything

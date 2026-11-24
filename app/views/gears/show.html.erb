@@ -88,7 +88,7 @@
           <% @fuel_entries.each do |fuel_entry| %>
             <tr>
               <td><%= fuel_entry.filled_on %></td>
-              <td class="num"><%= quantity fuel_entry.entered_amount %> <%= fuel_entry.amount_label %></td>
+              <td class="num"><%= quantity fuel_entry.entered_amount %> <%= fuel_entry.amount_label %><%= tag.small(" partial") unless fuel_entry.filled_up? %><%= tag.small(" about #{fuel_entry.missed_before} missed before") if fuel_entry.missed_previous? %></td>
               <td class="num"><%= money fuel_entry.total_price, fuel_entry.currency %></td>
               <% if show_time %>
                 <td class="num"><%= duration fuel_entry.minutes %></td>
@@ -96,7 +96,7 @@
               <% end %>
               <% if show_distance %>
                 <td class="num"><%= distance fuel_entry.entered_odometer %></td>
-                <td class="num"><%= distance fuel_entry.entered_trip %></td>
+                <td class="num"><%= distance fuel_entry.distance %></td>
                 <td class="num"><% if fuel_entry.distance_per_unit %><%= number_with_precision fuel_entry.distance_per_unit, precision: 1 %> <%= fuel_entry.distance_label %>/<%= fuel_entry.amount_label %><% end %></td>
               <% end %>
               <% if fuel_notes %><td class="notes"><%= fuel_entry.notes %></td><% end %>

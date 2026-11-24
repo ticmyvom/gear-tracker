@@ -96,6 +96,16 @@ class Gear < ApplicationRecord
     FUEL_UNITS.fetch(power_source, [])
   end
 
+  # Worked out once, so a page listing many entries doesn't repeat it for each.
+  def fuel_economy
+    @fuel_economy ||= FuelEconomy.new(self)
+  end
+
+  def reload(*)
+    @fuel_economy = nil
+    super
+  end
+
   # Only vehicles get odometer and miles fields.
   def vehicle?
     category == "vehicle"

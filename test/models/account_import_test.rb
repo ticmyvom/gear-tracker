@@ -49,6 +49,19 @@ class AccountImportTest < ActiveSupport::TestCase
     assert_equal [ "kWh", 12.5.to_d ], [ energy.unit, energy.amount ]
   end
 
+  test "keeps whether the tank was filled up and one was missed, and gives older entries the defaults" do
+    entry = { "date" => "2025-02-03", "kind" => "fuel", "amount" => 10, "currency" => "USD" }
+    import(file([ gear("fuel_entries" => [ entry.merge("filled_up" => false, "missed_previous" => true), entry.merge("filled_up" => true, "missed_previous" => false), entry ]) ]))
+
+    assert_equal [ [ false, true ], [ true, false ], [ true, false ] ], @user.gears.find_by!(name: "Van").fuel_entries.order(:id).pluck(:filled_up, :missed_previous)
+  end
+
+  test "refuses a filled_up that isn't true or false" do
+    [ "no", nil, { "a" => 1 } ].each do |value|
+      assert_nothing_imported file([ gear("fuel_entries" => [ { "date" => "2025-02-03", "kind" => "fuel", "amount" => 10, "filled_up" => value } ]) ]), "filled_up"
+    end
+  end
+
   test "attaches components to their new parent, whatever order the file lists them in" do
     tires = gear("id" => 2, "name" => "Tires", "parent_id" => 1, "power_source" => nil, "fuel_entries" => [])
     import(file([ tires, gear ]))

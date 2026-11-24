@@ -28,6 +28,43 @@ class FuelEntriesControllerTest < ActionDispatch::IntegrationTest
     assert_equal 458.3.to_d, FuelEntry.last.entered_trip
   end
 
+  test "filled up is ticked by default, and can be unticked" do
+    get new_gear_fuel_entry_path(@gear)
+    assert_select "input[type=checkbox][checked][name=?]", "fuel_entry[filled_up]"
+
+    post gear_fuel_entries_path(@gear), params: { fuel_entry: { entered_amount: "3", filled_up: "0" } }
+    assert_not FuelEntry.last.filled_up?
+    follow_redirect!
+    assert_select "td", text: "3 gal partial"
+  end
+
+  test "a missed fill-up can be noted, and the gear page shows about how many" do
+    get new_gear_fuel_entry_path(@gear)
+    assert_select "input[type=checkbox]:not([checked])[name=?]", "fuel_entry[missed_previous]"
+
+    post gear_fuel_entries_path(@gear), params: { fuel_entry: { entered_amount: "10", entered_odometer: "241500", filled_up: "1", missed_previous: "1" } }
+    follow_redirect!
+
+    # 1,458 mi at the usual 42.9 mi/gal takes 34 gal; 10 were logged, and fill-ups are about 10.25.
+    assert_select "td", text: "10 gal about 2 missed before"
+  end
+
+  test "the gear page shows distance and efficiency worked out from the odometers" do
+    post gear_fuel_entries_path(@gear), params: { fuel_entry: { entered_amount: "10", entered_odometer: "240542", filled_up: "1" } }
+    follow_redirect!
+
+    assert_select "td", text: "500"
+    assert_select "td", text: "50.0 mi/gal"
+  end
+
+  test "a plug-in hybrid isn't told its distance is worked out" do
+    get new_gear_fuel_entry_path(@gear)
+    assert_select "p", text: /worked out from the odometers/
+
+    get new_gear_fuel_entry_path(gears(:phev))
+    assert_select "p", text: /worked out from the odometers/, count: 0
+  end
+
   test "create requires an amount" do
     assert_no_difference -> { FuelEntry.count } do
       post gear_fuel_entries_path(@gear), params: { fuel_entry: { total_price: "", entered_amount: "" } }

@@ -12,8 +12,9 @@ their own gear.
 - **Power source**: what makes the gear go: nothing, human power, gasoline, diesel,
   propane, electricity, or both gasoline and electricity for a plug-in hybrid.
 - **Fuel entries**: fill-ups (gallons) or energy use (kWh) for gear that runs on fuel or
-  electricity. Add the time used to see fuel per hour or average watts, or miles
-  driven to see miles per gallon or per kWh.
+  electricity. Add the time used to see fuel per hour or average watts, or the
+  odometer or miles driven to see miles per gallon or per kWh, from one full tank to
+  the next.
 - **Readings**: measurements over time, like tire pressure or tread depth. Readings of
   vehicles and their parts can also note the odometer.
 - **API for agents**: let an agent or script read your gear and log expenses, fuel and

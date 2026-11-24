@@ -120,11 +120,16 @@ Only for gear with a power source that uses fuel or electricity.
 | `date` | Defaults to today |
 | `total_price`, `currency` | What it cost |
 | `hours`, `minutes` | Time used; send either or both, and they're added up |
-| `odometer`, `trip` | In your distance unit |
+| `odometer`, `trip` | In your distance unit. `trip` is the distance since the entry before; without it, it's worked out from the odometers, except for plug-in hybrids. |
+| `filled_up` | `true` (the default) if the tank is now full, or the battery is at its usual level; `false` for a partial fill-up |
+| `missed_previous` | `true` if a fill-up or charge before this one wasn't logged; `false` is the default. There's no efficiency until the next full one, unless `trip` is the distance since the missed one. |
 | `notes` | Text |
 
 Responses also include the units, `minutes` (total time used), `rate` (watts
-for energy, or fuel per hour) and `efficiency` (like miles per gallon).
+for energy, or fuel per hour), `distance` (since the entry before: `trip`, or
+worked out) and `efficiency` (like miles per gallon, since the last time it was
+full; `null` for a partial fill-up, which counts toward the next full one). `missed_before` is about how many went
+unlogged just before this one.
 
 ### Readings
 

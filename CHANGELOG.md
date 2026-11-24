@@ -10,6 +10,12 @@ changes in a way that breaks existing clients.
 
 ## [Unreleased]
 
+- Fuel efficiency no longer needs a typed distance: without one, it's worked out
+  from the odometers. Fuel entries note whether the tank was filled up, and a
+  partial fill-up counts toward the next full one, so it can't skew efficiency.
+  They can also note that a fill-up before them wasn't logged, which leaves that
+  tank out, and estimate how many were missed.
+  Plug-in hybrids still need a typed distance
 - Expense categories are picked from a list too, like Maintenance, Insurance or
   Parking & tolls, and move over the same way gear categories did. In the API,
   an expense's `category` is now one of the list's keys, and responses add

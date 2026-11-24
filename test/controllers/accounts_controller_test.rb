@@ -64,6 +64,14 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
     assert_equal [ false, false ], prius.values_at("public", "public_costs")
   end
 
+  test "export keeps the order of fuel entries from the same day" do
+    20.times { gears(:prius).fuel_entries.create!(amount: it + 1, filled_on: "2025-01-01") }
+    get export_account_path
+
+    ids = response.parsed_body["gears"].find { it["name"] == "2010 Toyota Prius" }["fuel_entries"].pluck("id")
+    assert_equal gears(:prius).fuel_entries.order(:filled_on, :id).ids, ids
+  end
+
   test "export has nothing from other users and no secrets" do
     get export_account_path
 

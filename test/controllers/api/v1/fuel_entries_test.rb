@@ -21,6 +21,34 @@ class Api::V1::FuelEntriesTest < ActionDispatch::IntegrationTest
     assert_in_delta 37.854, FuelEntry.find(json["id"]).amount, 0.001 # stored in liters
   end
 
+  test "efficiency from the odometer, and partial fill-ups" do
+    log = ->(**fields) { post api_v1_gear_fuel_entries_path(gears(:prius)), params: fields, headers: api_headers, as: :json }
+
+    log.(amount: 2, odometer: 240_142, filled_up: false)
+    assert_equal [ false, 100.0, nil, nil ], json.values_at("filled_up", "distance", "trip", "efficiency")
+
+    log.(amount: 8, odometer: 240_542)
+    assert_equal [ true, 400.0, 50.0 ], json.values_at("filled_up", "distance", "efficiency")
+
+    patch api_v1_gear_fuel_entry_path(gears(:prius), json["id"]), params: { trip: 300 }, headers: api_headers, as: :json
+    assert_equal [ 300.0, 40.0 ], json.values_at("distance", "efficiency")
+  end
+
+  test "a missed fill-up leaves efficiency out" do
+    post api_v1_gear_fuel_entries_path(gears(:prius)), params: { amount: 10, odometer: 241_500, missed_previous: true }, headers: api_headers, as: :json
+
+    assert_equal [ true, 2, nil ], json.values_at("missed_previous", "missed_before", "efficiency")
+  end
+
+  test "filled_up and missed_previous can't be null" do
+    %w[ filled_up missed_previous ].each do |field|
+      post api_v1_gear_fuel_entries_path(gears(:prius)), params: { amount: 2, field => nil }, headers: api_headers, as: :json
+
+      assert_response :unprocessable_content
+      assert json["details"].key?(field)
+    end
+  end
+
   test "a metric user's entries are in km and liters" do
     get api_v1_gear_fuel_entries_path(gears(:truck)), headers: api_headers("gt_two_write")
 

@@ -22,6 +22,20 @@
     <div>
       <%= form.label :entered_trip, "#{fuel_entry.electric? ? "Distance driven" : "Distance since last fill-up"} (#{fuel_entry.distance_label}, optional)" %>
       <%= form.number_field :entered_trip, min: 0, step: "0.1", inputmode: "decimal" %>
+      <% if gear.fuel_units.one? %>
+        <p class="muted">Left blank, it's worked out from the odometers.</p>
+      <% end %>
+    </div>
+    <div>
+      <%= form.label :filled_up do %>
+        <%= form.check_box :filled_up %> <%= fuel_entry.electric? ? "Charged to your usual level" : "Filled up (full tank)" %>
+      <% end %>
+    </div>
+    <div>
+      <%= form.label :missed_previous do %>
+        <%= form.check_box :missed_previous %> I missed logging a <%= fuel_entry.electric? ? "charge" : "fill-up" %> before this one
+      <% end %>
+      <p class="muted">Leaves this one out of efficiency, unless you type the distance since the one you missed.</p>
     </div>
   <% end %>
   <div>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_23_130000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_23_150000) do
   create_table "api_tokens", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "name", null: false
@@ -50,6 +50,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_23_130000) do
     t.integer "minutes"
     t.string "currency", null: false
     t.text "notes"
+    t.boolean "filled_up", default: true, null: false
+    t.boolean "missed_previous", default: false, null: false
     t.index ["gear_id"], name: "index_fuel_entries_on_gear_id"
   end
 

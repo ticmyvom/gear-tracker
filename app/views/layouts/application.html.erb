@@ -14,8 +14,13 @@
     <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
     <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
 
-    <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
-    <link rel="icon" href="/favicon-16.png" type="image/png" sizes="16x16">
+    <%# A plain square in development, to tell its tabs from the live site's %>
+    <% if Rails.env.development? %>
+      <link rel="icon" href="/favicon-dev.svg" type="image/svg+xml">
+    <% else %>
+      <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
+      <link rel="icon" href="/favicon-16.png" type="image/png" sizes="16x16">
+    <% end %>
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
     <%# Includes all stylesheet files in app/assets/stylesheets %>

@@ -6,3 +6,5 @@ live in `public/`.
 - `logo/logo.png`: the logo at full size (1254×1254). Make new sizes from it:
   - `public/favicon-16.png` and `public/favicon-32.png`: browser tab icons
   - `public/apple-touch-icon.png` (180×180): the icon when saved to a phone's home screen
+
+`public/favicon-dev.svg`, the plain square shown in development, isn't made from the logo.

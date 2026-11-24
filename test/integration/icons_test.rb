@@ -16,4 +16,22 @@ class IconsTest < ActionDispatch::IntegrationTest
       assert_equal expected, png_size(file).join("x"), link["href"]
     end
   end
+
+  test "development has its own icon, and only development" do
+    get privacy_path
+    assert_select "link[href='/favicon-dev.svg']", 0
+
+    in_development { get privacy_path }
+    assert_equal [ "/favicon-dev.svg" ], css_select("link[rel=icon]").map { it["href"] }
+    assert Rails.public_path.join("favicon-dev.svg").exist?
+  end
+
+  private
+    def in_development
+      original = Rails.env
+      Rails.env = "development"
+      yield
+    ensure
+      Rails.env = original
+    end
 end

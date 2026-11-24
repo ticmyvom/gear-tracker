@@ -9,6 +9,9 @@
 
 <dl>
   <dt>Category</dt><dd><%= @gear.category_name || "-" %></dd>
+  <% if @gear.vehicle? && @gear.nickname %>
+    <dt>Vehicle</dt><dd><%= @gear.vehicle_name || "-" %></dd>
+  <% end %>
   <dt>Powered by</dt><dd><%= @gear.power_source_name || "Not powered" %></dd>
   <dt>Purchased</dt><dd><%= @gear.purchased_on || "-" %></dd>
   <dt>Bought from</dt><dd><%= @gear.purchased_from.presence || "-" %></dd>

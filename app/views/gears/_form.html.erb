@@ -2,12 +2,35 @@
   <%= render "shared/errors", record: gear %>
 
   <div>
-    <%= form.label :name %>
-    <%= form.text_field :name, required: true, autofocus: true, placeholder: "2010 Toyota Prius" %>
-  </div>
-  <div>
     <%= form.label :category %>
-    <%= form.select :category, Gear::CATEGORIES.invert, include_blank: "None" %>
+    <%= form.select :category, Gear::CATEGORIES.invert, { include_blank: "None" }, autofocus: true %>
+  </div>
+  <%# The stylesheet shows vehicle-only and other-only parts to match the category. %>
+  <fieldset class="vehicle-only">
+    <div>
+      <%= form.label :year %>
+      <%= form.text_field :year, inputmode: "numeric", maxlength: 4, placeholder: "2010" %>
+    </div>
+    <div>
+      <%= form.label :make %>
+      <%= form.text_field :make, maxlength: 50, list: "makes", placeholder: "Toyota" %>
+      <datalist id="makes"><%= options_for_select(Gear::MAKES) %></datalist>
+    </div>
+    <div>
+      <%= form.label :model %>
+      <%= form.text_field :model, maxlength: 50, placeholder: "Prius" %>
+    </div>
+    <div>
+      <%= form.label :trim %>
+      <%= form.text_field :trim, maxlength: 50, placeholder: "Two" %>
+    </div>
+  </fieldset>
+  <div>
+    <%= form.label :name do %>
+      <span class="other-only">Name</span><span class="vehicle-only">Nickname (optional)</span>
+    <% end %>
+    <%= form.text_field :name, value: gear.nickname %>
+    <p class="muted vehicle-only">Without one, it's named by its year, make, model and trim.</p>
   </div>
   <div>
     <%= form.label :power_source, "Powered by" %>

@@ -2,6 +2,10 @@ prius:
   user: one
   name: 2010 Toyota Prius
   category: vehicle
+  year: 2010
+  make: Toyota
+  model: Prius
+  trim: Two
   power_source: gasoline
   purchased_on: <%= 2.years.ago.to_date %>
   price: 8000

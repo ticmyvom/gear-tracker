@@ -9,7 +9,7 @@ class AccountImport
 
   class Invalid < StandardError; end
 
-  GEAR_FIELDS = %w[ name power_source price currency purchased_from notes created_at ].freeze
+  GEAR_FIELDS = [ "name", *Gear::VEHICLE_FIELDS.map(&:to_s), "power_source", "price", "currency", "purchased_from", "notes", "created_at" ].freeze
   # Each record type: its association, date column, and the fields copied as they are.
   RECORDS = {
     "expenses" => [ :spent_on, %w[ description category amount currency vendor notes created_at ] ],

@@ -25,7 +25,7 @@ module Demo
   class << self
     private
       def add_prius_prime(user)
-        prius = user.gears.create!(name: "2020 Toyota Prius Prime", category: "vehicle", power_source: "plug_in_hybrid",
+        prius = user.gears.create!(name: "2020 Toyota Prius Prime", category: "vehicle", year: 2020, make: "Toyota", model: "Prius Prime", power_source: "plug_in_hybrid",
           price: 21_500, purchased_on: 2.years.ago.to_date, purchased_from: "Used car dealer",
           notes: "Plug-in hybrid: about 25 miles on a charge, then about 54 mpg on gas.")
 

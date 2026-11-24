@@ -5,6 +5,7 @@ bought it, where from, and what it has really cost you. Each user sees only
 their own gear.
 
 - **Gear**: anything you own, with its purchase date, price, and where you bought it.
+  Vehicles can also note their year, make, model and trim, and a nickname.
 - **Components**: gear that belongs to other gear, like a set of tires on a car.
   Their costs count toward the parent's total.
 - **Expenses**: money spent after the purchase, like repairs or insurance.

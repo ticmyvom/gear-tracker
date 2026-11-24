@@ -84,8 +84,9 @@ Optional fields can be left out. Send `null` to clear one.
 
 | Field | Notes |
 | --- | --- |
-| `name` | Required |
+| `name` | Required, except for vehicles with a year, make, model or trim, which are named by those |
 | `category` | One of `vehicle`, `bicycle`, `parts`, `tools`, `electronics`, `computers`, `appliances`, `kitchen`, `heating_cooling`, `household`, `outdoor`, `sports`, `clothing`, `music` or `other`; the name, like `Heating & cooling`, works too. Leave out for none. Responses include its `category_name`. Vehicles and their parts get odometer fields on the website. |
+| `year`, `make`, `model`, `trim` | For vehicles, like `2010`, `Toyota`, `Prius` and `Two` |
 | `power_source` | `manual`, `gasoline`, `diesel`, `propane`, `electric` or `plug_in_hybrid`. Leave out for gear that isn't powered. |
 | `parent_id` | Makes this gear a component of another of your top-level gear |
 | `purchased_on` | Date |

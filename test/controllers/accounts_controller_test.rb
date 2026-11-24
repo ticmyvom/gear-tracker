@@ -100,6 +100,7 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
     assert_in_delta original.odometer, copy.fuel_entries.sole.odometer, 0.1
     assert_equal copy, new_user.gears.find_by!(name: "Michelin tires").parent
     assert_equal [ "Oil change" ], copy.expenses.pluck(:description)
+    assert_equal [ 2010, "Toyota", "Prius", "Two" ], copy.values_at(*Gear::VEHICLE_FIELDS)
   end
 
   test "settings offers the import form only while the account has no gear" do

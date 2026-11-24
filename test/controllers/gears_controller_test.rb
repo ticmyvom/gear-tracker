@@ -169,6 +169,49 @@ class GearsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "manual", Gear.last.power_source
   end
 
+  test "vehicle details are saved, shown and offered for editing" do
+    post gears_path, params: { gear: { name: "Daily", category: "vehicle", year: "2015", make: "honda", model: "Fit", trim: "EX" } }
+    assert_redirected_to Gear.last
+
+    get gear_path(Gear.last)
+    assert_select "dt", text: "Vehicle"
+    assert_select "dd", text: "2015 Honda Fit EX"
+
+    get edit_gear_path(Gear.last)
+    assert_select ".vehicle-only input[name='gear[year]'][value='2015']"
+    assert_select ".vehicle-only datalist#makes option[value=Honda]"
+  end
+
+  test "a vehicle without a nickname shows its details once, and an empty nickname field" do
+    post gears_path, params: { gear: { name: "", category: "vehicle", year: "2015", make: "Honda", model: "Fit" } }
+
+    get gear_path(Gear.last)
+    assert_select "h1", text: "2015 Honda Fit"
+    assert_select "dt", text: "Vehicle", count: 0
+
+    get edit_gear_path(Gear.last)
+    assert_select "input[name='gear[name]']:not([value])"
+  end
+
+  test "edit fills in a nickname or a name" do
+    [ :prius, :tires ].each do |gear|
+      get edit_gear_path(gears(gear))
+      assert_select "input[name='gear[name]'][value=?]", gears(gear).name
+    end
+  end
+
+  test "a bad year re-renders the form with the error" do
+    post gears_path, params: { gear: { name: "Daily", category: "vehicle", year: "99" } }
+
+    assert_response :unprocessable_content
+    assert_select ".errors", text: /Year must be greater than or equal to 1885/
+  end
+
+  test "show has no vehicle row for other gear" do
+    get gear_path(gears(:tires))
+    assert_select "dt", text: "Vehicle", count: 0
+  end
+
   test "create a component from the new form" do
     get new_gear_path(parent_id: gears(:prius).id)
     assert_select "option[selected][value=?]", gears(:prius).id.to_s

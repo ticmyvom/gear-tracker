@@ -28,6 +28,25 @@ class Api::V1::GearsTest < ActionDispatch::IntegrationTest
     assert_equal [ "household", "Household" ], json.values_at("category", "category_name")
   end
 
+  test "vehicle details can be read, sent and cleared" do
+    get api_v1_gear_path(gears(:prius)), headers: api_headers
+    assert_equal [ 2010, "Toyota", "Prius", "Two" ], json.values_at("year", "make", "model", "trim")
+
+    post api_v1_gears_path, params: { name: "Daily", category: "vehicle", year: 2015, make: "honda", model: "Fit" }, headers: api_headers, as: :json
+    assert_response :created
+    assert_equal [ 2015, "Honda", "Fit", nil ], json.values_at("year", "make", "model", "trim")
+
+    patch api_v1_gear_path(gears(:prius)), params: { trim: nil }, headers: api_headers, as: :json
+    assert_nil gears(:prius).reload.trim
+  end
+
+  test "a vehicle can be added without a name" do
+    post api_v1_gears_path, params: { category: "vehicle", year: 2015, make: "Honda" }, headers: api_headers, as: :json
+
+    assert_response :created
+    assert_equal "2015 Honda", json["name"]
+  end
+
   test "create refuses a category that isn't on the list, and names the allowed ones" do
     post api_v1_gears_path, params: { name: "Air filter", category: "Home" }, headers: api_headers, as: :json
 

@@ -96,6 +96,66 @@ class GearTest < ActiveSupport::TestCase
     assert_match "must be one of", gear.errors[:category].first
   end
 
+  test "vehicle name joins the parts that are filled in, for vehicles only" do
+    assert_equal "2010 Toyota Prius Two", gears(:prius).vehicle_name
+    assert_equal "Toyota Prius", Gear.new(category: "vehicle", make: "Toyota", model: "Prius").vehicle_name
+    assert_nil gears(:phev).vehicle_name
+    assert_nil Gear.new(category: "other", make: "Toyota").vehicle_name
+  end
+
+  test "a vehicle without a nickname is named by its details, and renamed when they change" do
+    car = users(:one).gears.create!(category: "vehicle", year: 2015, make: "Honda", model: "Fit")
+    assert_equal [ "2015 Honda Fit", nil ], [ car.name, car.nickname ]
+
+    car.update!(year: 2016)
+    assert_equal "2016 Honda Fit", car.name
+
+    car.update!(name: "Daily", trim: "EX")
+    assert_equal %w[ Daily Daily ], [ car.name, car.nickname ]
+
+    car.update!(name: "")
+    assert_equal "2016 Honda Fit EX", car.name
+  end
+
+  test "a nickname stays when the details change" do
+    gears(:prius).update!(year: 2011)
+    assert_equal "2010 Toyota Prius", gears(:prius).name
+  end
+
+  test "a vehicle needs a nickname or details, and other gear needs a name" do
+    car = users(:one).gears.new(category: "vehicle")
+    assert_not car.valid?
+    assert_equal [ "Add a year, make or model, or a nickname" ], car.errors.full_messages
+
+    tent = users(:one).gears.new(category: "outdoor", make: "Toyota")
+    assert_not tent.valid?
+    assert_equal [ "Name can't be blank" ], tent.errors.full_messages
+  end
+
+  test "known makes get one spelling, and others are kept as typed" do
+    assert_equal "Toyota", Gear.new(make: " TOYOTA ").make
+    assert_equal "Mercedes-Benz", Gear.new(make: "mercedes-benz").make
+    assert_equal "My Kit Car", Gear.new(make: "My  Kit Car").make
+    assert_equal [ nil, nil, nil ], Gear.new(make: " ", model: "", trim: " ").values_at(:make, :model, :trim)
+  end
+
+  test "suggested makes are in order and listed once" do
+    assert_equal Gear::MAKES.uniq.sort_by(&:downcase), Gear::MAKES
+  end
+
+  test "year must be a sensible whole number, or blank" do
+    valid = ->(year) { gears(:prius).tap { it.year = year }.valid? }
+
+    [ "", 1885, 2010, Date.current.year + 1 ].each { assert valid.(it), it.inspect }
+    [ 1884, Date.current.year + 2, "soon", 2010.5 ].each { assert_not valid.(it), it.inspect }
+  end
+
+  test "make, model and trim can't be too long" do
+    %i[ make model trim ].each do |field|
+      assert_not Gear.new(field => "x" * 51).tap(&:valid?).errors[field].empty?
+    end
+  end
+
   test "vehicles and their parts track the odometer" do
     assert gears(:prius).vehicle?
     assert gears(:tires).tracks_odometer? # a part of the Prius

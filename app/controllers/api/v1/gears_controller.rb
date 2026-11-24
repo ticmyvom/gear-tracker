@@ -3,7 +3,7 @@ module Api
     # Gear can be listed, read, added and changed, but not deleted: deleting gear
     # also deletes its components and every record, which is left to the website.
     class GearsController < BaseController
-      FIELDS = %i[ name category power_source parent_id purchased_on price currency purchased_from notes ].freeze
+      FIELDS = [ :name, :category, *Gear::VEHICLE_FIELDS, :power_source, :parent_id, :purchased_on, :price, :currency, :purchased_from, :notes ].freeze
 
       before_action :set_gear, only: %i[ show update ]
 

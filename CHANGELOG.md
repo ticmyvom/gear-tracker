@@ -10,6 +10,9 @@ changes in a way that breaks existing clients.
 
 ## [Unreleased]
 
+- Vehicles can note their year, make, model and trim, on the website, in the API
+  and in data files. Their name is now an optional nickname; without one, they're
+  named by those details
 - Gear categories are picked from a list, like Vehicle, Electronics or Household,
   instead of typed. Existing categories move to the closest one; any that don't
   fit become Other, with the old text kept in the notes. In the API, `category`

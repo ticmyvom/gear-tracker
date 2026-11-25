@@ -1,6 +1,7 @@
 # To do
 
 ## Features
+- [ ] After adding an expense, fuel entry or reading, go back to the same place on the gear page instead of its top, so adding several of the same kind in a row doesn't mean scrolling down each time
 - [ ] Try the API token section of Settings in a real browser: create a token, copy it, check it works with `curl`, then revoke it (so far only tested by automated tests)
 - [ ] Mark gear as sold or retired, so cost per year stops falling after you let it go
 - [ ] Show the latest value of each reading, and filter reading history (e.g. one tire's pressure)

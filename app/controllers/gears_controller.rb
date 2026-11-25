@@ -54,6 +54,6 @@ class GearsController < ApplicationController
     end
 
     def gear_params
-      params.expect(gear: [ :name, :category, *Gear::VEHICLE_FIELDS, :power_source, :parent_id, :purchased_on, :price, :currency, :purchased_from, :notes, :public, :public_costs ])
+      params.expect(gear: [ :name, :category, *Gear::VEHICLE_FIELDS, :power_source, :parent_id, :purchased_on, :price, :currency, :purchased_from, :notes, :public, :public_costs, *Gear::LISTING_FIELDS ])
     end
 end

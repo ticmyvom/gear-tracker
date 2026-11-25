@@ -9,6 +9,7 @@ Rails.application.routes.draw do
     post :import
   end
   get "privacy", to: "pages#privacy"
+  resources :vehicles, only: %i[ index show ], constraints: { id: /\d+/ }
   get "u", to: "profiles#index", as: :profiles
   get "u/:username", to: "profiles#show", as: :profile
 

@@ -132,6 +132,29 @@ class GearTest < ActiveSupport::TestCase
     assert_equal [ "Name can't be blank" ], tent.errors.full_messages
   end
 
+  test "only top-level vehicles can be listed, and nothing is by default" do
+    assert_equal [ false ] * 4, gears(:prius).values_at(*Gear::LISTING_FIELDS)
+
+    gears(:prius).update!(listed: true, listed_price: true, listed_costs: true, listed_economy: true)
+    gears(:tires).update!(listed: true, make: "A", model: "B")
+    assert_equal [ gears(:prius) ], Gear.listed.to_a
+
+    gears(:prius).update!(category: "other")
+    assert_equal [ false ] * 4, gears(:prius).values_at(*Gear::LISTING_FIELDS)
+  end
+
+  test "unlisting a vehicle turns off what it showed, so listing it again starts over" do
+    gears(:prius).update!(listed: true, listed_price: true)
+    gears(:prius).update!(listed: false)
+
+    assert_not gears(:prius).listed_price?
+  end
+
+  test "a listed vehicle needs a make and model" do
+    assert_not gears(:phev).update(listed: true)
+    assert_equal [ "Add a make and model to list it on the Vehicles page" ], gears(:phev).errors.full_messages
+  end
+
   test "known makes get one spelling, and others are kept as typed" do
     assert_equal "Toyota", Gear.new(make: " TOYOTA ").make
     assert_equal "Mercedes-Benz", Gear.new(make: "mercedes-benz").make

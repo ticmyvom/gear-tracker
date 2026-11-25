@@ -159,6 +159,28 @@ class GearsControllerTest < ActionDispatch::IntegrationTest
     assert_select "a", text: "Add energy entry"
   end
 
+  test "a vehicle can be listed from its form, off by default" do
+    get edit_gear_path(gears(:prius))
+    Gear::LISTING_FIELDS.each { assert_select ".vehicle-only input[type=checkbox]:not([checked])[name=?]", "gear[#{it}]" }
+    assert_select "p", text: /listed without your name/
+
+    get gear_path(gears(:prius))
+    assert_select "dd", text: "Not listed"
+
+    patch gear_path(gears(:prius)), params: { gear: { listed: "1", listed_costs: "1" } }
+    assert_equal [ true, false, true, false ], gears(:prius).reload.values_at(*Gear::LISTING_FIELDS)
+    follow_redirect!
+    assert_select "dd a[href=?]", vehicle_path(gears(:prius)), text: "Listed"
+  end
+
+  test "the form warns that a public profile's name is shown" do
+    users(:one).update!(username: "one", display_name: "One", profile_public: true)
+    get edit_gear_path(gears(:prius))
+
+    assert_select "p", text: /your name is shown with it/
+    assert_select "p", text: /without your name/, count: 0
+  end
+
   test "a vehicle's page shows its stats" do
     get gear_path(gears(:prius))
 

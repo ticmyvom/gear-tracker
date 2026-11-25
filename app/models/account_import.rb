@@ -1,8 +1,8 @@
 # Adds the gear and records from a "Download all your data" file to an account
 # that has no gear yet, so importing a file twice can't make copies. It all
 # happens in one transaction, so a file with a problem changes nothing.
-# Imported gear starts private, whatever the file says, and the profile isn't
-# imported. Ids and computed fields (totals, rates, efficiency) are ignored,
+# Imported gear starts private and unlisted, whatever the file says, and the
+# profile isn't imported. Ids and computed fields (totals, rates, efficiency) are ignored,
 # and fuel amounts and distances are converted from the file's units.
 class AccountImport
   MAX_SIZE = 5.megabytes

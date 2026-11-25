@@ -2,8 +2,8 @@
 # in or not. A private profile looks exactly like one that doesn't exist, so it
 # can't be used to find out who has an account.
 class ProfilesController < ApplicationController
+  include NotIndexed
   allow_unauthenticated_access
-  before_action { response.headers["X-Robots-Tag"] = "noindex" } # not listed in search engines
 
   def index
     @users = User.public_profiles.order(Arel.sql("display_name COLLATE NOCASE"), :username)

@@ -43,6 +43,11 @@ module ApplicationHelper
     [ (pluralize(years, "year") if years.positive?), (pluralize(months, "month") if months.positive?) ].compact.join(" ")
   end
 
+  # A VehicleStats efficiency with its unit, like "45.1 mi/gal"
+  def efficiency(stats, value)
+    value ? "#{number_with_precision(value, precision: 1)} #{stats.efficiency_label}" : "-"
+  end
+
   def quantity(value)
     number_with_precision value, precision: 3, strip_insignificant_zeros: true
   end

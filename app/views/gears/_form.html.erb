@@ -68,6 +68,32 @@
         <% end %>
       </div>
     </fieldset>
+    <fieldset class="vehicle-only">
+      <legend>Vehicles page</legend>
+      <div>
+        <%= form.label :listed do %>
+          <%= form.check_box :listed %> List it, to help people choosing a car
+        <% end %>
+        <p class="muted">Anyone can see its year, make, model, trim and power source, but not its nickname.
+          <%= Current.user.profile_public? ? "Your profile is public, so your name is shown with it." : "Your profile is private, so it's listed without your name. If you make your profile public, your name is shown with it." %></p>
+      </div>
+      <div>
+        <%= form.label :listed_price do %>
+          <%= form.check_box :listed_price %> Also show its purchase price
+        <% end %>
+      </div>
+      <div>
+        <%= form.label :listed_costs do %>
+          <%= form.check_box :listed_costs %> Also show its running costs, per year and by category
+        <% end %>
+      </div>
+      <div>
+        <%= form.label :listed_economy do %>
+          <%= form.check_box :listed_economy %> Also show its efficiency, distance, and number of logs
+        <% end %>
+        <p class="muted">Only totals, averages and the like, never dates, descriptions, vendors or notes.</p>
+      </div>
+    </fieldset>
   <% end %>
   <div class="actions">
     <%= form.submit %>

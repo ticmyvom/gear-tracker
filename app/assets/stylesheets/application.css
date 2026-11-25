@@ -34,6 +34,7 @@ header {
 
 header nav {
   display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
   align-items: baseline;
   margin-left: auto;

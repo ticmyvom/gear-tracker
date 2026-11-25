@@ -33,6 +33,7 @@
       <strong><%= link_to "Gear Tracker", root_path %></strong>
       <small>own gears, not stuff</small>
       <nav>
+        <%= link_to "Vehicles", vehicles_path %>
         <%= link_to "People", profiles_path %>
         <% if authenticated? %>
           <%= Current.user.email_address %>

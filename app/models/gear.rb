@@ -37,6 +37,8 @@ class Gear < ApplicationRecord
 
   # What kind of vehicle it is, in the order it's written.
   VEHICLE_FIELDS = %i[ year make model trim ].freeze
+  # What the owner chose to show on the Vehicles page. Without the first, none apply.
+  LISTING_FIELDS = %i[ listed listed_price listed_costs listed_economy ].freeze
   # Suggested while typing, and how each is spelled; any other make is fine too.
   MAKES = [
     "Acura", "Alfa Romeo", "Audi", "BMW", "Buick", "BYD", "Cadillac", "Chevrolet", "Chrysler", "Dodge", "Ducati", "Fiat",
@@ -56,6 +58,8 @@ class Gear < ApplicationRecord
   delegate :distance_unit, :volume_unit, to: :user
 
   scope :top_level, -> { where(parent_id: nil) }
+  # Shown on the Vehicles page.
+  scope :listed, -> { top_level.where(category: "vehicle", listed: true) }
 
   normalizes :power_source, with: ->(source) { source.presence }
   normalizes :make, with: ->(text) { text.squish.then { |typed| MAKES.find { it.casecmp?(typed) } || typed.presence } }
@@ -64,6 +68,8 @@ class Gear < ApplicationRecord
   # Components are shown as part of their parent, so only top-level gear is made public on its own.
   before_validation { self.public = self.public_costs = false if parent_id.present? }
   before_validation { self.public_costs = false unless public? }
+  before_validation { self.listed = false unless vehicle? && parent_id.nil? }
+  before_validation { self.listed_price = self.listed_costs = self.listed_economy = false unless listed? }
 
   validates :name, presence: true, unless: :vehicle?
   validate { errors.add(:base, "Add a year, make or model, or a nickname") if vehicle? && name.blank? }
@@ -73,6 +79,7 @@ class Gear < ApplicationRecord
   validates :year, allow_nil: true, numericality: { only_integer: true, greater_than_or_equal_to: 1885, less_than_or_equal_to: ->(_) { Date.current.year + 1 } }
   validates :make, :model, :trim, length: { maximum: 50 }
   validate :parent_is_allowed
+  validate { errors.add(:base, "Add a make and model to list it on the Vehicles page") if listed? && (make.blank? || model.blank?) }
 
   # Purchase price plus every expense and fuel entry, including those of components.
   def total_cost

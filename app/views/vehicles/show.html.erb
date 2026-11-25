@@ -1,0 +1,24 @@
+<% content_for :title, @vehicle.vehicle_name %>
+<% content_for :head, tag.meta(name: "robots", content: "noindex") %>
+<p><%= link_to "< Vehicles", vehicles_path %></p>
+
+<h1><%= @vehicle.vehicle_name %></h1>
+
+<dl>
+  <% if @owner %>
+    <dt>Owner</dt><dd><%= link_to @owner.display_name, profile_path(username: @owner.username) %></dd>
+  <% end %>
+  <dt>Powered by</dt><dd><%= @vehicle.power_source_name || "-" %></dd>
+  <% if @vehicle.listed_price? %>
+    <dt>Purchase price</dt><dd><%= money @vehicle.price, @vehicle.currency %></dd>
+    <% if @vehicle.listed_costs? && @vehicle.price %>
+      <dt>Total cost so far</dt><dd><%= money @vehicle.total_cost, @vehicle.currency %></dd>
+    <% end %>
+  <% end %>
+</dl>
+
+<% if @vehicle.listed_costs? || @vehicle.listed_economy? %>
+  <%= render "gears/stats", stats: @stats, costs: @vehicle.listed_costs?, economy: @vehicle.listed_economy?, owner: false %>
+<% else %>
+  <p class="muted">The owner doesn't share its stats.</p>
+<% end %>

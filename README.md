@@ -2,7 +2,7 @@
 
 Own gears, not stuff. A text-based web app for recording what you own, when you
 bought it, where from, and what it has really cost you. Each user sees only
-their own gear.
+their own gear, and what others choose to make public.
 
 - **Gear**: anything you own, with its purchase date, price, and where you bought it.
   Vehicles can also note their year, make, model and trim, and a nickname.
@@ -29,6 +29,9 @@ their own gear.
   one currency show each separately.
 - **Public profile**: optional. Pick a display name and username, turn your profile on,
   and choose which gear to show at `/u/<username>`, with or without its costs.
+- **Vehicles page**: optional. List a vehicle at `/vehicles` to help people choosing a car,
+  with or without its price, running costs and efficiency, and without your name unless
+  your profile is public.
 - **Your data**: download everything as a JSON file, import that file into a new
   account, or delete your account, all from Settings.
 

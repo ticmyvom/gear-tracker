@@ -6,7 +6,7 @@ json.account do
 end
 json.gears @gears do |gear|
   json.partial! "api/v1/gears/gear", gear: gear
-  json.call(gear, :public, :public_costs)
+  json.call(gear, :public, :public_costs, *Gear::LISTING_FIELDS)
   json.expenses gear.expenses.sort_by(&:spent_on), partial: "api/v1/expenses/expense", as: :expense
   json.fuel_entries gear.fuel_entries.sort_by { [ it.filled_on, it.id ] }, partial: "api/v1/fuel_entries/fuel_entry", as: :fuel_entry
   json.readings gear.readings.sort_by(&:read_on), partial: "api/v1/readings/reading", as: :reading

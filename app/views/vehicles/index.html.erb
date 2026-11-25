@@ -1,0 +1,47 @@
+<% content_for :title, "Vehicles" %>
+<% content_for :head, tag.meta(name: "robots", content: "noindex") %>
+
+<h1>Vehicles</h1>
+<p class="muted">What vehicles really cost their owners, for choosing your next one. List yours from its edit page.</p>
+
+<%= form_with url: vehicles_path, method: :get, class: "actions" do |form| %>
+  <%= form.label :make do %>Make <%= form.select :make, options_for_select(@makes, @make), include_blank: "Any" %><% end %>
+  <%= form.label :model do %>Model <%= form.select :model, options_for_select(@models, @model), include_blank: "Any" %><% end %>
+  <%= form.submit "Filter", name: nil %>
+  <%= link_to "Clear", vehicles_path if @make.present? || @model.present? %>
+<% end %>
+
+<% if @stats.any? %>
+  <div class="scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>Vehicle</th><th>Powered by</th><th class="num">Price</th><th class="num">Running cost<br>per year</th>
+          <th class="num">Running cost<br>per <%= @stats.first.distance_label %></th><th class="num">Average<br>efficiency</th><th class="num">Distance<br>tracked</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @stats.each do |stats| %>
+          <% vehicle = stats.gear %>
+          <tr>
+            <td><%= link_to vehicle.vehicle_name, vehicle_path(vehicle) %></td>
+            <td><%= vehicle.power_source_name || "-" %></td>
+            <td class="num"><%= vehicle.listed_price? ? money(vehicle.price, vehicle.currency) : "-" %></td>
+            <td class="num"><%= vehicle.listed_costs? ? money(stats.running_cost_per_year, vehicle.currency) : "-" %></td>
+            <td class="num"><%= vehicle.listed_costs? && vehicle.listed_economy? ? money(stats.cost_per_distance, vehicle.currency) : "-" %></td>
+            <td class="num"><%= vehicle.listed_economy? ? efficiency(stats, stats.average_efficiency) : "-" %></td>
+            <td class="num"><%= vehicle.listed_economy? && stats.distance ? "#{distance(stats.distance)} #{stats.distance_label}" : "-" %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% else %>
+  <p class="muted">No vehicles<%= @make.present? || @model.present? || @page > 1 ? " match" : " yet" %>.</p>
+<% end %>
+
+<p class="actions">
+  <% filters = { make: @make.presence, model: @model.presence } %>
+  <%= link_to "< Previous", vehicles_path(filters.merge(page: @page - 1)) if @page > 1 %>
+  <%= link_to "Next >", vehicles_path(filters.merge(page: @page + 1)) if @more %>
+</p>

@@ -62,6 +62,12 @@ class AccountImportTest < ActiveSupport::TestCase
     end
   end
 
+  test "never lists an imported vehicle" do
+    import(file([ gear("category" => "vehicle", "make" => "Ford", "model" => "Transit", "listed" => true, "listed_price" => true) ]))
+
+    assert_equal [ false, false ], @user.gears.find_by!(name: "Van").values_at(:listed, :listed_price)
+  end
+
   test "attaches components to their new parent, whatever order the file lists them in" do
     tires = gear("id" => 2, "name" => "Tires", "parent_id" => 1, "power_source" => nil, "fuel_entries" => [])
     import(file([ tires, gear ]))

@@ -10,6 +10,10 @@ changes in a way that breaks existing clients.
 
 ## [Unreleased]
 
+- A public Vehicles page at `/vehicles`, with filters by make and model, shows what
+  listed vehicles really cost. Owners choose to list each vehicle, and whether to
+  show its price, running costs, and efficiency; nothing is listed by default, and
+  the owner's name is shown only while their profile is public
 - A vehicle's page shows its stats: running costs in total, per year, per mile or
   km and by category; average, best, worst and latest efficiency; and how much
   was logged

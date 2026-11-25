@@ -49,6 +49,43 @@ class FuelEntriesControllerTest < ActionDispatch::IntegrationTest
     assert_select "td", text: "10 gal about 2 missed before"
   end
 
+  test "an unusual efficiency is flagged on the gear page and the form, until it's checked" do
+    entry = nil
+    [ 400, 400, 400, 1200 ].inject(240_042) do |odometer, distance|
+      entry = @gear.fuel_entries.create!(entered_amount: 10, entered_odometer: odometer + distance)
+      odometer + distance
+    end
+
+    get gear_path(@gear)
+    assert_select "a[href=?]", edit_gear_fuel_entry_path(@gear, entry), text: "Unusually high: check", count: 1
+
+    get edit_gear_fuel_entry_path(@gear, entry)
+    assert_select ".alert", text: /120.0 mi\/gal is unusually high.\s+It's usually about 40.0/
+    assert_select ".alert", text: /Did you miss logging a fill-up before this one/
+    assert_select "input[type=checkbox][name=?]", "fuel_entry[efficiency_checked]"
+
+    patch gear_fuel_entry_path(@gear, entry), params: { fuel_entry: { efficiency_checked: "1" } }
+    follow_redirect!
+    assert_select "a", text: /Unusually/, count: 0
+
+    get edit_gear_fuel_entry_path(@gear, entry) # so it can be unticked
+    assert_select ".alert", count: 0
+    assert_select "input[type=checkbox][checked][name=?]", "fuel_entry[efficiency_checked]"
+  end
+
+  test "an unusually low efficiency points to the entry before" do
+    entry = nil
+    [ 240_442, 240_842, 241_242, 241_342 ].each { entry = @gear.fuel_entries.create!(entered_amount: 10, entered_odometer: it) }
+
+    get edit_gear_fuel_entry_path(@gear, entry)
+    assert_select ".alert", text: /unusually low.*Was the fill-up before this one only partial\? If so, untick “Filled up \(full tank\)” on that entry/m
+  end
+
+  test "an ordinary entry isn't asked to be checked" do
+    get edit_gear_fuel_entry_path(@gear, fuel_entries(:fill_up))
+    assert_select "input[name=?]", "fuel_entry[efficiency_checked]", count: 0
+  end
+
   test "the gear page shows distance and efficiency worked out from the odometers" do
     post gear_fuel_entries_path(@gear), params: { fuel_entry: { entered_amount: "10", entered_odometer: "240542", filled_up: "1" } }
     follow_redirect!
@@ -59,10 +96,10 @@ class FuelEntriesControllerTest < ActionDispatch::IntegrationTest
 
   test "a plug-in hybrid isn't told its distance is worked out" do
     get new_gear_fuel_entry_path(@gear)
-    assert_select "p", text: /worked out from the odometers/
+    assert_select "p", text: /Leave this distance blank/
 
     get new_gear_fuel_entry_path(gears(:phev))
-    assert_select "p", text: /worked out from the odometers/, count: 0
+    assert_select "p", text: /Leave this distance blank/, count: 0
   end
 
   test "create requires an amount" do

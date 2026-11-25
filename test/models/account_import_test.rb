@@ -49,11 +49,11 @@ class AccountImportTest < ActiveSupport::TestCase
     assert_equal [ "kWh", 12.5.to_d ], [ energy.unit, energy.amount ]
   end
 
-  test "keeps whether the tank was filled up and one was missed, and gives older entries the defaults" do
+  test "keeps whether the tank was filled up, one was missed and it was checked, and gives older entries the defaults" do
     entry = { "date" => "2025-02-03", "kind" => "fuel", "amount" => 10, "currency" => "USD" }
-    import(file([ gear("fuel_entries" => [ entry.merge("filled_up" => false, "missed_previous" => true), entry.merge("filled_up" => true, "missed_previous" => false), entry ]) ]))
+    import(file([ gear("fuel_entries" => [ entry.merge("filled_up" => false, "missed_previous" => true, "efficiency_checked" => true), entry.merge("filled_up" => true, "missed_previous" => false), entry ]) ]))
 
-    assert_equal [ [ false, true ], [ true, false ], [ true, false ] ], @user.gears.find_by!(name: "Van").fuel_entries.order(:id).pluck(:filled_up, :missed_previous)
+    assert_equal [ [ false, true, true ], [ true, false, false ], [ true, false, false ] ], @user.gears.find_by!(name: "Van").fuel_entries.order(:id).pluck(:filled_up, :missed_previous, :efficiency_checked)
   end
 
   test "refuses a filled_up that isn't true or false" do

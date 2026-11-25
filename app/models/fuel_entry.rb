@@ -22,7 +22,7 @@ class FuelEntry < ApplicationRecord
   validates :total_price, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
   validates :odometer, :trip, numericality: { greater_than_or_equal_to: 0 }, allow_nil: true
   validates :minutes, numericality: { only_integer: true, greater_than: 0 }, allow_nil: true
-  validates :filled_up, :missed_previous, inclusion: { in: [ true, false ] }
+  validates :filled_up, :missed_previous, :efficiency_checked, inclusion: { in: [ true, false ] }
   validate :gear_uses_unit, on: :create
 
   # Before it's saved, a new entry takes its unit from the gear.
@@ -85,8 +85,22 @@ class FuelEntry < ApplicationRecord
 
   # Distance per unit of fuel or energy, like mi/gal or km/L, since the last full tank.
   def distance_per_unit
-    per_unit = gear&.fuel_economy&.per_unit(self)
-    Units.convert(per_unit, "km", distance_unit) / Units.convert(1, stored_unit_for(:amount), preferred_unit_for(:amount)) if per_unit
+    preferred_efficiency(gear&.fuel_economy&.per_unit(self))
+  end
+
+  # What it usually gets, in the same units.
+  def usual_distance_per_unit
+    preferred_efficiency(gear&.fuel_economy&.usual_per_unit(display_unit))
+  end
+
+  # :high or :low if the efficiency is worth checking.
+  def efficiency_flag
+    gear&.fuel_economy&.flag(self)
+  end
+
+  # Like "mi/gal"
+  def efficiency_label
+    "#{distance_label}/#{amount_label}"
   end
 
   # About how many fill-ups went unlogged just before this one.
@@ -110,6 +124,10 @@ class FuelEntry < ApplicationRecord
   private
     def currency_owner
       gear&.user
+    end
+
+    def preferred_efficiency(per_unit)
+      Units.convert(per_unit, "km", distance_unit) / Units.convert(1, stored_unit_for(:amount), preferred_unit_for(:amount)) if per_unit
     end
 
     def store_time_used

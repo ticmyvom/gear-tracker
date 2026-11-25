@@ -40,8 +40,20 @@ class Api::V1::FuelEntriesTest < ActionDispatch::IntegrationTest
     assert_equal [ true, 2, nil ], json.values_at("missed_previous", "missed_before", "efficiency")
   end
 
-  test "filled_up and missed_previous can't be null" do
-    %w[ filled_up missed_previous ].each do |field|
+  test "an unusual efficiency is flagged until it's checked" do
+    entry = nil
+    [ 240_442, 240_842, 241_242, 242_442 ].each { entry = gears(:prius).fuel_entries.create!(entered_amount: 10, entered_odometer: it) }
+    path = api_v1_gear_fuel_entry_path(gears(:prius), entry)
+
+    get path, headers: api_headers
+    assert_equal [ "high", false ], json.values_at("efficiency_flag", "efficiency_checked")
+
+    patch path, params: { efficiency_checked: true }, headers: api_headers, as: :json
+    assert_equal [ nil, true ], json.values_at("efficiency_flag", "efficiency_checked")
+  end
+
+  test "the checkboxes can't be null" do
+    %w[ filled_up missed_previous efficiency_checked ].each do |field|
       post api_v1_gear_fuel_entries_path(gears(:prius)), params: { amount: 2, field => nil }, headers: api_headers, as: :json
 
       assert_response :unprocessable_content

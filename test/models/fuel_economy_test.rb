@@ -151,6 +151,52 @@ class FuelEconomyTest < ActiveSupport::TestCase
     assert_in_delta 50, FuelEconomy.new(phev.reload).per_unit(typed), 0.001
   end
 
+  # Tanks of 40 L that went 400 km, after a first full one, then more tanks of these distances.
+  def usual_tanks(*distances)
+    odometer = 1000
+    log(40, odometer: odometer)
+    [ 400, 400, 400, *distances ].map { |distance| log(40, odometer: odometer += distance) }
+  end
+
+  def flags(entries) = entries.map { FuelEntry.find(it.id).efficiency_flag }
+
+  test "flags an efficiency that's unusually high or low" do
+    assert_equal [ nil, nil, nil, :high, :low ], flags(usual_tanks(800, 200))
+  end
+
+  test "ordinary changes aren't flagged" do
+    assert_equal [ nil ] * 5, flags(usual_tanks(560, 280)) # 1.4 and 0.7 times the usual
+  end
+
+  test "too few tanks to know what's usual aren't flagged" do
+    log(40, odometer: 1000)
+    tanks = [ 1400, 1800, 2800 ].map { log(40, odometer: it) }
+
+    assert_equal [ nil, nil, nil ], flags(tanks)
+  end
+
+  test "checking an efficiency removes its flag, and so does saying one was missed" do
+    *, checked, missed = usual_tanks(800, 800)
+    checked.update!(efficiency_checked: true)
+    missed.update!(missed_previous: true)
+
+    assert_equal [ nil, nil ], flags([ checked, missed ])
+    assert_nil efficiency(missed)
+  end
+
+  test "flagged tanks don't count toward the usual efficiency in estimates" do
+    usual_tanks(8000) # at odometer 10,200
+    after_missed = log(40, odometer: 11_000, missed: true)
+
+    assert_equal 1, missed_before(after_missed)
+  end
+
+  test "the usual efficiency is the median" do
+    entry = usual_tanks(500, 800).last
+
+    assert_equal 10, FuelEntry.find(entry.id).usual_distance_per_unit
+  end
+
   test "unsaved entries are left out" do
     log(40, odometer: 1000)
     @truck.fuel_entries.new(amount: nil)

@@ -1,3 +1,5 @@
+<% fill_up = fuel_entry.electric? ? "charge" : "fill-up" %>
+<% filled_up_label = fuel_entry.electric? ? "Charged to your usual level" : "Filled up (full tank)" %>
 <%= form_with model: [ gear, fuel_entry ] do |form| %>
   <%= render "shared/errors", record: fuel_entry %>
   <%= form.hidden_field :unit if fuel_entry.new_record? %>
@@ -23,17 +25,36 @@
       <%= form.label :entered_trip, "#{fuel_entry.electric? ? "Distance driven" : "Distance since last fill-up"} (#{fuel_entry.distance_label}, optional)" %>
       <%= form.number_field :entered_trip, min: 0, step: "0.1", inputmode: "decimal" %>
       <% if gear.fuel_units.one? %>
-        <p class="muted">Left blank, it's worked out from the odometers.</p>
+        <p class="muted">Leave this distance blank to use the odometers: this one minus the one on the entry before.</p>
       <% end %>
     </div>
+    <% if fuel_entry.persisted? && (fuel_entry.efficiency_flag || fuel_entry.efficiency_checked?) %>
+      <div>
+        <% if fuel_entry.efficiency_flag %>
+          <p class="alert">
+            <%= number_with_precision fuel_entry.distance_per_unit, precision: 1 %> <%= fuel_entry.efficiency_label %> is unusually <%= fuel_entry.efficiency_flag %>.
+            It's usually about <%= number_with_precision fuel_entry.usual_distance_per_unit, precision: 1 %>.
+            <% if fuel_entry.efficiency_flag == :high %>
+              Did you miss logging a <%= fill_up %> before this one, or not fill up all the way this time? If so, change that box below.
+            <% else %>
+              Was the <%= fill_up %> before this one only partial? If so, untick “<%= filled_up_label %>” on that entry instead.
+            <% end %>
+            If not, look for a typo in the amount, odometer or distance here, or in the odometer on the entry before.
+          </p>
+        <% end %>
+        <%= form.label :efficiency_checked do %>
+          <%= form.check_box :efficiency_checked %> I checked the efficiency, and it's right
+        <% end %>
+      </div>
+    <% end %>
     <div>
       <%= form.label :filled_up do %>
-        <%= form.check_box :filled_up %> <%= fuel_entry.electric? ? "Charged to your usual level" : "Filled up (full tank)" %>
+        <%= form.check_box :filled_up %> <%= filled_up_label %>
       <% end %>
     </div>
     <div>
       <%= form.label :missed_previous do %>
-        <%= form.check_box :missed_previous %> I missed logging a <%= fuel_entry.electric? ? "charge" : "fill-up" %> before this one
+        <%= form.check_box :missed_previous %> I missed logging a <%= fill_up %> before this one
       <% end %>
       <p class="muted">Leaves this one out of efficiency, unless you type the distance since the one you missed.</p>
     </div>

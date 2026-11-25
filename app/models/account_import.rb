@@ -80,6 +80,7 @@ class AccountImport
       record.trip = distance(entry, "trip")
       record.filled_up = boolean(entry, "filled_up", default: true)
       record.missed_previous = boolean(entry, "missed_previous", default: false)
+      record.efficiency_checked = boolean(entry, "efficiency_checked", default: false)
     end
 
     def distance(entry, field = "odometer")

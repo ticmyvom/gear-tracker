@@ -9,7 +9,16 @@
 # After a missed (unlogged) fill-up the fuel isn't all known, so there's no
 # efficiency until the next full tank, unless the distance since the missed one
 # was typed.
+#
+# An efficiency far from the usual one is flagged for the owner to check, since
+# it's often a missed or partial fill-up, or a typo.
 class FuelEconomy
+  # Below or above this many times the median is unusual. A missed fill-up about
+  # doubles it, while weather and hills change it less.
+  USUAL = 0.6..1.5
+  # With fewer tanks, there's no telling which one is off.
+  FLAG_AFTER = 4
+
   def initialize(gear)
     entries = gear.fuel_entries.select(&:persisted?).sort_by { [ it.filled_on, it.id ] }
     # With both fuel and electricity, the odometer can't tell which one moved it.
@@ -17,6 +26,8 @@ class FuelEconomy
     @legs = {}
     @per_unit = {}
     @missed = {}
+    @flags = {}
+    @usual = {}
     entries.group_by(&:unit).each_value { measure(it) }
   end
 
@@ -35,12 +46,22 @@ class FuelEconomy
     @missed.fetch(entry.id, 0)
   end
 
+  # :high or :low if the efficiency is unusual and the owner hasn't checked it.
+  def flag(entry)
+    @flags[entry.id] unless entry.efficiency_checked?
+  end
+
+  # The median distance per liter or kWh.
+  def usual_per_unit(unit)
+    @usual[unit]
+  end
+
   private
     def measure(entries)
       previous = last_full = nil
       fuel_known = true
       tank = []
-      measured = [] # [ distance, amount ] of each full tank
+      measured = {} # full tanks => [ distance, amount ]
       gaps = {} # entries after a missed fill-up => distance since the entry before
 
       entries.each do |entry|
@@ -58,7 +79,7 @@ class FuelEconomy
           if distance&.positive?
             amount = tank.sum(&:amount)
             @per_unit[entry.id] = distance / amount
-            measured << [ distance, amount ]
+            measured[entry] = [ distance, amount ]
           end
           last_full = entry
           fuel_known = true
@@ -67,7 +88,22 @@ class FuelEconomy
         previous = entry
       end
 
+      flag_unusual(measured.keys)
+      measured = measured.reject { |entry, _| flag(entry) }.values
       gaps.each { |entry, distance| @missed[entry.id] = estimate_missed(entry, distance, measured, entries) }
+    end
+
+    def flag_unusual(entries)
+      return if entries.empty?
+
+      values = entries.map { per_unit(it) }.sort
+      median = @usual[entries.first.unit] = (values[(values.size - 1) / 2] + values[values.size / 2]) / 2
+      return if entries.size < FLAG_AFTER
+
+      entries.each do |entry|
+        ratio = per_unit(entry) / median
+        @flags[entry.id] = ratio > USUAL.end ? :high : :low unless USUAL.cover?(ratio)
+      end
     end
 
     def tank_distance(tank, last_full)

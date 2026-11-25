@@ -97,7 +97,7 @@
               <% if show_distance %>
                 <td class="num"><%= distance fuel_entry.entered_odometer %></td>
                 <td class="num"><%= distance fuel_entry.distance %></td>
-                <td class="num"><% if fuel_entry.distance_per_unit %><%= number_with_precision fuel_entry.distance_per_unit, precision: 1 %> <%= fuel_entry.distance_label %>/<%= fuel_entry.amount_label %><% end %></td>
+                <td class="num"><% if fuel_entry.distance_per_unit %><%= number_with_precision fuel_entry.distance_per_unit, precision: 1 %> <%= fuel_entry.efficiency_label %><% if fuel_entry.efficiency_flag %><br><small><%= link_to "Unusually #{fuel_entry.efficiency_flag}: check", edit_gear_fuel_entry_path(@gear, fuel_entry) %></small><% end %><% end %></td>
               <% end %>
               <% if fuel_notes %><td class="notes"><%= fuel_entry.notes %></td><% end %>
               <td><%= link_to "Edit", edit_gear_fuel_entry_path(@gear, fuel_entry) %></td>

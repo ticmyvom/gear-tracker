@@ -2,13 +2,16 @@
 
 Notable changes to Gear Tracker. Versions follow [Semantic Versioning](https://semver.org/):
 a **patch** release fixes bugs, a **minor** release adds features, and a **major**
-release changes something users or API clients rely on. Until 1.0.0, the app isn't
-publicly hosted yet.
+release changes something users or API clients rely on.
 
 The API has its own version in its path (`/api/v1`), which changes only when the API
 changes in a way that breaks existing clients.
 
 ## [Unreleased]
+
+## [0.3.0] - 2026-11-24
+
+What vehicles really cost, and public profiles.
 
 - A public Vehicles page at `/vehicles`, with filters by make and model, shows what
   listed vehicles really cost. Owners choose to list each vehicle, and whether to
@@ -22,8 +25,8 @@ changes in a way that breaks existing clients.
   partial fill-up counts toward the next full one, so it can't skew efficiency.
   They can also note that a fill-up before them wasn't logged, which leaves that
   tank out, and estimate how many were missed. An unusually high or low efficiency
-  is flagged until you fix it or say it's right.
-  Plug-in hybrids still need a typed distance
+  is flagged until you fix it or say it's right. Plug-in hybrids still need a typed
+  distance
 - Expense categories are picked from a list too, like Maintenance, Insurance or
   Parking & tolls, and move over the same way gear categories did. In the API,
   an expense's `category` is now one of the list's keys, and responses add

@@ -1,0 +1,33 @@
+<%# What it costs to run. Takes a VehicleStats. %>
+<% efficiency = ->(value) { value ? "#{number_with_precision(value, precision: 1)} #{stats.efficiency_label}" : "-" } %>
+<h2>Stats</h2>
+<dl>
+  <dt>Time tracked</dt><dd><%= time_tracked stats.days_tracked %></dd>
+  <dt>Distance tracked</dt><dd><%= stats.distance ? "#{distance(stats.distance)} #{stats.distance_label}" : "- (needs two odometers)" %></dd>
+  <dt>Running costs</dt><dd><%= money stats.running_costs %> <small>fuel, expenses and parts, without the purchase price</small></dd>
+  <dt>Running cost per year</dt><dd><%= stats.running_cost_per_year ? money(stats.running_cost_per_year) : "- (after #{VehicleStats::MIN_DAYS} days of logs)" %></dd>
+  <dt>Running cost per <%= stats.distance_label %></dt><dd><%= stats.cost_per_distance ? money(stats.cost_per_distance) : "- (after #{VehicleStats::MIN_DAYS} days between odometers)" %></dd>
+  <% if stats.efficiency? %>
+    <dt>Average efficiency</dt><dd><%= efficiency.(stats.average_efficiency) %></dd>
+    <dt>Best</dt><dd><%= stats.best_efficiency ? efficiency.(stats.best_efficiency) : "- (after #{VehicleStats::MIN_TANKS} full tanks)" %></dd>
+    <dt>Worst</dt><dd><%= stats.worst_efficiency ? efficiency.(stats.worst_efficiency) : "- (after #{VehicleStats::MIN_TANKS} full tanks)" %></dd>
+    <dt>Latest</dt><dd><%= efficiency.(stats.latest_efficiency) %></dd>
+  <% end %>
+  <dt>Fuel entries</dt><dd><%= stats.fuel_count %><%= ", and about #{stats.missed_count} missed, so costs are a little low" if stats.missed_count.positive? %></dd>
+  <dt>Expenses</dt><dd><%= stats.expense_count %></dd>
+</dl>
+<% if stats.flagged_count.positive? %>
+  <p class="alert">Left out of efficiency and distance until you check: <%= pluralize stats.flagged_count, "unusual fuel entry" %>, marked in the log below.</p>
+<% end %>
+<% stats.breakdown.each do |currency, slices| %>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>Running costs<%= " in #{currency}" if stats.breakdown.many? %></th><th class="num">Amount</th><th class="num">Share</th></tr></thead>
+      <tbody>
+        <% slices.each do |slice| %>
+          <tr><td><%= slice.name %></td><td class="num"><%= money slice.amount, currency %></td><td class="num"><%= number_to_percentage slice.percent, precision: 1 %></td></tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>

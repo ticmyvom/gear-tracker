@@ -32,6 +32,8 @@
   <%= button_to "Delete", @gear, method: :delete, data: { turbo_confirm: "Delete #{@gear.name} and all its components, expenses, fuel entries and readings?" } %>
 </div>
 
+<%= render "stats", stats: @stats if @stats&.any? %>
+
 <% if @gear.parent_id.nil? %>
   <h2>Components</h2>
   <p class="muted">Parts with their own purchase history, like a set of tires.</p>

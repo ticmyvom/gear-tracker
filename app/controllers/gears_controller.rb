@@ -11,6 +11,7 @@ class GearsController < ApplicationController
     @fuel_entries = @gear.fuel_entries.order(filled_on: :desc, id: :desc)
     @expenses = @gear.expenses.order(spent_on: :desc, id: :desc)
     @readings = @gear.readings.order(read_on: :desc, id: :desc)
+    @stats = VehicleStats.new(@gear) if @gear.vehicle?
   end
 
   def new

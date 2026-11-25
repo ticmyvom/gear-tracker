@@ -3,6 +3,11 @@ require "test_helper"
 class ApplicationHelperTest < ActionView::TestCase
   teardown { Current.reset }
 
+  test "time tracked is in days, then months and years" do
+    assert_equal [ "0 days", "1 day", "59 days", "2 months", "1 year", "1 year 1 month", "2 years 6 months" ],
+      [ 0, 1, 59, 61, 366, 400, 914 ].map { time_tracked(it) }
+  end
+
   test "money uses dollars without a signed-in user" do
     assert_equal "$1,234.50", money(1234.5)
     assert_equal "-", money(nil)

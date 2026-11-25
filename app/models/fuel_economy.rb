@@ -19,16 +19,44 @@ class FuelEconomy
   # With fewer tanks, there's no telling which one is off.
   FLAG_AFTER = 4
 
+  # From one full tank to the next.
+  Tank = Data.define(:entry, :distance, :amount) do
+    def per_unit = distance / amount
+  end
+
+  # Full tanks in date order, without any flagged ones.
+  attr_reader :tanks
+
   def initialize(gear)
     entries = gear.fuel_entries.select(&:persisted?).sort_by { [ it.filled_on, it.id ] }
     # With both fuel and electricity, the odometer can't tell which one moved it.
-    @use_odometer = (gear.fuel_units | entries.map(&:unit)).one?
+    @units = gear.fuel_units | entries.map(&:unit)
+    @entries = entries
+    @tanks = []
     @legs = {}
     @per_unit = {}
     @missed = {}
     @flags = {}
     @usual = {}
     entries.group_by(&:unit).each_value { measure(it) }
+  end
+
+  # False when both fuel and electricity were used.
+  def one_source?
+    @units.one?
+  end
+
+  # "l" or "kWh", when there's only one.
+  def unit
+    @units.first if one_source?
+  end
+
+  def missed_total
+    @missed.values.sum
+  end
+
+  def flagged_count
+    @entries.count { flag(it) }
   end
 
   # Distance since the entry before: as typed, or else from the odometers.
@@ -61,7 +89,7 @@ class FuelEconomy
       previous = last_full = nil
       fuel_known = true
       tank = []
-      measured = {} # full tanks => [ distance, amount ]
+      measured = []
       gaps = {} # entries after a missed fill-up => distance since the entry before
 
       entries.each do |entry|
@@ -79,7 +107,7 @@ class FuelEconomy
           if distance&.positive?
             amount = tank.sum(&:amount)
             @per_unit[entry.id] = distance / amount
-            measured[entry] = [ distance, amount ]
+            measured << Tank.new(entry, distance, amount)
           end
           last_full = entry
           fuel_known = true
@@ -88,8 +116,9 @@ class FuelEconomy
         previous = entry
       end
 
-      flag_unusual(measured.keys)
-      measured = measured.reject { |entry, _| flag(entry) }.values
+      flag_unusual(measured.map(&:entry))
+      measured = measured.reject { flag(it.entry) }
+      @tanks += measured
       gaps.each { |entry, distance| @missed[entry.id] = estimate_missed(entry, distance, measured, entries) }
     end
 
@@ -113,7 +142,7 @@ class FuelEconomy
 
     # nil unless both odometers are known and it went up, so a typo isn't counted.
     def between(earlier, later)
-      return unless @use_odometer && earlier&.odometer && later.odometer
+      return unless one_source? && earlier&.odometer && later.odometer
 
       (later.odometer - earlier.odometer).then { it if it.positive? }
     end
@@ -124,7 +153,7 @@ class FuelEconomy
       full = entries.select(&:filled_up?)
       return 1 if distance.nil? || measured.empty? || full.empty?
 
-      usual_per_unit = measured.sum(&:first) / measured.sum(&:last)
+      usual_per_unit = measured.sum(&:distance) / measured.sum(&:amount)
       usual_amount = full.sum(&:amount) / full.size
       [ ((distance / usual_per_unit - entry.amount) / usual_amount).round, 1 ].max
     end

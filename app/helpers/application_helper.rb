@@ -34,6 +34,15 @@ module ApplicationHelper
     [ ("#{hours} h" if hours.positive?), ("#{mins} min" if mins.positive?) ].compact.join(" ")
   end
 
+  # 45 => "45 days", 400 => "1 year 1 month"
+  def time_tracked(days)
+    months = (days / 30.4375).floor
+    return pluralize(days, "day") if months < 2
+
+    years, months = months.divmod(12)
+    [ (pluralize(years, "year") if years.positive?), (pluralize(months, "month") if months.positive?) ].compact.join(" ")
+  end
+
   def quantity(value)
     number_with_precision value, precision: 3, strip_insignificant_zeros: true
   end

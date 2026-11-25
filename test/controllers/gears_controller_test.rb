@@ -159,6 +159,41 @@ class GearsControllerTest < ActionDispatch::IntegrationTest
     assert_select "a", text: "Add energy entry"
   end
 
+  test "a vehicle's page shows its stats" do
+    get gear_path(gears(:prius))
+
+    assert_select "h2", text: "Stats"
+    assert_select "dd", text: /\A\$715.00/ # $40 fuel, $50 oil change, $600 tires, $25 rotation
+    assert_select "td", text: "83.9%"
+    assert_select "dt", text: "Running cost per mi"
+    assert_select "dd", text: /after 180 days between odometers/
+  end
+
+  test "stats name the currency only when there's more than one" do
+    get gear_path(gears(:prius))
+    assert_select "th", text: "Running costs"
+
+    gears(:prius).expenses.create!(spent_on: Date.current, description: "Toll", amount: 5, currency: "EUR")
+    get gear_path(gears(:prius))
+    assert_select "th", text: "Running costs in EUR"
+  end
+
+  test "stats mention missed and unusual fuel entries" do
+    [ 240_442, 240_842, 241_242, 242_442 ].each { gears(:prius).fuel_entries.create!(entered_amount: 10, entered_odometer: it) }
+    gears(:prius).fuel_entries.create!(entered_amount: 10, entered_odometer: 243_300, missed_previous: true)
+    get gear_path(gears(:prius))
+
+    assert_select "dd", text: /and about 1 missed/
+    assert_select ".alert", text: /Left out of efficiency and distance until you check: 1 unusual fuel entry/
+  end
+
+  test "other gear and vehicles with nothing logged have no stats" do
+    [ :tires, :phev ].each do |gear|
+      get gear_path(gears(gear))
+      assert_select "h2", text: "Stats", count: 0
+    end
+  end
+
   test "create" do
     assert_difference -> { users(:one).gears.count } do
       post gears_path, params: { gear: { name: "Tent", power_source: "manual", price: "199.99", purchased_on: "2026-01-02", purchased_from: "REI" } }

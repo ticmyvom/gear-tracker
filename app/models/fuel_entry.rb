@@ -127,7 +127,7 @@ class FuelEntry < ApplicationRecord
     end
 
     def preferred_efficiency(per_unit)
-      Units.convert(per_unit, "km", distance_unit) / Units.convert(1, stored_unit_for(:amount), preferred_unit_for(:amount)) if per_unit
+      Units.efficiency(per_unit, stored_unit_for(:amount), distance_unit, preferred_unit_for(:amount)) if per_unit
     end
 
     def store_time_used

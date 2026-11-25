@@ -15,6 +15,8 @@ their own gear.
   electricity. Add the time used to see fuel per hour or average watts, or the
   odometer or miles driven to see miles per gallon or per kWh, from one full tank to
   the next.
+- **Vehicle stats**: running costs in total, per year, per mile or km and by category, and
+  average, best, worst and latest efficiency.
 - **Readings**: measurements over time, like tire pressure or tread depth. Readings of
   vehicles and their parts can also note the odometer.
 - **API for agents**: let an agent or script read your gear and log expenses, fuel and

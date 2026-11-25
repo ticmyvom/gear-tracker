@@ -18,4 +18,9 @@ module Units
 
     value * SIZES.fetch(from) / SIZES.fetch(to)
   end
+
+  # Kilometers per liter or kWh, in other units, like miles per gallon.
+  def self.efficiency(km_per_unit, amount_unit, distance_to, amount_to)
+    convert(km_per_unit, "km", distance_to) / convert(1, amount_unit, amount_to) if km_per_unit
+  end
 end

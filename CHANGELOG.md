@@ -9,6 +9,8 @@ changes in a way that breaks existing clients.
 
 ## [Unreleased]
 
+- A listed vehicle shows its owner's name only if they tick "Also show my name",
+  even when their profile is public. Vehicles listed before now hide it
 - After adding, changing or deleting an expense, fuel entry or reading, the gear
   page opens at that section, not at the top. Cancel does the same
 

@@ -1,6 +1,6 @@
 # Vehicles their owners listed, for people choosing a car, signed in or not. They
 # show only what the owner chose, never the nickname, and the owner's name only
-# while their profile is public. A vehicle that isn't listed looks exactly like
+# if they chose to and their profile is public. A vehicle that isn't listed looks exactly like
 # one that doesn't exist.
 class VehiclesController < ApplicationController
   include NotIndexed
@@ -27,7 +27,6 @@ class VehiclesController < ApplicationController
   def show
     @vehicle = Gear.listed.find(params[:id])
     @stats = stats_for(@vehicle)
-    @owner = @vehicle.user if @vehicle.user.profile_public?
   end
 
   private

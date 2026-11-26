@@ -74,8 +74,7 @@
         <%= form.label :listed do %>
           <%= form.check_box :listed %> List it, to help people choosing a car
         <% end %>
-        <p class="muted">Anyone can see its year, make, model, trim and power source, but not its nickname.
-          <%= Current.user.profile_public? ? "Your profile is public, so your name is shown with it." : "Your profile is private, so it's listed without your name. If you make your profile public, your name is shown with it." %></p>
+        <p class="muted">Anyone can see its year, make, model, trim and power source, but not its nickname or your name.</p>
       </div>
       <div>
         <%= form.label :listed_price do %>
@@ -92,6 +91,12 @@
           <%= form.check_box :listed_economy %> Also show its efficiency, distance, and number of logs
         <% end %>
         <p class="muted">Only totals, averages and the like, never dates, descriptions, vendors or notes.</p>
+      </div>
+      <div>
+        <%= form.label :listed_owner do %>
+          <%= form.check_box :listed_owner %> Also show my name, linked to my public profile
+        <% end %>
+        <%= tag.p "Your profile is private, so your name isn't shown until you make it public in Settings.", class: "muted" unless Current.user.profile_public? %>
       </div>
     </fieldset>
   <% end %>

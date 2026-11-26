@@ -31,7 +31,7 @@ their own gear, and what others choose to make public.
   and choose which gear to show at `/u/<username>`, with or without its costs.
 - **Vehicles page**: optional. List a vehicle at `/vehicles` to help people choosing a car,
   with or without its price, running costs and efficiency, and without your name unless
-  your profile is public.
+  you choose to show it.
 - **Your data**: download everything as a JSON file, import that file into a new
   account, or delete your account, all from Settings.
 

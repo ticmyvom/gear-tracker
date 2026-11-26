@@ -133,14 +133,14 @@ class GearTest < ActiveSupport::TestCase
   end
 
   test "only top-level vehicles can be listed, and nothing is by default" do
-    assert_equal [ false ] * 4, gears(:prius).values_at(*Gear::LISTING_FIELDS)
+    assert_equal [ false ] * 5, gears(:prius).values_at(*Gear::LISTING_FIELDS)
 
-    gears(:prius).update!(listed: true, listed_price: true, listed_costs: true, listed_economy: true)
+    gears(:prius).update!(Gear::LISTING_FIELDS.index_with(true))
     gears(:tires).update!(listed: true, make: "A", model: "B")
     assert_equal [ gears(:prius) ], Gear.listed.to_a
 
     gears(:prius).update!(category: "other")
-    assert_equal [ false ] * 4, gears(:prius).values_at(*Gear::LISTING_FIELDS)
+    assert_equal [ false ] * 5, gears(:prius).values_at(*Gear::LISTING_FIELDS)
   end
 
   test "unlisting a vehicle turns off what it showed, so listing it again starts over" do
@@ -148,6 +148,18 @@ class GearTest < ActiveSupport::TestCase
     gears(:prius).update!(listed: false)
 
     assert_not gears(:prius).listed_price?
+  end
+
+  test "the owner is shown only if they chose to, and their profile is public" do
+    users(:one).update!(username: "one", display_name: "One", profile_public: true)
+    gears(:prius).update!(listed: true)
+    assert_nil gears(:prius).shown_owner
+
+    gears(:prius).update!(listed_owner: true)
+    assert_equal users(:one), gears(:prius).shown_owner
+
+    users(:one).update!(profile_public: false)
+    assert_nil gears(:prius).reload.shown_owner
   end
 
   test "a listed vehicle needs a make and model" do

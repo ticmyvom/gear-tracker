@@ -38,7 +38,7 @@ class Gear < ApplicationRecord
   # What kind of vehicle it is, in the order it's written.
   VEHICLE_FIELDS = %i[ year make model trim ].freeze
   # What the owner chose to show on the Vehicles page. Without the first, none apply.
-  LISTING_FIELDS = %i[ listed listed_price listed_costs listed_economy ].freeze
+  LISTING_FIELDS = %i[ listed listed_price listed_costs listed_economy listed_owner ].freeze
   # Suggested while typing, and how each is spelled; any other make is fine too.
   MAKES = [
     "Acura", "Alfa Romeo", "Audi", "BMW", "Buick", "BYD", "Cadillac", "Chevrolet", "Chrysler", "Dodge", "Ducati", "Fiat",
@@ -69,7 +69,7 @@ class Gear < ApplicationRecord
   before_validation { self.public = self.public_costs = false if parent_id.present? }
   before_validation { self.public_costs = false unless public? }
   before_validation { self.listed = false unless vehicle? && parent_id.nil? }
-  before_validation { self.listed_price = self.listed_costs = self.listed_economy = false unless listed? }
+  before_validation { self.listed_price = self.listed_costs = self.listed_economy = self.listed_owner = false unless listed? }
 
   validates :name, presence: true, unless: :vehicle?
   validate { errors.add(:base, "Add a year, make or model, or a nickname") if vehicle? && name.blank? }
@@ -124,6 +124,11 @@ class Gear < ApplicationRecord
   end
 
   # A name the owner chose, rather than one filled in from the vehicle's details.
+  # The owner, if they chose to show their name with this listed vehicle and their profile is public.
+  def shown_owner
+    user if listed_owner? && user.profile_public?
+  end
+
   def nickname
     name unless name == vehicle_name
   end

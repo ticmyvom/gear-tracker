@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_24_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_25_120000) do
   create_table "api_tokens", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "name", null: false
@@ -79,6 +79,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_24_120000) do
     t.boolean "listed_price", default: false, null: false
     t.boolean "listed_costs", default: false, null: false
     t.boolean "listed_economy", default: false, null: false
+    t.boolean "listed_owner", default: false, null: false
     t.index ["listed"], name: "index_gears_on_listed"
     t.index ["parent_id"], name: "index_gears_on_parent_id"
     t.index ["user_id"], name: "index_gears_on_user_id"

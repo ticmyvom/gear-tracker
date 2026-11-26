@@ -1,7 +1,7 @@
 require "test_helper"
 
 class VehiclesControllerTest < ActionDispatch::IntegrationTest
-  ALL = { listed: true, listed_price: true, listed_costs: true, listed_economy: true }.freeze
+  ALL = Gear::LISTING_FIELDS.index_with(true).freeze
 
   setup do
     @prius = gears(:prius)
@@ -148,11 +148,13 @@ class VehiclesControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test "the owner's name shows only while their profile is public" do
+  test "the owner's name shows only if they chose to, and while their profile is public" do
+    users(:one).update!(username: "trail-runner", display_name: "Trail Runner", profile_public: true)
     get vehicle_path(@prius)
     assert_select "dt", text: "Owner", count: 0
+    assert_no_match "Trail Runner", response.body
 
-    users(:one).update!(username: "trail-runner", display_name: "Trail Runner", profile_public: true)
+    @prius.update!(listed_owner: true)
     get vehicle_path(@prius)
     assert_select "dd a[href=?]", profile_path(username: "trail-runner"), text: "Trail Runner"
 

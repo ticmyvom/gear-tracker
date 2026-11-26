@@ -5,8 +5,8 @@
 <h1><%= @vehicle.vehicle_name %></h1>
 
 <dl>
-  <% if @owner %>
-    <dt>Owner</dt><dd><%= link_to @owner.display_name, profile_path(username: @owner.username) %></dd>
+  <% if (owner = @vehicle.shown_owner) %>
+    <dt>Owner</dt><dd><%= link_to owner.display_name, profile_path(username: owner.username) %></dd>
   <% end %>
   <dt>Powered by</dt><dd><%= @vehicle.power_source_name || "-" %></dd>
   <% if @vehicle.listed_price? %>

@@ -61,7 +61,7 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Tire pressure FL", prius["readings"].first["name"]
     assert_includes data["gears"].pluck("name"), "Michelin tires"
     assert_equal [ nil, nil, false ], data["account"].values_at("username", "display_name", "profile_public")
-    assert_equal [ false ] * 6, prius.values_at("public", "public_costs", *Gear::LISTING_FIELDS.map(&:to_s))
+    assert_equal [ false ] * 7, prius.values_at("public", "public_costs", *Gear::LISTING_FIELDS.map(&:to_s))
   end
 
   test "export keeps the order of fuel entries from the same day" do

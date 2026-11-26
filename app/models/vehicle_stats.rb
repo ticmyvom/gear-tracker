@@ -127,7 +127,8 @@ class VehicleStats
     def odometers
       @odometers ||= [
         *gear.fuel_entries.reject { gear.fuel_economy.flag(it) }.map { [ it.filled_on, it.odometer ] },
-        *readings.map { [ it.read_on, it.odometer ] }
+        *readings.map { [ it.read_on, it.odometer ] },
+        *expenses.map { [ it.spent_on, it.odometer ] }
       ].select { |date, km| km && date <= @today }.sort
     end
 

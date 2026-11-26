@@ -59,8 +59,9 @@ module Api
           controller_name.singularize
         end
 
+        # Odometers are in the user's distance unit.
         def record_params(fields)
-          attributes = body_params(fields)
+          attributes = body_params(fields).transform_keys { it == "odometer" ? "entered_odometer" : it }
           if attributes.key?("date")
             check_date(attributes["date"], "date")
             attributes[self.class::DATE_COLUMN.to_s] = attributes.delete("date")

@@ -18,6 +18,7 @@
     <%= form.label :vendor %>
     <%= form.text_field :vendor %>
   </div>
+  <%= render "shared/odometer_field", form: form, gear: gear, record: expense %>
   <%= render "shared/notes_field", form: form %>
   <div class="actions">
     <%= form.submit %>

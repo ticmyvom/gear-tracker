@@ -101,9 +101,11 @@ class VehicleStatsTest < ActiveSupport::TestCase
     fuel(0, odometer: 1000)
     part.readings.create!(read_on: @start + 10, name: "Tread depth", value: 6, odometer: 1800)
     fuel(5, odometer: 9_999) # a typo in between doesn't matter
-
     assert_equal 800, stats.distance
-    assert_in_delta 497.1, stats(distance_unit: "mi").distance, 0.1
+
+    spend(20, 50, odometer: 2000)
+    assert_equal 1000, stats.distance
+    assert_in_delta 621.4, stats(distance_unit: "mi").distance, 0.1
   end
 
   test "distance needs two odometers, and one that went up" do

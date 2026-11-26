@@ -1,0 +1,8 @@
+<%# locals: (form:, gear:, record:) %>
+<%# Only vehicles and their parts get an odometer, or a record that already has one. %>
+<% if gear.tracks_odometer? || record.entered_odometer.present? %>
+  <div>
+    <%= form.label :entered_odometer, "Odometer (#{record.distance_label}, optional)" %>
+    <%= form.number_field :entered_odometer, min: 0, step: "0.1", inputmode: "decimal" %>
+  </div>
+<% end %>

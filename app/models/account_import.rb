@@ -54,7 +54,7 @@ class AccountImport
             check_hash(entry)
             record = gear.public_send(association).new(fields(entry, copied).merge(date_column => date(entry["date"], "date")))
             convert_fuel_units(record, entry) if record.is_a?(FuelEntry)
-            record.odometer = distance(entry) if record.is_a?(Reading)
+            record.odometer = distance(entry) if record.is_a?(Reading) || record.is_a?(Expense)
             record.assign_attributes(category(entry, Expense)) if record.is_a?(Expense)
             save(record, "A #{association.singularize.humanize(capitalize: false)} of #{describe(item)}")
           end

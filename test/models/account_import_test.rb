@@ -134,6 +134,13 @@ class AccountImportTest < ActiveSupport::TestCase
     assert_equal [ [ "parts", nil ], [ "other", "Category: Snacks\n\nChips" ], [ nil, nil ] ], expenses.pluck(:category, :notes)
   end
 
+  test "converts an expense's odometer from the file's units" do
+    expense = { "date" => "2025-01-02", "description" => "Brakes", "amount" => 300, "currency" => "USD", "odometer" => 1000 }
+    import(file([ gear("expenses" => [ expense ]) ]))
+
+    assert_in_delta 1609.344, @user.gears.find_by!(name: "Van").expenses.sole.odometer, 0.001
+  end
+
   test "converts a reading's odometer from the file's units" do
     reading = { "date" => "2025-03-04", "name" => "Tread depth", "value" => 6, "odometer" => 1000 }
     import(file([ gear("readings" => [ reading ]) ]))

@@ -22,12 +22,7 @@
     <%= form.label :unit %>
     <%= form.text_field :unit, placeholder: "psi" %>
   </div>
-  <% if gear.tracks_odometer? || reading.entered_odometer.present? %>
-    <div>
-      <%= form.label :entered_odometer, "Odometer (#{reading.distance_label}, optional)" %>
-      <%= form.number_field :entered_odometer, min: 0, step: "0.1", inputmode: "decimal" %>
-    </div>
-  <% end %>
+  <%= render "shared/odometer_field", form: form, gear: gear, record: reading %>
   <%= render "shared/notes_field", form: form %>
   <div class="actions">
     <%= form.submit %>

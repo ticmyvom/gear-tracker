@@ -106,6 +106,7 @@ amount per currency, since amounts in different currencies aren't added up.
 | `description` | Required |
 | `amount` | Required number |
 | `currency` | Defaults to your currency |
+| `odometer` | Optional, in your distance unit (`distance_unit` in responses) |
 | `category` | One of `maintenance`, `repair`, `tires`, `parts`, `insurance`, `registration`, `taxes`, `financing`, `parking`, `cleaning`, `subscriptions` or `other`; the name, like `Parking & tolls`, works too. Leave out for none. Responses include its `category_name`. Log fuel and charging as fuel entries instead. |
 | `vendor`, `notes` | Text |
 

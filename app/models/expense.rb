@@ -1,6 +1,7 @@
 class Expense < ApplicationRecord
   include Priced
   include Categorized
+  include HasOdometer
 
   CATEGORIES = {
     "maintenance" => "Maintenance",

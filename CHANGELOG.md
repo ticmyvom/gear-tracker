@@ -9,6 +9,8 @@ changes in a way that breaks existing clients.
 
 ## [Unreleased]
 
+- Expenses of vehicles and their parts can note the odometer too, like "oil change
+  at 152,300 mi". It also counts toward a vehicle's distance tracked
 - A listed vehicle shows its owner's name only if they tick "Also show my name",
   even when their profile is public. Vehicles listed before now hide it
 - After adding, changing or deleting an expense, fuel entry or reading, the gear

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_25_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_25_130000) do
   create_table "api_tokens", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "name", null: false
@@ -34,6 +34,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_25_120000) do
     t.datetime "updated_at", null: false
     t.string "currency", null: false
     t.text "notes"
+    t.decimal "odometer", precision: 16, scale: 6
     t.index ["gear_id"], name: "index_expenses_on_gear_id"
   end
 

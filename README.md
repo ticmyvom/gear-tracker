@@ -8,7 +8,8 @@ their own gear, and what others choose to make public.
   Vehicles can also note their year, make, model and trim, and a nickname.
 - **Components**: gear that belongs to other gear, like a set of tires on a car.
   Their costs count toward the parent's total.
-- **Expenses**: money spent after the purchase, like repairs or insurance.
+- **Expenses**: money spent after the purchase, like repairs or insurance. Expenses of
+  vehicles and their parts can note the odometer.
 - **Power source**: what makes the gear go: nothing, human power, gasoline, diesel,
   propane, electricity, or both gasoline and electricity for a plug-in hybrid.
 - **Fuel entries**: fill-ups (gallons) or energy use (kWh) for gear that runs on fuel or

@@ -52,6 +52,28 @@ class ExpensesControllerTest < ActionDispatch::IntegrationTest
     assert_select "a[href=?]", gear_path(@gear, anchor: "expenses"), text: "Cancel"
   end
 
+  test "vehicles and their parts get an odometer field, other gear doesn't" do
+    [ gears(:prius), gears(:tires) ].each do |gear|
+      get new_gear_expense_path(gear)
+      assert_select "label", text: "Odometer (mi, optional)"
+    end
+
+    sign_in_as users(:two)
+    get new_gear_expense_path(gears(:drill))
+    assert_select "input[name='expense[entered_odometer]']", count: 0
+  end
+
+  test "an expense saves the odometer, and the gear page shows it only once one has it" do
+    get gear_path(@gear)
+    assert_select "th", text: "Odometer (mi)", count: 0
+
+    post gear_expenses_path(@gear), params: { expense: { spent_on: "2026-01-02", description: "Brakes", amount: "300", entered_odometer: "152300" } }
+    assert_in_delta 152_300 * 1.609344, Expense.last.odometer, 0.01
+    follow_redirect!
+    assert_select "th", text: "Odometer (mi)"
+    assert_select "td", text: "152,300"
+  end
+
   test "create requires an amount" do
     assert_no_difference -> { Expense.count } do
       post gear_expenses_path(@gear), params: { expense: { spent_on: "2026-01-02", description: "Fuel", amount: "" } }

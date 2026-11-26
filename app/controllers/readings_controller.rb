@@ -13,7 +13,7 @@ class ReadingsController < ApplicationController
     @reading = @gear.readings.new(reading_params)
 
     if @reading.save
-      redirect_to @gear, notice: "Reading added."
+      redirect_to @gear, section: :readings, notice: "Reading added."
     else
       render :new, status: :unprocessable_content
     end
@@ -21,7 +21,7 @@ class ReadingsController < ApplicationController
 
   def update
     if @reading.update(reading_params)
-      redirect_to @gear, notice: "Reading updated."
+      redirect_to @gear, section: :readings, notice: "Reading updated."
     else
       render :edit, status: :unprocessable_content
     end
@@ -29,7 +29,7 @@ class ReadingsController < ApplicationController
 
   def destroy
     @reading.destroy!
-    redirect_to @gear, notice: "Reading deleted.", status: :see_other
+    redirect_to @gear, section: :readings, notice: "Reading deleted.", status: :see_other
   end
 
   private

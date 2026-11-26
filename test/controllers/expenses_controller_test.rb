@@ -36,6 +36,22 @@ class ExpensesControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_content
   end
 
+  test "saving goes back to the expenses, and only then" do
+    post gear_expenses_path(@gear), params: { expense: { spent_on: "2026-01-02", description: "Wash", amount: "9" } }
+    assert_equal :expenses, flash[:section]
+    follow_redirect!
+    assert_select "h2#expenses[data-controller=scroll-into-view]"
+    assert_select "[data-controller=scroll-into-view]", count: 1
+
+    get gear_path(@gear)
+    assert_select "h2#expenses:not([data-controller])"
+  end
+
+  test "cancel goes back to the expenses" do
+    get new_gear_expense_path(@gear)
+    assert_select "a[href=?]", gear_path(@gear, anchor: "expenses"), text: "Cancel"
+  end
+
   test "create requires an amount" do
     assert_no_difference -> { Expense.count } do
       post gear_expenses_path(@gear), params: { expense: { spent_on: "2026-01-02", description: "Fuel", amount: "" } }

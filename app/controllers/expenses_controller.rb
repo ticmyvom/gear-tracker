@@ -13,7 +13,7 @@ class ExpensesController < ApplicationController
     @expense = @gear.expenses.new(expense_params)
 
     if @expense.save
-      redirect_to @gear, notice: "Expense added."
+      redirect_to @gear, section: :expenses, notice: "Expense added."
     else
       render :new, status: :unprocessable_content
     end
@@ -21,7 +21,7 @@ class ExpensesController < ApplicationController
 
   def update
     if @expense.update(expense_params)
-      redirect_to @gear, notice: "Expense updated."
+      redirect_to @gear, section: :expenses, notice: "Expense updated."
     else
       render :edit, status: :unprocessable_content
     end
@@ -29,7 +29,7 @@ class ExpensesController < ApplicationController
 
   def destroy
     @expense.destroy!
-    redirect_to @gear, notice: "Expense deleted.", status: :see_other
+    redirect_to @gear, section: :expenses, notice: "Expense deleted.", status: :see_other
   end
 
   private

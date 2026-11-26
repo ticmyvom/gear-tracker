@@ -1,4 +1,16 @@
 module ApplicationHelper
+  # The gear page, scrolled to the section listing this kind of record.
+  def gear_section_path(gear, model)
+    gear_path(gear, anchor: model.model_name.route_key)
+  end
+
+  # A gear page section's heading, scrolled to after saving one of its records,
+  # so adding several in a row doesn't mean scrolling down each time.
+  def section_heading(model, text)
+    id = model.model_name.route_key
+    tag.h2 text, id: id, data: ({ controller: "scroll-into-view" } if flash[:section].to_s == id)
+  end
+
   # Tables show a Notes column only when some row has a note.
   def any_notes?(records)
     records.any? { it.notes.present? }

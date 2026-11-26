@@ -234,6 +234,12 @@ class FuelEntriesControllerTest < ActionDispatch::IntegrationTest
     assert_equal "l", FuelEntry.last.reload.unit
   end
 
+  test "saving and deleting go back to the fuel entries" do
+    delete gear_fuel_entry_path(@gear, fuel_entries(:fill_up))
+    follow_redirect!
+    assert_select "h2#fuel_entries[data-controller=scroll-into-view]"
+  end
+
   test "destroy" do
     assert_difference -> { FuelEntry.count }, -1 do
       delete gear_fuel_entry_path(@gear, fuel_entries(:fill_up))

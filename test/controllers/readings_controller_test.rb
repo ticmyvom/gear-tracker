@@ -40,6 +40,12 @@ class ReadingsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 36, readings(:pressure).reload.value
   end
 
+  test "saving and deleting go back to the readings" do
+    delete gear_reading_path(@gear, readings(:pressure))
+    follow_redirect!
+    assert_select "h2#readings[data-controller=scroll-into-view]"
+  end
+
   test "destroy" do
     assert_difference -> { Reading.count }, -1 do
       delete gear_reading_path(@gear, readings(:pressure))

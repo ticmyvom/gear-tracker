@@ -1,7 +1,11 @@
 # To do
 
+## Commands to run now and then
+- Monthly, or after a burst of deploys: `bin/kamal server exec "df -h /"` shows how full the server's disk is. Look into it if Use% is over 80% (36% on 2026-11-24)
+
 ## Features
-- [ ] After adding an expense, fuel entry or reading, go back to the same place on the gear page instead of its top, so adding several of the same kind in a row doesn't mean scrolling down each time
+- [x] After adding, changing or deleting an expense, fuel entry or reading, go back to its section of the gear page instead of the top
+- [ ] A "Save and add another" button, for adding several of the same kind in a row
 - [ ] Try the API token section of Settings in a real browser: create a token, copy it, check it works with `curl`, then revoke it (so far only tested by automated tests)
 - [ ] Mark gear as sold or retired, so cost per year stops falling after you let it go
 - [ ] Show the latest value of each reading, and filter reading history (e.g. one tire's pressure)

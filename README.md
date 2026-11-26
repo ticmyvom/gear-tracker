@@ -99,8 +99,9 @@ Then open http://localhost:3000 and sign up.
 
 ## Tests
 
-    bin/rails test   # the test suite
-    bin/ci           # everything a pull request must pass: security scans, tests and seeds
+    bin/rails test          # the test suite
+    bin/rails test:system   # the few tests that need a browser; needs Firefox
+    bin/ci                  # everything a pull request must pass: security scans, both kinds of tests and seeds
 
 ## Keeping your data
 

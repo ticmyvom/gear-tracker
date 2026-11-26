@@ -21,7 +21,7 @@
   <%= render "shared/notes_field", form: form %>
   <div class="actions">
     <%= form.submit %>
-    <%= link_to "Cancel", gear %>
+    <%= link_to "Cancel", gear_section_path(gear, Expense) %>
   </div>
 <% end %>
 

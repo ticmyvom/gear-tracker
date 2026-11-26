@@ -9,6 +9,9 @@ changes in a way that breaks existing clients.
 
 ## [Unreleased]
 
+- After adding, changing or deleting an expense, fuel entry or reading, the gear
+  page opens at that section, not at the top. Cancel does the same
+
 ## [0.3.0] - 2026-11-24
 
 What vehicles really cost, and public profiles.

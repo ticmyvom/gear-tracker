@@ -64,7 +64,7 @@
 
 <% fuel_units = (@gear.fuel_units + @fuel_entries.map(&:unit)).uniq %>
 <% if fuel_units.any? %>
-  <h2><%= FuelEntry.log_name_for(fuel_units) %></h2>
+  <%= section_heading FuelEntry, FuelEntry.log_name_for(fuel_units) %>
   <p class="muted">Add the time used to see the rate (watts for electricity)<%= ", or distance to see efficiency" if @gear.vehicle? %>.</p>
   <% if @gear.fuel_units.any? %>
     <p class="actions">
@@ -114,7 +114,7 @@
   <% end %>
 <% end %>
 
-<h2>Expenses</h2>
+<%= section_heading Expense, "Expenses" %>
 <p><%= link_to "Add expense", new_gear_expense_path(@gear) %></p>
 <% if @expenses.any? %>
   <% expense_notes = any_notes?(@expenses) %>
@@ -140,7 +140,7 @@
   </div>
 <% end %>
 
-<h2>Readings</h2>
+<%= section_heading Reading, "Readings" %>
 <p class="muted">Measurements over time, like tire pressure or odometer.</p>
 <p><%= link_to "Add reading", new_gear_reading_path(@gear) %></p>
 <% if @readings.any? %>

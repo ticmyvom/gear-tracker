@@ -33,3 +33,6 @@
 # Ignore key files for decrypting credentials and more.
 /config/*.key
 
+
+# Sound clips of other people's voices, kept out of the repository until they say yes.
+/design/sounds/

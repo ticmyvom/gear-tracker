@@ -242,7 +242,8 @@ are listed by `bin/kamal app containers`.
 - Check GitHub's security alerts for the repository (turn on **Dependabot
   alerts** under Settings → Code security), update gems with `bundle update`,
   run `bin/ci`, and deploy.
-- `bin/kamal logs` for repeated errors, and on the server, `df -h` for disk space.
+- `bin/kamal logs` for repeated errors, and `bin/kamal disk` for disk space
+  (look into it above 80%). `bin/kamal users` shows how many people signed up.
 - The backup check in step 11.
 
 **Every few months:** the restore drill in step 12.

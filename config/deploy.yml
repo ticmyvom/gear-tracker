@@ -62,6 +62,10 @@ aliases:
   shell: app exec --interactive --reuse "bash"
   logs: app logs -f
   dbc: app exec --interactive --reuse "bin/rails dbconsole"
+  # How many people signed up, and when (no emails): bin/kamal users
+  users: app exec --reuse "bin/rails runner 'puts User.count, User.order(:created_at).pluck(:created_at)'"
+  # How full the server's disk is: bin/kamal disk
+  disk: server exec "df -h /"
 
 # The databases (and their local backups) live on this persistent volume.
 volumes:

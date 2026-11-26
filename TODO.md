@@ -1,7 +1,10 @@
 # To do
 
 ## Commands to run now and then
-- Monthly, or after a burst of deploys: `bin/kamal server exec "df -h /"` shows how full the server's disk is. Look into it if Use% is over 80% (36% on 2026-11-24)
+Run these from the project folder. If Kamal says secrets are missing, first run `source ~/.config/gear-tracker/production.env`.
+- Monthly, or after a burst of deploys: `bin/kamal disk` shows how full the server's disk is. Look into it if Use% is over 80% (36% on 2026-11-24)
+- Whenever you're curious: `bin/kamal users` shows how many people signed up, then when each did (no emails)
+- More in `docs/hosting.md`, step 14 (Upkeep)
 
 ## Features
 - [x] After adding, changing or deleting an expense, fuel entry or reading, go back to its section of the gear page instead of the top

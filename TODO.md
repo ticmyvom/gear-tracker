@@ -9,6 +9,9 @@ Run these from the project folder. If Kamal says secrets are missing, first run 
 ## Features
 - [x] After adding, changing or deleting an expense, fuel entry or reading, go back to its section of the gear page instead of the top
 - [ ] A "Save and add another" button, for adding several of the same kind in a row
+- [ ] Reminders on a vehicle's page, from the dates and odometers already logged (no new fields), so forgotten costs get logged rather than guessed:
+  - Insurance and registration: "Insurance was last logged 7 months ago. Did you miss a payment?", using the usual time between payments
+  - Oil change: due by time or distance since the last one, whichever comes first, from the owner's own usual interval (to decide: how to tell oil changes apart, since they're under Maintenance; maybe the description)
 - [ ] April Fools (April 1 only): play a short sound on sign-up, sign-in and sign-out, like "Hello and welcome" and "May the Lord bless you and keep you, and you have yourself a wonderful day" (clips in `design/sounds/`, kept out of git by `.gitignore` until there's permission; from The Car Care Nut's Lexus RX450h+ video). First ask him for permission, or record our own version. Add a page listing each sound and where it's from. Browsers may block sounds that weren't started by a click, so check that they play
 - [ ] Try the API token section of Settings in a real browser: create a token, copy it, check it works with `curl`, then revoke it (so far only tested by automated tests)
 - [ ] Mark gear as sold or retired, so cost per year stops falling after you let it go

@@ -9,6 +9,7 @@ Run these from the project folder. If Kamal says secrets are missing, first run 
 ## Features
 - [x] After adding, changing or deleting an expense, fuel entry or reading, go back to its section of the gear page instead of the top
 - [ ] A "Save and add another" button, for adding several of the same kind in a row
+- [ ] April Fools (April 1 only): play a short sound on sign-up, sign-in and sign-out, like "Hello and welcome" and "May the Lord bless you and keep you, and you have yourself a wonderful day" (clips in `~/Downloads/car-care-nut-clips/`, from The Car Care Nut's Lexus RX450h+ video). First ask him for permission, or record our own version. Add a page listing each sound and where it's from. Browsers may block sounds that weren't started by a click, so check that they play
 - [ ] Try the API token section of Settings in a real browser: create a token, copy it, check it works with `curl`, then revoke it (so far only tested by automated tests)
 - [ ] Mark gear as sold or retired, so cost per year stops falling after you let it go
 - [ ] Show the latest value of each reading, and filter reading history (e.g. one tire's pressure)

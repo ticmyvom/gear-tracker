@@ -24,6 +24,7 @@ class VehiclesControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_equal [ "2001 Ford F-150", "2010 Toyota Prius Two" ], shown
+    assert_select "th", text: "Purchaseprice" # "Purchase<br>price"
     assert_select "header nav a[href=?]", vehicles_path
   end
 

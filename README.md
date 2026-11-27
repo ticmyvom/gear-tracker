@@ -1,8 +1,8 @@
 # Gear Tracker
 
 Own gears, not stuff. A text-based web app for recording what you own, when you
-bought it, where from, and what it has really cost you. Each user can see the
-gears they own and the gears made public by other users.
+bought it, where it came from, and what it has really cost you.\
+Each user can see the gears they own and the gears made public by other users.
 
 ![Gear list with total cost and cost per year](docs/screenshots/gear-list.png)
 

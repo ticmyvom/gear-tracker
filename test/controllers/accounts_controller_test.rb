@@ -158,4 +158,9 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
     get new_session_path
     assert_select "footer a[href=?]", privacy_path
   end
+
+  test "every page links to the documentation on GitHub" do
+    get new_session_path
+    assert_select "footer a[href=?]", "#{GearTracker::REPOSITORY_URL}#readme", text: "Documentation"
+  end
 end

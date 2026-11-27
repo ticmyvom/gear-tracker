@@ -9,6 +9,9 @@ changes in a way that breaks existing clients.
 
 ## [Unreleased]
 
+- The footer links to the documentation, now split into short pages with the README
+  as their table of contents. It includes a guide to logging fuel from an iPhone
+  Shortcut
 - A gear page lists its sections, like Stats, Fuel and Expenses, at the top of the
   window while you scroll, or beside the page on wide screens. Press S, C, F, E or R
   to jump to stats, components, fuel, expenses or readings

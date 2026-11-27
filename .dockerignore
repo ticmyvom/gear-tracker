@@ -47,7 +47,7 @@
 /.devcontainer
 /.ruby-lsp
 
-# Screenshots are for the README; docs/api.md stays, since the app serves it.
+# Screenshots are for the docs on GitHub; docs/api.md stays, since the app serves it.
 /docs/screenshots
 
 # Ignore Docker-related files

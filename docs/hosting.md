@@ -225,7 +225,7 @@ someone used the site that minute, run it again a minute later.
 ## 13. Updating the site
 
 1. Run `bin/ci`, and fix anything that fails.
-2. For a release, follow **Releasing a version** in the README (version,
+2. For a release, follow **Releasing a version** in [CONTRIBUTING.md](../CONTRIBUTING.md) (version,
    changelog, tag).
 3. Load the secrets and run `bin/kamal deploy`. If they aren't loaded, the deploy
    stops before changing anything (`.kamal/hooks/pre-deploy`); without them the
@@ -274,8 +274,8 @@ settings and volume, so it works while the app is stopped.
 - Your SSH key: add a new key to `/home/deploy/.ssh/authorized_keys` on the
   server and remove the old one.
 
-**Someone reports a security problem:** see the README's "Reporting a security
-problem". Fix it, deploy, then credit them if they'd like.
+**Someone reports a security problem:** see "Reporting a security problem" in
+[CONTRIBUTING.md](../CONTRIBUTING.md). Fix it, deploy, then credit them if they'd like.
 
 ## Later: a home server instead
 

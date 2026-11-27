@@ -21,6 +21,8 @@ Bundler.require(*Rails.groups)
 module GearTracker
   # Semantic versioning (major.minor.patch); see the VERSION file and CHANGELOG.md.
   VERSION = File.read(File.expand_path("../VERSION", __dir__)).strip
+  # The code and its documentation; the README is the table of contents.
+  REPOSITORY_URL = "https://github.com/ticmyvom/gear-tracker".freeze
 
   class Application < Rails::Application
     # How long backups keep deleted data; the privacy page promises this.

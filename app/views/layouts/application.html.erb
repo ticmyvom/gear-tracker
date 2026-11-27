@@ -53,6 +53,6 @@
       <%= yield %>
     </main>
 
-    <footer class="muted">Gear Tracker <%= GearTracker::VERSION %> · <%= link_to "Privacy", privacy_path %></footer>
+    <footer class="muted">Gear Tracker <%= GearTracker::VERSION %> · <%= link_to "Privacy", privacy_path %> · <%= link_to "Documentation", "#{GearTracker::REPOSITORY_URL}#readme" %></footer>
   </body>
 </html>

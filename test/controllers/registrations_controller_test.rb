@@ -22,4 +22,10 @@ class RegistrationsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :unprocessable_content
   end
+
+  test "create saves the browser's time zone" do
+    post registration_path, params: { user: { email_address: "new@example.com", password: "long enough", password_confirmation: "long enough", time_zone: "America/Chicago" } }
+
+    assert_equal "America/Chicago", User.find_by(email_address: "new@example.com").time_zone
+  end
 end

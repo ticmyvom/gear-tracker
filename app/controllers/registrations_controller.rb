@@ -19,6 +19,6 @@ class RegistrationsController < ApplicationController
 
   private
     def user_params
-      params.expect(user: %i[ email_address password password_confirmation ])
+      params.expect(user: %i[ email_address password password_confirmation time_zone ])
     end
 end

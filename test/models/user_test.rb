@@ -78,4 +78,23 @@ class UserTest < ActiveSupport::TestCase
     user.update!(username: "one", display_name: "One", profile_public: true)
     assert_equal [ gears(:prius) ], user.public_gears.to_a
   end
+
+  test "time zones are stored by IANA name, and unknown ones as none" do
+    assert_equal "America/Los_Angeles", User.new(time_zone: "Pacific Time (US & Canada)").time_zone
+    assert_equal "America/Boise", User.new(time_zone: "America/Boise").time_zone
+    assert_nil User.new(time_zone: "Mars/Olympus_Mons").time_zone
+  end
+
+  test "time zone choices share one option per zone and keep a saved zone Rails doesn't name" do
+    assert_includes User.time_zone_options, [ "(GMT+07:00) Bangkok, Hanoi", "Asia/Bangkok" ]
+    assert_equal [ "America/Boise", "America/Boise" ], User.time_zone_options("America/Boise").first
+    assert_equal User.time_zone_options, User.time_zone_options("Asia/Bangkok")
+  end
+
+  test "today is in the user's time zone, or UTC without one" do
+    travel_to Time.utc(2026, 11, 27, 4, 47) do
+      assert_equal Date.new(2026, 11, 26), User.new(time_zone: "America/Los_Angeles").in_time_zone { Date.current }
+      assert_equal Date.new(2026, 11, 27), User.new.in_time_zone { Date.current }
+    end
+  end
 end

@@ -17,6 +17,6 @@ class SettingsController < ApplicationController
 
   private
     def settings_params
-      params.expect(user: %i[ currency distance_unit volume_unit username display_name profile_public ])
+      params.expect(user: %i[ currency distance_unit volume_unit time_zone username display_name profile_public ])
     end
 end

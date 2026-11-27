@@ -54,4 +54,17 @@ class SessionsControllerTest < ActionDispatch::IntegrationTest
 
     assert_select "footer", text: /Gear Tracker #{Regexp.escape(GearTracker::VERSION)}/
   end
+
+  test "create fills in a missing time zone from the browser" do
+    post session_path, params: { email_address: @user.email_address, password: "password", time_zone: "America/Denver" }
+
+    assert_equal "America/Denver", @user.reload.time_zone
+  end
+
+  test "create keeps a saved time zone, like when signing in while traveling" do
+    @user.update!(time_zone: "America/New_York")
+    post session_path, params: { email_address: @user.email_address, password: "password", time_zone: "Europe/Paris" }
+
+    assert_equal "America/New_York", @user.reload.time_zone
+  end
 end

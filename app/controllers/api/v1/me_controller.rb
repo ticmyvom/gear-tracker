@@ -6,6 +6,8 @@ module Api
           currency: current_user.currency,
           distance_unit: current_user.distance_unit,
           volume_unit: current_user.volume_unit,
+          time_zone: Time.zone.name,
+          today: Date.current,
           token: { name: current_api_token.name, permission: current_api_token.permission }
         }
       end

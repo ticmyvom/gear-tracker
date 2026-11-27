@@ -5,6 +5,7 @@
 <%= form_with url: session_path do |form| %>
   <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "Enter your email address", value: params[:email_address] || (Demo::EMAIL if Demo.enabled?) %><br>
   <%= form.password_field :password, required: true, autocomplete: "current-password", placeholder: "Enter your password", maxlength: 72, value: (Demo::PASSWORD if Demo.enabled?) %><br>
+  <%= form.hidden_field :time_zone, value: nil, data: { controller: "time-zone" } %>
   <%= form.submit "Sign in" %>
 <% end %>
 <br>

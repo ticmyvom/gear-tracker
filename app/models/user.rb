@@ -24,6 +24,10 @@ class User < ApplicationRecord
   normalizes :email_address, with: ->(e) { e.strip.downcase }
   normalizes :username, with: ->(name) { name.strip.downcase.presence }
   normalizes :display_name, with: ->(name) { name.squish.presence }
+  # Stores the IANA name, like "America/Los_Angeles", which browsers report too,
+  # even if given a Rails name like "Pacific Time (US & Canada)". An unknown zone
+  # becomes none rather than an error, so a browser reporting one can't block sign-up.
+  normalizes :time_zone, with: ->(zone) { ActiveSupport::TimeZone[zone]&.tzinfo&.name }
 
   validates :email_address, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :password, length: { minimum: 8 }, allow_nil: true
@@ -37,6 +41,20 @@ class User < ApplicationRecord
   validates :username, :display_name, presence: { message: "is needed for a public profile" }, if: :profile_public?
 
   scope :public_profiles, -> { where(profile_public: true) }
+
+  # Choices for Settings, like "(GMT+07:00) Bangkok, Hanoi", by IANA name.
+  # Keeps the saved zone even if it isn't one of Rails' names, like "America/Boise".
+  def self.time_zone_options(selected = nil)
+    options = ActiveSupport::TimeZone.all.group_by { it.tzinfo.name }.map do |name, zones|
+      [ "(GMT#{zones.first.formatted_offset}) #{zones.map(&:name).join(", ")}", name ]
+    end
+    selected.nil? || options.any? { it.last == selected } ? options : [ [ selected, selected ], *options ]
+  end
+
+  # Runs the block with "today" in the user's time zone; UTC until they have one.
+  def in_time_zone(&)
+    Time.use_zone(time_zone || "UTC", &)
+  end
 
   # Gear shown on the public profile: public top-level gear, while the profile is public.
   def public_gears

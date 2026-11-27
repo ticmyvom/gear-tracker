@@ -210,8 +210,9 @@ class Api::V1::SecurityTest < ActionDispatch::IntegrationTest
   end
 
   test "me shows settings but not the email address or other tokens" do
+    travel_to Time.utc(2026, 11, 27, 4, 47)
     get api_v1_me_path, headers: api_headers
 
-    assert_equal({ "currency" => "USD", "distance_unit" => "mi", "volume_unit" => "us_gal", "token" => { "name" => "Agent on laptop", "permission" => "write" } }, json)
+    assert_equal({ "currency" => "USD", "distance_unit" => "mi", "volume_unit" => "us_gal", "time_zone" => "UTC", "today" => "2026-11-27", "token" => { "name" => "Agent on laptop", "permission" => "write" } }, json)
   end
 end

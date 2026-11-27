@@ -29,9 +29,11 @@ curl https://your-server/api/v1/gears/12/fuel_entries \
 
 ## For agents
 
-- Call `GET /api/v1/me` first to learn the user's currency and units.
+- Call `GET /api/v1/me` first to learn the user's currency, units and time zone,
+  and what `today` is there.
 - Find the gear with `GET /api/v1/gears`, matching on `name`, then use its `id`.
-- Send dates as `YYYY-MM-DD`. Work out "today" or "yesterday" yourself.
+- Send dates as `YYYY-MM-DD`. Work out "yesterday" from `today` in `/me`, not
+  from your own clock, which may be in another time zone.
 - Amounts, odometer and distances are in the user's units, not metric. The
   response names the unit in fields like `amount_unit` and `distance_unit`.
 - Unknown fields are rejected, so a misspelled field fails loudly instead of
@@ -57,7 +59,7 @@ All paths start with `/api/v1`. Ids are whole numbers.
 
 | Method | Path | What it does |
 | --- | --- | --- |
-| GET | `/me` | Your currency, units, and this token's name and access |
+| GET | `/me` | Your currency, units, time zone and today's date there, and this token's name and access |
 | GET | `/gears` | All your gear, with total cost |
 | GET | `/gears/:id` | One gear, with its components |
 | POST | `/gears` | Add gear |
@@ -118,7 +120,7 @@ Only for gear with a power source that uses fuel or electricity.
 | --- | --- |
 | `kind` | `fuel` or `energy`. Only needed for plug-in hybrids, and can't be changed later. |
 | `amount` | Required. Fuel is in your volume unit (gallons or liters); energy is in kWh. |
-| `date` | Defaults to today |
+| `date` | Defaults to today in your time zone |
 | `total_price`, `currency` | What it cost |
 | `hours`, `minutes` | Time used; send either or both, and they're added up |
 | `odometer`, `trip` | In your distance unit. `trip` is the distance since the entry before; without it, it's worked out from the odometers, except for plug-in hybrids. |

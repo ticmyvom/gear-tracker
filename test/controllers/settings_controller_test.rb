@@ -63,4 +63,26 @@ class SettingsControllerTest < ActionDispatch::IntegrationTest
 
     assert users(:one).reload.profile_public
   end
+
+  # --- Time zone ---
+
+  test "edit leaves the time zone blank until there is one, for the browser to fill in" do
+    get edit_settings_path
+    assert_select "select[name='user[time_zone]'][data-controller=time-zone] option[value='']"
+
+    users(:one).update!(time_zone: "America/Chicago")
+    get edit_settings_path
+    assert_select "select[name='user[time_zone]'] option[value='']", count: 0
+    assert_select "option[selected][value='America/Chicago']"
+  end
+
+  test "update saves the time zone, and new entries default to today there" do
+    patch settings_path, params: { user: { time_zone: "America/Los_Angeles" } }
+    assert_equal "America/Los_Angeles", users(:one).reload.time_zone
+
+    travel_to Time.utc(2026, 11, 27, 4, 47) do
+      get new_gear_fuel_entry_path(gears(:prius))
+      assert_select "input[name='fuel_entry[filled_on]'][value='2026-11-26']"
+    end
+  end
 end

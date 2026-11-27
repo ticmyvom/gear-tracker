@@ -18,6 +18,11 @@
     <%= form.select :volume_unit, Units::VOLUMES.invert %>
     <p class="muted">Fuel entries you already made are shown in the new units.</p>
   </div>
+  <div>
+    <%= form.label :time_zone %>
+    <%= form.select :time_zone, User.time_zone_options(@user.time_zone), { include_blank: @user.time_zone.nil? }, data: { controller: "time-zone" } %>
+    <p class="muted">Decides which day "today" is, for new entries and the API.</p>
+  </div>
   <div class="actions">
     <%= form.submit "Save settings" %>
     <%= link_to "Cancel", root_path %>

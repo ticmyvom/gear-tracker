@@ -8,6 +8,7 @@ class SessionsController < ApplicationController
   def create
     if user = User.authenticate_by(params.permit(:email_address, :password))
       start_new_session_for user
+      fill_in_time_zone user
       redirect_to after_authentication_url
     else
       redirect_to new_session_path, alert: "Try another email address or password."
@@ -18,4 +19,11 @@ class SessionsController < ApplicationController
     terminate_session
     redirect_to new_session_path, status: :see_other
   end
+
+  private
+    # Accounts made before time zones existed get the browser's on their next sign-in.
+    # A zone already saved is kept, so signing in while traveling doesn't change it.
+    def fill_in_time_zone(user)
+      user.update(time_zone: params[:time_zone]) if user.time_zone.nil? && params[:time_zone].present?
+    end
 end

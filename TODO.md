@@ -17,6 +17,7 @@ Run these from the project folder. If Kamal says secrets are missing, first run 
 - [ ] Mark gear as sold or retired, so cost per year stops falling after you let it go
 - [ ] Show the latest value of each reading, and filter reading history (e.g. one tire's pressure)
 - [x] A page listing all public profiles, each name in a box with a transparent border
+- [ ] Let users show their region on their public profile, if they choose to (separate from the time zone setting, which stays private)
 - [ ] A support page; supporters' names get a colored border with the year attached, like a license plate registration sticker
 
 ## Data

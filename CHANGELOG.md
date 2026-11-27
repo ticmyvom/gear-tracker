@@ -9,6 +9,10 @@ changes in a way that breaks existing clients.
 
 ## [Unreleased]
 
+- Dates like "today" follow your time zone, not the server's, so entries made in
+  the evening no longer default to tomorrow. It's set from your browser when you
+  sign up or next sign in, and can be changed in Settings. In the API, a date left
+  out means today in your time zone, and `/me` includes `time_zone` and `today`
 - Expenses of vehicles and their parts can note the odometer too, like "oil change
   at 152,300 mi". It also counts toward a vehicle's distance tracked
 - A listed vehicle shows its owner's name only if they tick "Also show my name",

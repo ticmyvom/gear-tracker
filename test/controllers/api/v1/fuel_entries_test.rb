@@ -104,4 +104,16 @@ class Api::V1::FuelEntriesTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_content
     assert_match "Time used must be greater than 0", json["error"]
   end
+
+  test "a date left out is today in the user's time zone" do
+    users(:one).update!(time_zone: "America/Los_Angeles")
+
+    travel_to Time.utc(2026, 11, 27, 4, 47) do
+      post api_v1_gear_fuel_entries_path(gears(:prius)), params: { amount: 9 }, headers: api_headers, as: :json
+      assert_equal "2026-11-26", json["date"]
+
+      get api_v1_me_path, headers: api_headers
+      assert_equal [ "America/Los_Angeles", "2026-11-26" ], json.values_at("time_zone", "today")
+    end
+  end
 end

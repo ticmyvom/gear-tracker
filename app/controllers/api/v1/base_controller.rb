@@ -18,6 +18,8 @@ module Api
         with: -> { render_error :too_many_requests, "Too many requests. Try again in a minute." }
       before_action :authenticate
       before_action :require_write_permission, unless: -> { request.get? || request.head? }
+      # A date left out, like a fuel entry's, means today in the user's time zone.
+      around_action { |_, action| current_user.in_time_zone(&action) }
 
       rescue_from ActiveRecord::RecordNotFound, with: -> { render_error :not_found, "Not found" }
       rescue_from ActionDispatch::Http::Parameters::ParseError, with: -> { render_error :bad_request, "Request body isn't valid JSON" }

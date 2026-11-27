@@ -32,3 +32,7 @@ Run these from the project folder. If Kamal says secrets are missing, first run 
 - [x] Follow `docs/hosting.md`: buy the domain, rent and harden the VPS, set up Resend and the R2 backup bucket, then deploy
 - [x] After the first deploy, restore a backup once to prove backups work (2026-11-20; repeat every few months)
 - [ ] When running more than one server, move background jobs to their own server (see `SOLID_QUEUE_IN_PUMA` in `config/deploy.yml`)
+
+## Maybe
+Ideas to do only if a need shows up.
+- [ ] A glossary page (`docs/glossary.md`, linked from the README), once several terms need defining across pages, like total cost vs. running costs, cost per year, efficiency, and partial or missed fill-ups. Until then, define each term where it's used, as the Features page does for running costs

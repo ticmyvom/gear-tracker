@@ -22,7 +22,8 @@ their own gear, and what others choose to make public.
   vehicles and their parts can also note the odometer.
 - **API for agents**: let an agent or script read your gear and log expenses, fuel and
   energy use, and readings, with a token you create in Settings. See
-  [docs/api.md](docs/api.md), also served at `/api/v1`.
+  [docs/api.md](docs/api.md), also served at `/api/v1`, which also shows how to log
+  fuel from an iPhone Shortcut.
 - **Settings**: your currency, miles or kilometers, and US gallons, UK gallons or
   liters. Fuel entries are stored in kilometers and liters and shown in your units, so
   changing units updates old entries too. Your currency is the default for new prices and

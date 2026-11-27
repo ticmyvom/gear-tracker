@@ -28,7 +28,7 @@ Run these from the project folder. If Kamal says secrets are missing, first run 
 - [ ] Check that the demo Codespace resets when it restarts (opening and signing in work)
 
 ## Before deploying
-- [ ] Turn on private vulnerability reporting in the GitHub repository's settings, so the "Report a vulnerability" step in CONTRIBUTING.md works
+- [x] Turn on private vulnerability reporting in the GitHub repository's settings, so the "Report a vulnerability" step in CONTRIBUTING.md works
 - [x] Follow `docs/hosting.md`: buy the domain, rent and harden the VPS, set up Resend and the R2 backup bucket, then deploy
 - [x] After the first deploy, restore a backup once to prove backups work (2026-11-20; repeat every few months)
 - [ ] When running more than one server, move background jobs to their own server (see `SOLID_QUEUE_IN_PUMA` in `config/deploy.yml`)

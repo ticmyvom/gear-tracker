@@ -27,10 +27,11 @@
 
 <h2>Your choices</h2>
 <ul>
-  <li><strong>Public profile:</strong> off by default. If you turn it on in Settings, you're listed on the People page, and anyone can see your display name, username and only the gear you mark public, with its costs only if you choose. Your email and other gear are never shown. Public pages ask search engines not to list them.</li>
+  <li><strong>Public profile:</strong> off by default. If you turn it on in Settings, you're listed on the People page, and anyone can see your display name, username and only the gear you mark public, with its costs only if you choose. Your email and other gears are never shown. Public pages ask search engines not to list them.</li>
   <li><strong>Vehicles page:</strong> off by default for each vehicle. If you list one, anyone can see its year, make, model, trim and power source, and only if you choose, its purchase price, its running costs, and its efficiency, distance and number of logs. Dates, descriptions, vendors, notes and its nickname are never shown. Your name is shown with it only if you choose, and only while your profile is public.</li>
   <li><strong>Download your data</strong> at any time from Settings, as a JSON file.</li>
   <li><strong>Delete your account</strong> from Settings. Everything you entered is deleted at once. Copies in backups are deleted as old backups expire, within <%= Rails.configuration.x.backup_retention_days %> days.</li>
 </ul>
 
 <p class="muted">Questions? Open an issue on <%= link_to "the project's GitHub page", GearTracker::REPOSITORY_URL %>.</p>
+<p class="muted">Found a security problem? Don't open an issue. Use <strong>Report a vulnerability</strong> on <%= link_to "the repository's Security tab", "#{GearTracker::REPOSITORY_URL}/security" %>, so it can be fixed before it's made public.</p>

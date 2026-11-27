@@ -346,4 +346,14 @@ class GearsControllerTest < ActionDispatch::IntegrationTest
     get edit_gear_path(gears(:tires))
     assert_select "input[name='gear[public]']", count: 0
   end
+
+  test "show links to each section it has, each with a key" do
+    get gear_path(gears(:prius))
+    links = css_select("nav.section-nav a").map { [ it["href"], it["aria-keyshortcuts"] ] }
+    assert_equal [ [ "#stats", "s" ], [ "#components", "c" ], [ "#fuel_entries", "f" ], [ "#expenses", "e" ], [ "#readings", "r" ] ], links
+    links.each { |href, _| assert_select "h2#{href}" }
+
+    get gear_path(gears(:tires)) # a component, not powered
+    assert_equal %w[ #expenses #readings ], css_select("nav.section-nav a").map { it["href"] }
+  end
 end

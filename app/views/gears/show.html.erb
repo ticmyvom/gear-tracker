@@ -7,6 +7,15 @@
 
 <h1><%= @gear.name %></h1>
 
+<% fuel_units = (@gear.fuel_units + @fuel_entries.map(&:unit)).uniq %>
+<nav class="section-nav" aria-label="Sections" data-controller="section-nav" data-action="keydown@document->section-nav#jump">
+  <%= section_link "stats", "Stats", key: "s" if @stats&.any? %>
+  <%= section_link "components", "Components", key: "c" if @gear.parent_id.nil? %>
+  <%= section_link FuelEntry, FuelEntry.log_name_for(fuel_units), key: "f" if fuel_units.any? %>
+  <%= section_link Expense, "Expenses", key: "e" %>
+  <%= section_link Reading, "Readings", key: "r" %>
+</nav>
+
 <dl>
   <dt>Category</dt><dd><%= @gear.category_name || "-" %></dd>
   <% if @gear.vehicle? && @gear.nickname %>
@@ -38,7 +47,7 @@
 <%= render "stats", stats: @stats if @stats&.any? %>
 
 <% if @gear.parent_id.nil? %>
-  <h2>Components</h2>
+  <h2 id="components">Components</h2>
   <p class="muted">Parts with their own purchase history, like a set of tires.</p>
   <p><%= link_to "Add component", new_gear_path(parent_id: @gear.id) %></p>
   <% if @components.any? %>
@@ -62,7 +71,6 @@
   <% end %>
 <% end %>
 
-<% fuel_units = (@gear.fuel_units + @fuel_entries.map(&:unit)).uniq %>
 <% if fuel_units.any? %>
   <%= section_heading FuelEntry, FuelEntry.log_name_for(fuel_units) %>
   <p class="muted">Add the time used to see the rate (watts for electricity)<%= ", or distance to see efficiency" if @gear.vehicle? %>.</p>

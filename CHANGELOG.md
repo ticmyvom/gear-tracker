@@ -9,6 +9,9 @@ changes in a way that breaks existing clients.
 
 ## [Unreleased]
 
+- A gear page lists its sections, like Stats, Fuel and Expenses, at the top of the
+  window while you scroll, or beside the page on wide screens. Press S, C, F, E or R
+  to jump to stats, components, fuel, expenses or readings
 - Dates like "today" follow your time zone, not the server's, so entries made in
   the evening no longer default to tomorrow. It's set from your browser when you
   sign up or next sign in, and can be changed in Settings. In the API, a date left

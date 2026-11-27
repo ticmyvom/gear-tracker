@@ -1,7 +1,7 @@
 <%# locals: (stats:, costs: true, economy: true, owner: true) %>
 <%# What it costs to run. Takes a VehicleStats; the Vehicles page leaves out what the owner doesn't share. %>
 <% currency = stats.gear.currency %>
-<h2>Stats</h2>
+<h2 id="stats">Stats</h2>
 <dl>
   <dt>Time tracked</dt><dd><%= time_tracked stats.days_tracked %></dd>
   <% if economy %>

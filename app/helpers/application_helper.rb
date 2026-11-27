@@ -7,9 +7,20 @@ module ApplicationHelper
   # A gear page section's heading, scrolled to after saving one of its records,
   # so adding several in a row doesn't mean scrolling down each time.
   def section_heading(model, text)
-    id = model.model_name.route_key
+    id = section_id(model)
     tag.h2 text, id: id, data: ({ controller: "scroll-into-view" } if flash[:section].to_s == id)
   end
+
+  # A link in the gear page's section nav. With a key, pressing it jumps there too;
+  # the key is shown only on devices with a mouse, which likely have a keyboard.
+  def section_link(section, text, key: nil)
+    id = section.is_a?(String) ? section : section_id(section)
+    link_to "##{id}", aria: { keyshortcuts: key } do
+      safe_join([ text, (tag.kbd(key.upcase) if key) ].compact, " ")
+    end
+  end
+
+  def section_id(model) = model.model_name.route_key
 
   # Tables show a Notes column only when some row has a note.
   def any_notes?(records)

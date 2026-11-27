@@ -78,5 +78,17 @@ footer { margin-top: 3rem; padding-top: 0.5rem; border-top: 1px solid var(--line
 .name-tags { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 0.75rem; }
 .name-tag { --tag-border: transparent; display: block; padding: 0.5rem 0.75rem; border: 3px solid var(--tag-border); border-radius: 0.5rem; text-decoration: none; }
 .name-tag small { display: block; }
+/* Gear page: section links stay at the top of the window while scrolling, or
+   beside the page where there's room. Headings stop below the bar when jumped to. */
+.section-nav { position: sticky; top: 0; z-index: 1; display: flex; gap: 1rem; overflow-x: auto; white-space: nowrap; padding: 0.5rem 0; background: Canvas; border-bottom: 1px solid var(--line); }
+h2[id] { scroll-margin-top: 3rem; }
+kbd { font: inherit; font-size: 0.75rem; padding: 0 0.25rem; border: 1px solid var(--line); border-radius: 0.25rem; color: var(--muted); }
+@media (hover: none) { .section-nav kbd { display: none; } }
+/* Beside the page: body is 60rem plus 1rem padding each side, then a gap. */
+@media (min-width: 88rem) {
+  .section-nav { position: fixed; top: 6rem; left: calc(50% - 31rem - 12rem); width: 11rem; flex-direction: column; gap: 0.25rem; white-space: normal; border: 0; }
+  h2[id] { scroll-margin-top: 1rem; }
+}
+
 .notice { color: light-dark(#17692b, #6fcf8a); }
 .alert, .errors { color: light-dark(#b3261e, #f28b82); }

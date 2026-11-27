@@ -9,6 +9,9 @@ changes in a way that breaks existing clients.
 
 ## [Unreleased]
 
+- The privacy page says that the site is maintained with an AI assistant, which
+  may read server logs and records to fix problems, and that logs include what
+  was sent, like an entry's amounts and notes
 - The footer links to the documentation, now split into short pages with the README
   as their table of contents. It includes a guide to logging fuel from an iPhone
   Shortcut

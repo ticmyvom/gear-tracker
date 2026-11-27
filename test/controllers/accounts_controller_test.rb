@@ -154,6 +154,7 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
     get privacy_path
     assert_response :success
     assert_select "h1", text: "Privacy"
+    assert_select "li", text: /Claude, an AI assistant made by Anthropic/
 
     get new_session_path
     assert_select "footer a[href=?]", privacy_path

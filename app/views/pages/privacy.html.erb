@@ -9,7 +9,7 @@
   <li><strong>What you enter:</strong> your gear, expenses, fuel and energy entries, readings, notes and settings.</li>
   <li><strong>Sign-ins:</strong> for each signed-in browser, its IP address and browser name, so a session can be recognized.</li>
   <li><strong>API tokens:</strong> their names and when they were last used. The tokens themselves are stored only as a fingerprint.</li>
-  <li><strong>Server logs:</strong> requests, with IP addresses, kept briefly to keep the site running and safe. Passwords and tokens are never logged.</li>
+  <li><strong>Server logs:</strong> requests, with IP addresses and what was sent, like the amounts and notes of an entry, kept briefly to keep the site running and safe. Passwords, tokens and email addresses are never logged.</li>
 </ul>
 
 <h2>What isn't done</h2>
@@ -22,6 +22,7 @@
 <ul>
   <li><strong>Email:</strong> password reset emails are sent through an email delivery service, which sees your email address and the message.</li>
   <li><strong>Backups:</strong> the database is copied continuously to encrypted cloud storage, so it can be restored if the server fails.</li>
+  <li><strong>AI assistant:</strong> the site is built and maintained with the help of Claude, an AI assistant made by Anthropic. To fix a problem, it may read the server logs or look up records in the database, and what it reads is sent to Anthropic and handled under <%= link_to "Anthropic's privacy policy", "https://www.anthropic.com/legal/privacy" %>. It looks at as little as the problem needs: counts and the site owner's own records where possible, and never your password or tokens, which aren't stored in readable form.</li>
 </ul>
 
 <h2>Your choices</h2>
